@@ -9,7 +9,7 @@ def create_macro():
     start_x = 80
     start_y = 80
     step_x  = 135
-    step_y  = 135 # pdn pitch is 70
+    step_y  = 135 # pdn pitch is 90
     rows = 25
     cols = 20
 
