@@ -19,6 +19,13 @@
 set ::env(PDK) $::env(PDK)
 set ::env(STD_CELL_LIBRARY) "sky130_fd_sc_hd"
 
+set ::env(DECAP_CELL) "\
+    sky130_fd_sc_hd__decap_3 \
+    sky130_fd_sc_hd__decap_4 \
+    sky130_fd_sc_hd__decap_6 \
+    sky130_fd_sc_hd__decap_8 \
+    sky130_ef_sc_hd__decap_12"
+
 # YOU ARE NOT ALLOWED TO CHANGE ANY VARIABLES DEFINED IN THE FIXED WRAPPER CFGS 
 source $::env(DESIGN_DIR)/fixed_dont_change/fixed_wrapper_cfgs.tcl
 
