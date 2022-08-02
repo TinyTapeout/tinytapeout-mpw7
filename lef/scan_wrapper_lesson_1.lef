@@ -1,0 +1,127 @@
+VERSION 5.7 ;
+  NOWIREEXTENSIONATPIN ON ;
+  DIVIDERCHAR "/" ;
+  BUSBITCHARS "[]" ;
+MACRO scan_wrapper_lesson_1
+  CLASS BLOCK ;
+  FOREIGN scan_wrapper_lesson_1 ;
+  ORIGIN 0.000 0.000 ;
+  SIZE 100.000 BY 100.000 ;
+  PIN clk_in
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER met2 ;
+        RECT 96.550 96.000 97.110 100.000 ;
+    END
+  END clk_in
+  PIN clk_out
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    PORT
+      LAYER met2 ;
+        RECT 48.250 0.000 48.810 4.000 ;
+    END
+  END clk_out
+  PIN data_in
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER met3 ;
+        RECT 96.000 47.340 100.000 48.540 ;
+    END
+  END data_in
+  PIN data_out
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    PORT
+      LAYER met3 ;
+        RECT 0.000 50.740 4.000 51.940 ;
+    END
+  END data_out
+  PIN latch_enable_in
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER met2 ;
+        RECT -0.050 0.000 0.510 4.000 ;
+    END
+  END latch_enable_in
+  PIN latch_enable_out
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    PORT
+      LAYER met2 ;
+        RECT -0.050 96.000 0.510 100.000 ;
+    END
+  END latch_enable_out
+  PIN scan_select_in
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER met2 ;
+        RECT 48.250 96.000 48.810 100.000 ;
+    END
+  END scan_select_in
+  PIN scan_select_out
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    PORT
+      LAYER met2 ;
+        RECT 96.550 0.000 97.110 4.000 ;
+    END
+  END scan_select_out
+  PIN vccd1
+    DIRECTION INPUT ;
+    USE POWER ;
+    PORT
+      LAYER met4 ;
+        RECT 19.550 10.640 21.150 87.280 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 49.200 10.640 50.800 87.280 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 78.855 10.640 80.455 87.280 ;
+    END
+  END vccd1
+  PIN vssd1
+    DIRECTION INPUT ;
+    USE GROUND ;
+    PORT
+      LAYER met4 ;
+        RECT 34.370 10.640 35.970 87.280 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 64.025 10.640 65.625 87.280 ;
+    END
+  END vssd1
+  OBS
+      LAYER li1 ;
+        RECT 5.520 10.795 94.300 87.125 ;
+      LAYER met1 ;
+        RECT 0.070 10.640 96.990 87.280 ;
+      LAYER met2 ;
+        RECT 0.790 95.720 47.970 96.000 ;
+        RECT 49.090 95.720 96.270 96.000 ;
+        RECT 0.100 4.280 96.960 95.720 ;
+        RECT 0.790 3.670 47.970 4.280 ;
+        RECT 49.090 3.670 96.270 4.280 ;
+      LAYER met3 ;
+        RECT 4.000 52.340 96.000 87.205 ;
+        RECT 4.400 50.340 96.000 52.340 ;
+        RECT 4.000 48.940 96.000 50.340 ;
+        RECT 4.000 46.940 95.600 48.940 ;
+        RECT 4.000 10.715 96.000 46.940 ;
+      LAYER met4 ;
+        RECT 21.550 10.640 33.970 87.280 ;
+        RECT 36.370 10.640 48.800 87.280 ;
+        RECT 51.200 10.640 63.625 87.280 ;
+        RECT 66.025 10.640 78.455 87.280 ;
+  END
+END scan_wrapper_lesson_1
+END LIBRARY
+
