@@ -1,17 +1,71 @@
 #!/usr/bin/env python3
-import shutil
+import shutil, os, sys
+from urllib.parse import urlparse
+import argparse
+import requests
+import base64
+import zipfile
+import io
+import logging
+# list of designs
+from designs import designs
+
 
 # where are things
 proj_name = "scan_wrapper_lesson_1"
+
+
+# download the artifact for each project to get the gds & lef
+def get_macros():
+    from tokens import git_token, git_username
+
+    # iterate through all designs
+    git_url = designs[0]
+
+    res = urlparse(git_url)
+    try:
+        _, user_name, repo = res.path.split('/')
+    except ValueError:
+        logging.error("couldn't split repo from %s" % git_url)
+        return 0
+    repo = repo.replace('.git', '')
+
+    # authenticate for rate limiting
+    auth_string = git_username + ':' + git_token
+    encoded = base64.b64encode(auth_string.encode('ascii'))
+    headers = {
+        "authorization" : 'Basic ' + encoded.decode('ascii'),
+        "Accept"        : "application/vnd.github+json",
+        }
+    api_url = 'https://api.github.com/repos/%s/%s/actions/artifacts' % (user_name, repo)
+    r = requests.get(api_url, headers=headers)
+    requests_remaining = int(r.headers['X-RateLimit-Remaining'])
+    if requests_remaining == 0:
+        print("no API requests remaining")
+        exit(1)
+    data = r.json()
+    latest = data['artifacts'][0]
+    download_url = latest['archive_download_url']
+    print(download_url)
+
+    # had to enable actions access on the token to get the artifact , so it probably won't work for other people's repos
+    r = requests.get(download_url, headers=headers)
+    print(r)
+    z = zipfile.ZipFile(io.BytesIO(r.content))
+    z.extractall("/tmp")
+    gds = "/tmp/runs/wokwi/results/final/gds/scan_wrapper.gds"
+    lef = "/tmp/runs/wokwi/results/final/lef/scan_wrapper.lef"
+    print(gds, lef)
+
 
 # create macro file & positions
 def create_macro():
     start_x = 80
     start_y = 80
     step_x  = 135
-    step_y  = 135 # pdn pitch is 90
-    rows = 25
-    cols = 20
+    step_y  = 135   # pdn pitch is 90
+    rows    = 25
+    cols    = 20
 
     num_macros = 0
 
@@ -37,14 +91,15 @@ def create_macro():
             fh.write("	")
             fh.write("instance_%d" % i)
             fh.write(" vccd1 vssd1 vccd1 vssd1")
-            if i != num_macros -1:
+            if i != num_macros - 1:
                 fh.write(", \\\n")
         fh.write('"\n')
 
     return num_macros
 
+
 # instantiate inside user_project_wrapper
-def instanciate(num_macros):
+def instantiate(num_macros):
     assigns = """
     localparam NUM_MACROS = %d;
     wire [NUM_MACROS:0] data, scan, latch, clk;
@@ -97,22 +152,51 @@ def instanciate(num_macros):
         fh.write(scan_controller_template)
         for number in range(num_macros):
             # instantiate template
-            instance = lesson_template % (number, number, number, number, number, number+1, number+1, number+1, number+1)
+            instance = lesson_template % (number, number, number, number, number, number + 1, number + 1, number + 1, number + 1)
             fh.write(instance)
-        fh.write(post) 
+        fh.write(post)
 
 
 def copy_gds_lef():
     # gds & lef
     gds = proj_name + '.gds'
-    dst = os.path.join("gds", gds) 
-    #self.system_config['caravel']['gl_dir'], os.path.basename(self.config['final']['lvs_filename']))
+    dst = os.path.join("gds", gds)
+    # self.system_config['caravel']['gl_dir'], os.path.basename(self.config['final']['lvs_filename']))
     shutil.copyfile(gds, dst)
 
     lef = proj_name + '.lef'
-    dst = os.path.join("lef", gds) 
+    dst = os.path.join("lef", lef)
     shutil.copyfile(lef, dst)
 
+
 if __name__ == '__main__':
-    num_macros = create_macro()
-    instanciate(num_macros)
+    parser = argparse.ArgumentParser(description="TinyTapeout")
+
+    parser.add_argument('--list', help="list projects", action='store_const', const=True)
+    parser.add_argument('--update-designs', help='fetch the project data', action='store_const', const=True)
+    parser.add_argument('--update-config', help='fetch the project data', action='store_const', const=True)
+    parser.add_argument('--debug', help="debug logging", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.INFO)
+
+    args = parser.parse_args()
+
+    # setup log
+    log_format = logging.Formatter('%(asctime)s - %(levelname)-8s - %(message)s')
+    # configure the client logging
+    log = logging.getLogger('')
+    # has to be set to debug as is the root logger
+    log.setLevel(args.loglevel)
+
+    # create console handler and set level to info
+    ch = logging.StreamHandler(sys.stdout)
+    # create formatter for console
+    ch.setFormatter(log_format)
+    log.addHandler(ch)
+
+    if args.update_designs:
+        get_macros()
+
+    if args.update_config:
+        # create macros.cfg, extra_lefs_defs
+        num_macros = create_macro()
+        # instantiate in user_project_wrapper.v
+        instantiate(num_macros)
