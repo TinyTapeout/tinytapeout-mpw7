@@ -14,20 +14,25 @@ from designs import designs
 # where are things
 proj_name = "scan_wrapper_lesson_1"
 
+class Project():
+    
+    def __init__(giturl, name):
+
 
 # download the artifact for each project to get the gds & lef
 def get_macros():
     from tokens import git_token, git_username
 
     # iterate through all designs
-    git_url = designs[0]
+    macro_number = 0
+    git_url = designs[macro_number]
 
     res = urlparse(git_url)
     try:
         _, user_name, repo = res.path.split('/')
     except ValueError:
-        logging.error("couldn't split repo from %s" % git_url)
-        return 0
+        logging.error("couldn't split repo from {}".format(git_url))
+        exit(1)
     repo = repo.replace('.git', '')
 
     # authenticate for rate limiting
@@ -37,25 +42,34 @@ def get_macros():
         "authorization" : 'Basic ' + encoded.decode('ascii'),
         "Accept"        : "application/vnd.github+json",
         }
-    api_url = 'https://api.github.com/repos/%s/%s/actions/artifacts' % (user_name, repo)
+
+    api_url = 'https://api.github.com/repos/{}/{}/actions/artifacts'.format(user_name, repo)
     r = requests.get(api_url, headers=headers)
     requests_remaining = int(r.headers['X-RateLimit-Remaining'])
     if requests_remaining == 0:
-        print("no API requests remaining")
+        logging.error("no API requests remaining")
         exit(1)
+
     data = r.json()
     latest = data['artifacts'][0]
     download_url = latest['archive_download_url']
-    print(download_url)
+    logging.debug(download_url)
 
     # had to enable actions access on the token to get the artifact , so it probably won't work for other people's repos
     r = requests.get(download_url, headers=headers)
-    print(r)
+    logging.debug(r)
     z = zipfile.ZipFile(io.BytesIO(r.content))
-    z.extractall("/tmp")
-    gds = "/tmp/runs/wokwi/results/final/gds/scan_wrapper.gds"
-    lef = "/tmp/runs/wokwi/results/final/lef/scan_wrapper.lef"
-    print(gds, lef)
+    files = {
+        'gds' : "/tmp/runs/wokwi/results/final/gds/scan_wrapper.gds",
+        'lef' : "/tmp/runs/wokwi/results/final/lef/scan_wrapper.lef",
+        }
+
+    logging.debug("{} {}".format(files['gds'], files['lef']))
+
+    for filetype in ['gds', 'lef']:
+        src = files[filetype]
+        dst = os.path.join(filetype, "project_{:03}.{}".format(macro_number, filetype))
+        shutil.copyfile(src, dst)
 
 
 # create macro file & positions
@@ -76,7 +90,7 @@ def create_macro():
                 # skip the space where the scan controller goes on the first row
                 if row == 0 and col <= 1:
                     continue
-                instance = "instance_%d %d %d N\n" % (num_macros, start_x + col * step_x, start_y + row * step_y)
+                instance = "project_{:03} {:<4} {:<4} N\n".format(num_macros, start_x + col * step_x, start_y + row * step_y)
                 fh.write(instance)
 
                 num_macros += 1
@@ -89,7 +103,7 @@ def create_macro():
         fh.write(", \\\n")
         for i in range(num_macros):
             fh.write("	")
-            fh.write("instance_%d" % i)
+            fh.write("project_{:03}".format(i))
             fh.write(" vccd1 vssd1 vccd1 vssd1")
             if i != num_macros - 1:
                 fh.write(", \\\n")
@@ -101,7 +115,7 @@ def create_macro():
 # instantiate inside user_project_wrapper
 def instantiate(num_macros):
     assigns = """
-    localparam NUM_MACROS = %d;
+    localparam NUM_MACROS = {};
     wire [NUM_MACROS:0] data, scan, latch, clk;
     wire [8:0] active_select = io_in[20:12];
     wire [7:0] inputs = io_in[28:21];
@@ -129,15 +143,15 @@ def instantiate(num_macros):
 
     """
     lesson_template = """
-    scan_wrapper_lesson_1 #(.NUM_IOS(8)) instance_%d (
-        .clk_in          (clk  [%d]),
-        .data_in         (data [%d]),
-        .scan_select_in  (scan [%d]),
-        .latch_enable_in (latch[%d]),
-        .clk_out         (clk  [%d]),
-        .data_out        (data [%d]),
-        .scan_select_out (scan [%d]),
-        .latch_enable_out(latch[%d])
+    project_{name} #(.NUM_IOS(8)) project_{instance:03} (
+        .clk_in          (clk  [{instance}]),
+        .data_in         (data [{instance}]),
+        .scan_select_in  (scan [{instance}]),
+        .latch_enable_in (latch[{instance}]),
+        .clk_out         (clk  [{next_instance}]),
+        .data_out        (data [{next_instance}]),
+        .scan_select_out (scan [{next_instance}]),
+        .latch_enable_out(latch[{next_instance}])
         );
     """
     with open('upw_pre.v') as fh:
@@ -148,25 +162,13 @@ def instantiate(num_macros):
 
     with open('verilog/rtl/user_project_wrapper.v', 'w') as fh:
         fh.write(pre)
-        fh.write(assigns % num_macros)
+        fh.write(assigns.format(num_macros))
         fh.write(scan_controller_template)
         for number in range(num_macros):
             # instantiate template
-            instance = lesson_template % (number, number, number, number, number, number + 1, number + 1, number + 1, number + 1)
+            instance = lesson_template.format(instance=number, next_instance=number + 1)
             fh.write(instance)
         fh.write(post)
-
-
-def copy_gds_lef():
-    # gds & lef
-    gds = proj_name + '.gds'
-    dst = os.path.join("gds", gds)
-    # self.system_config['caravel']['gl_dir'], os.path.basename(self.config['final']['lvs_filename']))
-    shutil.copyfile(gds, dst)
-
-    lef = proj_name + '.lef'
-    dst = os.path.join("lef", lef)
-    shutil.copyfile(lef, dst)
 
 
 if __name__ == '__main__':
@@ -193,7 +195,9 @@ if __name__ == '__main__':
     log.addHandler(ch)
 
     if args.update_designs:
+        # fetches the artifacts from a gitrepo, then copies the gds/lef to the correct place
         get_macros()
+
 
     if args.update_config:
         # create macros.cfg, extra_lefs_defs
