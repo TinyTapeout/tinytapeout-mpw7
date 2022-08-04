@@ -91,7 +91,12 @@ class Project():
             exit(1)
 
         data = r.json()
-        latest = data['artifacts'][0]
+        try:
+            latest = data['artifacts'][0]
+        except IndexError:
+            logging.error("no artifact found for {}".format(self))
+            exit(1)
+
         download_url = latest['archive_download_url']
         logging.info(download_url)
 
@@ -266,10 +271,9 @@ if __name__ == '__main__':
     log = logging.getLogger('')
     # has to be set to debug as is the root logger
     log.setLevel(args.loglevel)
-    logging.getLogger("requests").setLevel(logging.WARNING)
-    logging.getLogger("urllib3").setLevel(logging.WARNING)
-
-
+    # turn off debug logging for requests
+    logging.getLogger("requests").setLevel(logging.INFO)
+    logging.getLogger("urllib3").setLevel(logging.INFO)
 
     # create console handler and set level to info
     ch = logging.StreamHandler(sys.stdout)
