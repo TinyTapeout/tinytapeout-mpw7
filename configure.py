@@ -45,6 +45,7 @@ class Projects():
 class Project():
 
     def __init__(self, git_url, name, macro_id, fill=False):
+        # TODO name should come from the git repo, but then cached somewhere? how does the project know this if the repo is not being downloaded
         self.fill = fill
         if not re.search('^[a-z_][a-z0-9$_]*$', name):
             logging.error("invalid name {}".format(name))
@@ -104,21 +105,16 @@ class Project():
         r = requests.get(download_url, headers=headers)
         z = zipfile.ZipFile(io.BytesIO(r.content))
         z.extractall('/tmp')
+
         files = {
-            'gds' : "/tmp/runs/wokwi/results/final/gds/scan_wrapper.gds",
-            'lef' : "/tmp/runs/wokwi/results/final/lef/scan_wrapper.lef",
+            'gds' : { 'src' : "/tmp/runs/wokwi/results/final/gds/{}.gds".format(self.name), 'dst' : "gds/{}.gds".format(self.name) },
+            'lef' : { 'src' : "/tmp/runs/wokwi/results/final/lef/{}.lef".format(self.name), 'dst' : "lef/{}.lef".format(self.name) },
+            'v'   : { 'src' : "/tmp/runs/wokwi/results/final/verilog/gl/{}.v".format(self.name), 'dst' : "verilog/rtl/{}.v".format(self.name) },
             }
 
-        logging.debug("{} {}".format(files['gds'], files['lef']))
-
-        for filetype in ['gds', 'lef']:
-            src = files[filetype]
-            dst = self.get_filepath(filetype)
-            logging.debug("copy {} to {}".format(src, dst))
-            shutil.copyfile(src, dst)
-
-    def get_filepath(self, type):
-        return os.path.join(type, self.name + "." + type)
+        for filetype in files.keys():
+            logging.debug("copy {} to {}".format(files[filetype]['src'], files[filetype]['dst']))
+            shutil.copyfile(files[filetype]['src'], files[filetype]['dst'])
 
 class CaravelConfig():
 
@@ -180,7 +176,7 @@ class CaravelConfig():
             fh.write('set ::env(EXTRA_LEFS) "\\\n')
             fh.write("$script_dir/../../lef/scan_controller.lef \\\n")
             for project in self.projects.get_projects():
-                fh.write("$script_dir/../../{}".format(project.get_filepath('lef')))
+                fh.write("$script_dir/../../lef/{}.lef".format(project.name))
                 if project.fill:
                     fh.write('"\n')
                     break
@@ -189,7 +185,7 @@ class CaravelConfig():
             fh.write('set ::env(EXTRA_GDS_FILES) "\\\n')
             fh.write("$script_dir/../../gds/scan_controller.gds \\\n")
             for project in self.projects.get_projects():
-                fh.write("$script_dir/../../{}".format(project.get_filepath('gds')))
+                fh.write("$script_dir/../../gds/{}.gds".format(project.name))
                 if project.fill:
                     fh.write('"\n')
                     break
@@ -254,6 +250,13 @@ class CaravelConfig():
                 fh.write(instance)
             fh.write(post)
 
+        # build the user_project_includes.v file - used for blackboxing when building the GDS
+        with open('verilog/rtl/user_project_includes.v', 'w') as fh:
+            fh.write('`include "scan_controller.v"\n')
+            for project in self.projects.get_projects():
+                fh.write('`include "{}.v"\n'.format(project.name))
+                if project.fill:
+                    break
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="TinyTapeout")
