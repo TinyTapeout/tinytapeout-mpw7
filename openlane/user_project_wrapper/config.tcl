@@ -19,13 +19,6 @@
 set ::env(PDK) $::env(PDK)
 set ::env(STD_CELL_LIBRARY) "sky130_fd_sc_hd"
 
-set ::env(DECAP_CELL) "\
-    sky130_fd_sc_hd__decap_3 \
-    sky130_fd_sc_hd__decap_4 \
-    sky130_fd_sc_hd__decap_6 \
-    sky130_fd_sc_hd__decap_8 \
-    sky130_ef_sc_hd__decap_12"
-
 # YOU ARE NOT ALLOWED TO CHANGE ANY VARIABLES DEFINED IN THE FIXED WRAPPER CFGS 
 source $::env(DESIGN_DIR)/fixed_dont_change/fixed_wrapper_cfgs.tcl
 
@@ -43,9 +36,6 @@ set ::env(VDD_NETS) {vccd1}
 
 set ::env(FP_PDN_VPITCH) 90
 set ::env(FP_PDN_HPITCH) 90
-
-# "fix" LVS issue FIXME!
-#set ::env(LVS_CONNECT_BY_LABEL) 1
 
 # save some time
 set ::env(RUN_KLAYOUT_XOR) 0
