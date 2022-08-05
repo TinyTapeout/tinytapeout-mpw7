@@ -1,5 +1,5 @@
-projects = [
-        { 'git_url' : 'https://github.com/mattvenn/wokwi-verilog-gds-test',
-          'name'    : 'wokwi-test',
-        },
+# name must be valid verilog module name set in scan_wrapper.v
+urls = [
+            'https://github.com/mattvenn/wokwi-verilog-gds-test',
+            'https://github.com/mattvenn/animation_tinytapeout_demo',
     ]
