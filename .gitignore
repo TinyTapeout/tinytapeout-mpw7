@@ -1,4 +1,5 @@
 tokens.py
+gds/*gds
 /.idea/
 /precheck_results/
 */tmp
