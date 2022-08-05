@@ -13,4 +13,4 @@ See https://tinytapeout.com for more information on the project and how to get i
 * copied the erased version (just power rings) and deleted the first digital power rings, copy pasted that over final gds
 * precheck fails with missing power ports
 * manually added missing power ports to gl verilog of user_project_wrapper
-
+* precheck passes. Will try tapeout job
