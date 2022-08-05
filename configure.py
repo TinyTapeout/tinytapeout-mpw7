@@ -1,15 +1,7 @@
 #!/usr/bin/env python3
-import shutil, os, sys
 from urllib.parse import urlparse
-import argparse
-import requests
-import base64
-import zipfile
-import io
-import logging
-import re
+import argparse, requests, base64, zipfile, io, logging, pickle, shutil, sys
 from tokens import git_token, git_username
-# list of designs
 
 # pipe handling
 from signal import signal, SIGPIPE, SIG_DFL
@@ -20,59 +12,68 @@ NUM_PROJECTS = 498
 
 class Projects():
 
-    def __init__(self, fill=True, default_project=0):
-        from projects import projects
-        self.projects = []
-        project_id = 0
-        for project_id, config in enumerate(projects):
-            project = Project(config['git_url'], config['name'], project_id)
-            logging.debug("adding {}".format(project))
-            self.projects.append(project)
+    projects_db = "projects.pkl"
 
-        if fill:
-            # fill property is set for all but the first filler projects. 
-            for project_id in range(project_id + 1, NUM_PROJECTS):
-                project = Project(projects[default_project]['git_url'], projects[default_project]['name'], project_id, fill=True)
-                logging.debug("adding {}".format(project))
-                self.projects.append(project)
+    def __init__(self, update_cache=False):
+        self.default_project = 0
+        if update_cache:
+            self.update_cache()
+        else:
+            # load projects from cache
+            try:
+                self.wokwi_ids = pickle.load(open(Projects.projects_db, 'rb'))
+                logging.info("loaded {} projects".format(len(self.wokwi_ids)))
+            except FileNotFoundError:
+                logging.error("project cache {} not found, use --update-cache to build it".format(Projects.projects_db))
 
-        logging.info("added {} projects".format(len(self.projects)))
+    def update_cache(self):
+        from project_urls import urls
+        self.wokwi_ids = []
+        for url in urls:
+            self.wokwi_ids.append(self.install_artifacts(url))
 
-    def get_projects(self):
-        return self.projects
+        # cache it
+        with open(Projects.projects_db, 'wb') as fh:
+            pickle.dump(self.wokwi_ids, fh)
 
+    # filling the space with default projects is handled by returning the default on exception
+    def get_macro_instance(self, id):
+        try:
+            return "scan_wrapper_{}_{}".format(self.wokwi_ids[id], id)
+        except IndexError:
+            return "scan_wrapper_{}_{}".format(self.wokwi_ids[self.default_project], id)
 
-class Project():
+    def get_macro_gds_name(self, id):
+        try:
+            return "scan_wrapper_{}.gds".format(self.wokwi_ids[id])
+        except IndexError:
+            return "scan_wrapper_{}.gds".format(self.wokwi_ids[self.default_project])
 
-    def __init__(self, git_url, name, macro_id, fill=False):
-        # TODO name should come from the git repo, but then cached somewhere? how does the project know this if the repo is not being downloaded
-        self.fill = fill
-        if not re.search('^[a-z_][a-z0-9$_]*$', name):
-            logging.error("invalid name {}".format(name))
-            exit(1)
-        self.git_url = git_url
-        self.name = name
-        self.id = macro_id
+    def get_macro_lef_name(self, id):
+        try:
+            return "scan_wrapper_{}.lef".format(self.wokwi_ids[id])
+        except IndexError:
+            return "scan_wrapper_{}.lef".format(self.wokwi_ids[self.default_project])
 
-    def __str__(self):
-        return "{:03} {} : {}".format(self.id, self.get_macro_name(), self.git_url)
+    def get_macro_name(self, id):
+        try:
+            return "scan_wrapper_{}".format(self.wokwi_ids[id])
+        except IndexError:
+            return "scan_wrapper_{}".format(self.wokwi_ids[self.default_project])
 
-    def get_macro_name(self):
-        return self.name
-
-    def get_macro_instance(self):
-        return "{}_{:03}".format(self.name, self.id)
+    def get_verilog_include(self, id):
+        try:
+            return '`include "scan_wrapper_{}.v"\n'.format(self.wokwi_ids[id])
+        except IndexError:
+            return ''
 
     # download the artifact for each project to get the gds & lef
-    def install_artifacts(self):
-        if self.fill:
-            return
-
-        res = urlparse(self.git_url)
+    def install_artifacts(self, url):
+        res = urlparse(url)
         try:
             _, user_name, repo = res.path.split('/')
         except ValueError:
-            logging.error("couldn't split repo from {}".format(self.git_url))
+            logging.error("couldn't split repo from {}".format(url))
             exit(1)
         repo = repo.replace('.git', '')
 
@@ -104,28 +105,35 @@ class Project():
         # had to enable actions access on the token to get the artifact , so it probably won't work for other people's repos
         r = requests.get(download_url, headers=headers)
         z = zipfile.ZipFile(io.BytesIO(r.content))
-        z.extractall('/tmp')
+        z.extractall('/tmp/tt')
 
-        files = {
-            'gds' : { 'src' : "/tmp/runs/wokwi/results/final/gds/{}.gds".format(self.name), 'dst' : "gds/{}.gds".format(self.name) },
-            'lef' : { 'src' : "/tmp/runs/wokwi/results/final/lef/{}.lef".format(self.name), 'dst' : "lef/{}.lef".format(self.name) },
-            'v'   : { 'src' : "/tmp/runs/wokwi/results/final/verilog/gl/{}.v".format(self.name), 'dst' : "verilog/rtl/{}.v".format(self.name) },
-            }
+        # get the wokwi id
+        with open('/tmp/tt/src/ID') as fh:
+            wokwi_id = fh.readline().strip()
 
-        for filetype in files.keys():
-            logging.debug("copy {} to {}".format(files[filetype]['src'], files[filetype]['dst']))
-            shutil.copyfile(files[filetype]['src'], files[filetype]['dst'])
+        logging.info("wokwi id {}".format(wokwi_id))
+
+        # copy all important files to the correct places. Everything is dependent on the id
+        files = [
+            ("/tmp/tt/runs/wokwi/results/final/gds/scan_wrapper_{}.gds".format(wokwi_id), "gds/scan_wrapper_{}.gds".format(wokwi_id)),
+            ("/tmp/tt/runs/wokwi/results/final/lef/scan_wrapper_{}.lef".format(wokwi_id), "lef/scan_wrapper_{}.lef".format(wokwi_id)),
+            ("/tmp/tt/runs/wokwi/results/final/verilog/gl/scan_wrapper_{}.v".format(wokwi_id), "verilog/gl/scan_wrapper_{}.v".format(wokwi_id)),
+            ("/tmp/tt/src/scan_wrapper_{}.v".format(wokwi_id), "verilog/rtl/scan_wrapper_{}.v".format(wokwi_id)),
+            ("/tmp/tt/src/user_module_{}.v".format(wokwi_id), "verilog/rtl/user_module_{}.v".format(wokwi_id)),
+            ]
+
+        logging.info("copying files into position")
+        for file in files:
+            logging.debug("copy {} to {}".format(file[0], file[1]))
+            shutil.copyfile(file[0], file[1])
+
+        return wokwi_id
+
 
 class CaravelConfig():
 
     def __init__(self, projects):
         self.projects = projects
-
-    def install_artifacts(self):
-        for project in self.projects.get_projects():
-            project.install_artifacts()
-            if project.fill:
-                break
 
     # create macro file & positions, power hooks
     def create_macro_config(self):
@@ -148,8 +156,8 @@ class CaravelConfig():
                     if row == 0 and col <= 1:
                         continue
 
-                    project = self.projects.get_projects()[num_macros_placed]
-                    instance = "{} {:<4} {:<4} N\n".format(project.get_macro_instance(), start_x + col * step_x, start_y + row * step_y)
+                    macro_instance = self.projects.get_macro_instance(num_macros_placed)
+                    instance = "{} {:<4} {:<4} N\n".format(macro_instance, start_x + col * step_x, start_y + row * step_y)
                     fh.write(instance)
 
                     num_macros_placed += 1
@@ -162,38 +170,37 @@ class CaravelConfig():
             fh.write("scan_controller")
             fh.write(" vccd1 vssd1 vccd1 vssd1")
             fh.write(", \\\n")
-            for project_id, project in enumerate(self.projects.get_projects()):
+            for i in range(NUM_PROJECTS):
                 fh.write("	")
-                fh.write(project.get_macro_instance())
+                fh.write(self.projects.get_macro_instance(i))
                 fh.write(" vccd1 vssd1 vccd1 vssd1")
-                if project_id != num_macros_placed - 1:
+                if i != NUM_PROJECTS - 1:
                     fh.write(", \\\n")
             fh.write('"\n')
-    
+
         # extra_lef_gds.tcl
         logging.debug("creating extra_lef_gds.tcl")
         with open("openlane/user_project_wrapper/extra_lef_gds.tcl", 'w') as fh:
             fh.write('set ::env(EXTRA_LEFS) "\\\n')
             fh.write("$script_dir/../../lef/scan_controller.lef \\\n")
-            for project in self.projects.get_projects():
-                fh.write("$script_dir/../../lef/{}.lef".format(project.name))
-                if project.fill:
-                    fh.write('"\n')
-                    break
-                else:
+            for i in range(NUM_PROJECTS):
+                fh.write("$script_dir/../../lef/{}".format(self.projects.get_macro_lef_name(i)))
+                if i != NUM_PROJECTS - 1:
                     fh.write(" \\\n")
+                else:
+                    fh.write('"\n')
             fh.write('set ::env(EXTRA_GDS_FILES) "\\\n')
             fh.write("$script_dir/../../gds/scan_controller.gds \\\n")
-            for project in self.projects.get_projects():
-                fh.write("$script_dir/../../gds/{}.gds".format(project.name))
-                if project.fill:
-                    fh.write('"\n')
-                    break
-                else:
+            for i in range(NUM_PROJECTS):
+                fh.write("$script_dir/../../gds/{}".format(self.projects.get_macro_gds_name(i)))
+                if i != NUM_PROJECTS - 1:
                     fh.write(" \\\n")
+                else:
+                    fh.write('"\n')
 
     # instantiate inside user_project_wrapper
     def instantiate(self):
+        logging.debug("instantiating designs in user_project_wrapper.v")
         assigns = """
         localparam NUM_MACROS = {};
         wire [NUM_MACROS:0] data, scan, latch, clk;
@@ -244,19 +251,18 @@ class CaravelConfig():
             fh.write(pre)
             fh.write(assigns.format(NUM_PROJECTS))
             fh.write(scan_controller_template)
-            for project in self.projects.get_projects():
+            for i in range(NUM_PROJECTS):
                 # instantiate template
-                instance = lesson_template.format(instance=project.get_macro_instance(), name=project.get_macro_name(), id=project.id, next_id=project.id + 1)
+                instance = lesson_template.format(instance=self.projects.get_macro_instance(i), name=self.projects.get_macro_name(i), id=i, next_id=i + 1)
                 fh.write(instance)
             fh.write(post)
 
         # build the user_project_includes.v file - used for blackboxing when building the GDS
         with open('verilog/rtl/user_project_includes.v', 'w') as fh:
             fh.write('`include "scan_controller.v"\n')
-            for project in self.projects.get_projects():
-                fh.write('`include "{}.v"\n'.format(project.name))
-                if project.fill:
-                    break
+            for i in range(NUM_PROJECTS):
+                fh.write(self.projects.get_verilog_include(i))
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="TinyTapeout")
@@ -284,12 +290,8 @@ if __name__ == '__main__':
     ch.setFormatter(log_format)
     log.addHandler(ch)
 
-    projects = Projects()
+    projects = Projects(update_cache=args.update_projects)
     caravel = CaravelConfig(projects)
-
-    if args.update_projects:
-        # fetches the artifacts from a gitrepo, then copies the gds/lef to the correct place
-        caravel.install_artifacts()
 
     if args.update_caravel:
         caravel.create_macro_config()
