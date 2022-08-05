@@ -135,6 +135,16 @@ class CaravelConfig():
     def __init__(self, projects):
         self.projects = projects
 
+    @classmethod
+    def unique(cls, duplist):
+        unique_list = []
+        # traverse for all elements
+        for x in duplist:
+            # check if exists in unique_list or not
+            if x not in unique_list:
+                unique_list.append(x)
+        return unique_list
+
     # create macro file & positions, power hooks
     def create_macro_config(self):
         start_x = 80
@@ -180,20 +190,30 @@ class CaravelConfig():
 
         # extra_lef_gds.tcl
         logging.debug("creating extra_lef_gds.tcl")
+        lefs = []
+        gdss = []
+        for i in range(NUM_PROJECTS):
+            lefs.append(self.projects.get_macro_lef_name(i))
+            gdss.append(self.projects.get_macro_gds_name(i))
+
+        # can't have duplicates or OpenLane crashes at PDN 
+        lefs = CaravelConfig.unique(lefs)
+        gdss = CaravelConfig.unique(gdss)
+
         with open("openlane/user_project_wrapper/extra_lef_gds.tcl", 'w') as fh:
             fh.write('set ::env(EXTRA_LEFS) "\\\n')
             fh.write("$script_dir/../../lef/scan_controller.lef \\\n")
-            for i in range(NUM_PROJECTS):
-                fh.write("$script_dir/../../lef/{}".format(self.projects.get_macro_lef_name(i)))
-                if i != NUM_PROJECTS - 1:
+            for i, lef in enumerate(lefs):
+                fh.write("$script_dir/../../lef/{}".format(lef))
+                if i != len(lefs) - 1:
                     fh.write(" \\\n")
                 else:
                     fh.write('"\n')
             fh.write('set ::env(EXTRA_GDS_FILES) "\\\n')
             fh.write("$script_dir/../../gds/scan_controller.gds \\\n")
-            for i in range(NUM_PROJECTS):
-                fh.write("$script_dir/../../gds/{}".format(self.projects.get_macro_gds_name(i)))
-                if i != NUM_PROJECTS - 1:
+            for i, gds in enumerate(gdss):
+                fh.write("$script_dir/../../gds/{}".format(gds))
+                if i != len(gdss) - 1:
                     fh.write(" \\\n")
                 else:
                     fh.write('"\n')
@@ -258,10 +278,15 @@ class CaravelConfig():
             fh.write(post)
 
         # build the user_project_includes.v file - used for blackboxing when building the GDS
+        verilogs = [] 
+        for i in range(NUM_PROJECTS):
+            verilogs.append(self.projects.get_verilog_include(i))
+        verilogs = CaravelConfig.unique(verilogs)
+
         with open('verilog/rtl/user_project_includes.v', 'w') as fh:
             fh.write('`include "scan_controller.v"\n')
-            for i in range(NUM_PROJECTS):
-                fh.write(self.projects.get_verilog_include(i))
+            for verilog in verilogs:
+                fh.write(verilog)
 
 
 if __name__ == '__main__':
