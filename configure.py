@@ -196,7 +196,7 @@ class CaravelConfig():
             lefs.append(self.projects.get_macro_lef_name(i))
             gdss.append(self.projects.get_macro_gds_name(i))
 
-        # can't have duplicates or OpenLane crashes at PDN 
+        # can't have duplicates or OpenLane crashes at PDN
         lefs = CaravelConfig.unique(lefs)
         gdss = CaravelConfig.unique(gdss)
 
@@ -278,7 +278,7 @@ class CaravelConfig():
             fh.write(post)
 
         # build the user_project_includes.v file - used for blackboxing when building the GDS
-        verilogs = [] 
+        verilogs = []
         for i in range(NUM_PROJECTS):
             verilogs.append(self.projects.get_verilog_include(i))
         verilogs = CaravelConfig.unique(verilogs)
