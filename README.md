@@ -24,7 +24,7 @@ See progress notes below.
 
 Start klayout in edit mode:
 
-    klayout -e -l ~/work/asic-workshop/openlane_summary/klayout_gds.xml gds/user_project_wrapper.gds missing_power_rings.gds
+    klayout -e -l powerring.lyp gds/user_project_wrapper.gds missing_power_rings.gds
 
 * copy met4, via4, met5 from missing_power_rings.gsd into gds/user_project_wrapper.gds. Save it.
 
