@@ -149,8 +149,8 @@ class CaravelConfig():
     def create_macro_config(self):
         start_x = 80
         start_y = 80
-        step_x  = 135
-        step_y  = 135   # pdn pitch is 90
+        step_x  = 140
+        step_y  = 135
         rows    = 25
         cols    = 20
 

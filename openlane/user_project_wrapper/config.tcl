@@ -31,11 +31,19 @@ set ::env(DESIGN_NAME) user_project_wrapper
 #section end
 
 # User Configurations
-set ::env(GND_NETS) {vssd1}
-set ::env(VDD_NETS) {vccd1}
+#set ::env(GND_NETS) {vssd1}
+#set ::env(VDD_NETS) {vccd1}
 
-set ::env(FP_PDN_VPITCH) 90
-set ::env(FP_PDN_HPITCH) 90
+#custom pdn to remove all stripes apart from vssd1 and vccd1
+set ::env(PDN_CFG) $script_dir/pdn_cfg.tcl
+
+# pitch and offset for vertical straps (x axis)
+set ::env(FP_PDN_VPITCH) 140
+set ::env(FP_PDN_VOFFSET) 186
+
+# pitch and offset for horizontal straps (y axis)
+set ::env(FP_PDN_HPITCH) 135
+set ::env(FP_PDN_HOFFSET) 105
 
 # save some time
 set ::env(RUN_KLAYOUT_XOR) 0
@@ -114,3 +122,4 @@ set ::env(DIODE_INSERTION_STRATEGY) 0
 set ::env(FILL_INSERTION) 0
 set ::env(TAP_DECAP_INSERTION) 0
 set ::env(CLOCK_TREE_SYNTH) 0
+
