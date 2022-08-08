@@ -56,3 +56,7 @@ Edit verilog/gl/user_project_wrapper.v and add the missing power ports:
 * precheck fails with missing power ports
 * manually added missing power ports to gl verilog of user_project_wrapper
 * precheck passes. Will try tapeout job
+* tapeout job failed with DRC, was because outer power ring was too thin. I think due to configuration rather than being cutoff for precheck
+* updated missing_power_rings with correct rings and repeated, this time tapeout passes
+* Tim suggests doing this as a module/cell to make it easier to reproduce
+* Maximo suggests editing pdn.tcl and using the -nets option with add_pdn_stripe to force only 1st voltage domain
