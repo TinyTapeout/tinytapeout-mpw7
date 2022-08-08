@@ -18,35 +18,7 @@ See https://tinytapeout.com for more information on the project and how to get i
 
     make user_project_wrapper
 
-## Fix PDN
-
-See progress notes below.
-
-Start klayout in edit mode:
-
-    klayout -e -l powerring.lyp gds/user_project_wrapper.gds missing_power_rings.gds
-
-* copy met4, via4, met5 from missing_power_rings.gsd into gds/user_project_wrapper.gds. Save it.
-
-Edit verilog/gl/user_project_wrapper.v and add the missing power ports:
-
-    vdda1,
-    vdda2,
-    vssa1,
-    vssa2,
-    vssd1,
-    vssd2,
-    
-    ...
-    
-    input vdda1;
-    input vdda2;
-    input vssa1;
-    input vssa2;
-    input vssd1;
-    input vssd2;
-
-# Progress notes
+## Dev notes
 
 * PDN hang issues https://github.com/The-OpenROAD-Project/OpenLane/issues/1173
 * Also discovered PDN hangs if extra lefs/defs are not deduplicated
@@ -59,4 +31,5 @@ Edit verilog/gl/user_project_wrapper.v and add the missing power ports:
 * tapeout job failed with DRC, was because outer power ring was too thin. I think due to configuration rather than being cutoff for precheck
 * updated missing_power_rings with correct rings and repeated, this time tapeout passes
 * Tim suggests doing this as a module/cell to make it easier to reproduce
-* Maximo suggests editing pdn.tcl and using the -nets option with add_pdn_stripe to force only 1st voltage domain
+* Maximo suggests editing pdn_cfg.tcl and using the -nets option with add_pdn_stripe to force only 1st voltage domain
+* This worked, see the new openlane/user_project_wrapper/pdn_cfg.tcl config
