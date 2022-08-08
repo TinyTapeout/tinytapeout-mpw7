@@ -16,11 +16,6 @@ jobs:
     - name: checkout repo
       uses: actions/checkout@v2
 
-    # build pdk
-    - name: pdk & openlane & precheck
-      run: |
-        make setup
-        make precheck
 
     # need python
     - name: setup python
@@ -42,11 +37,6 @@ jobs:
       run: |
         pwd # /home/runner/work/tinytapeout-mpw7/tinytapeout-mpw7
 
-    # uncompress
-    - name: uncompress gds
-      run: | 
-        make uncompress
-
     # install oss fpga tools
 #    - name: install oss-cad-suite
 #      uses: YosysHQ/setup-oss-cad-suite@v1
@@ -56,13 +46,24 @@ jobs:
 #        yosys --version
 #        iverilog -V
 
-    # fetch the repos - will fail till work out the tokens stuff
+    # fetch the repos
     - name: fetch all
       run: python ./configure.py --update-projects
 
     # install projects
     - name: configure
       run: python ./configure.py --update-caravel
+
+    # build pdk - have to move this back above to get caravel makefile
+    - name: pdk & openlane & precheck
+      run: |
+        make setup
+        make precheck
+
+    # uncompress
+    - name: uncompress gds
+      run: | 
+        make uncompress
 
     - name: user project wrapper GDS
       run: make user_project_wrapper
@@ -76,9 +77,3 @@ jobs:
       with:
           name: Wrapper GDS
           path: gds/user_project_wrapper.gds
-
-    - name: Archive Wrapper Signoff
-      uses: actions/upload-artifact@v2
-      with:
-          name: Wrapper Report
-          path: openlane/user_project_wrapper/runs/user_project_wrapper/reports/final_summary_report.csv

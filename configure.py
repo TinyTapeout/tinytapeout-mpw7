@@ -84,6 +84,11 @@ class Projects():
             "Accept"        : "application/vnd.github+json",
             }
 
+        api_url = 'https://api.github.com/user/repos'
+        r = requests.get(api_url, headers=headers)
+        print(r)
+        data = r.json()
+        print(data)
         api_url = 'https://api.github.com/repos/{}/{}/actions/artifacts'.format(user_name, repo)
         r = requests.get(api_url, headers=headers)
         requests_remaining = int(r.headers['X-RateLimit-Remaining'])
@@ -91,9 +96,7 @@ class Projects():
             logging.error("no API requests remaining")
             exit(1)
 
-        print(r)
         data = r.json()
-        print(data)
         try:
             latest = data['artifacts'][0]
         except IndexError:
