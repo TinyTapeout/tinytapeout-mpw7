@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from urllib.parse import urlparse
-import argparse, requests, base64, zipfile, io, logging, pickle, shutil, sys
+import argparse, requests, base64, zipfile, io, logging, pickle, shutil, sys, os
 
 # pipe handling
 from signal import signal, SIGPIPE, SIG_DFL
@@ -77,7 +77,7 @@ class Projects():
         repo = repo.replace('.git', '')
 
         # authenticate for rate limiting
-        auth_string = os.environ[USERNAME] + ':' + os.environ[TOKEN]
+        auth_string = os.environ['USERNAME'] + ':' + os.environ['TOKEN']
         logging.info(auth_string)
         encoded = base64.b64encode(auth_string.encode('ascii'))
         headers = {
