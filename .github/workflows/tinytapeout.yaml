@@ -57,8 +57,8 @@ jobs:
 #        iverilog -V
 
     # fetch the repos - will fail till work out the tokens stuff
-#    - name: fetch all
-#      run: python ./configure.py --update-projects
+    - name: fetch all
+      run: python ./configure.py --update-projects
 
     # install projects
     - name: configure

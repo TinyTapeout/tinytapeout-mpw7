@@ -78,7 +78,6 @@ class Projects():
 
         # authenticate for rate limiting
         auth_string = os.environ['USERNAME'] + ':' + os.environ['TOKEN']
-        logging.info(auth_string)
         encoded = base64.b64encode(auth_string.encode('ascii'))
         headers = {
             "authorization" : 'Basic ' + encoded.decode('ascii'),
@@ -92,7 +91,9 @@ class Projects():
             logging.error("no API requests remaining")
             exit(1)
 
+        print(r)
         data = r.json()
+        print(data)
         try:
             latest = data['artifacts'][0]
         except IndexError:
