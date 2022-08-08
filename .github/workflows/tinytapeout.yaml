@@ -54,9 +54,9 @@ jobs:
 #        yosys --version
 #        iverilog -V
 
-    # fetch the repos
-    - name: fetch all
-      run: python ./configure.py --update-projects
+    # fetch the repos - will fail till work out the tokens stuff
+#    - name: fetch all
+#      run: python ./configure.py --update-projects
 
     # install projects
     - name: configure
