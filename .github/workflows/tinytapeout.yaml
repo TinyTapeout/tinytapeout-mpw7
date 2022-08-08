@@ -7,6 +7,8 @@ jobs:
         OPENLANE_ROOT:  /home/runner/openlane
         PDK_ROOT:       /home/runner/pdk
         PDK:            sky130B
+        TOKEN:          ${{ secrets.TOKEN }}
+        USERNAME:       ${{ secrets.USERNAME }}
     # ubuntu
     runs-on: ubuntu-latest
     steps:

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from urllib.parse import urlparse
 import argparse, requests, base64, zipfile, io, logging, pickle, shutil, sys
-from tokens import git_token, git_username
 
 # pipe handling
 from signal import signal, SIGPIPE, SIG_DFL
@@ -78,7 +77,8 @@ class Projects():
         repo = repo.replace('.git', '')
 
         # authenticate for rate limiting
-        auth_string = git_username + ':' + git_token
+        auth_string = os.environ[USERNAME] + ':' + os.environ[TOKEN]
+        logging.info(auth_string)
         encoded = base64.b64encode(auth_string.encode('ascii'))
         headers = {
             "authorization" : 'Basic ' + encoded.decode('ascii'),
