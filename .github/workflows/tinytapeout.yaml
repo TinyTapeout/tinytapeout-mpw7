@@ -2,7 +2,7 @@ name: tinytapeout
 # either manually started, or on a schedule
 on: [ push, workflow_dispatch, pull_request ]
 jobs:
-  multi_tool:
+  tinytapeout:
     env:
         OPENLANE_ROOT:  /home/runner/openlane
         PDK_ROOT:       /home/runner/pdk
