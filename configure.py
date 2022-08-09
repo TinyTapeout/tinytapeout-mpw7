@@ -95,7 +95,10 @@ class Projects():
 
         data = r.json()
         try:
-            latest = data['artifacts'][0]
+            if user_name == 'wokwi':
+                latest = data['artifacts'][1] #WTF!
+            else:
+                latest = data['artifacts'][0]
         except IndexError:
             logging.error("no artifact found for {}".format(self))
             exit(1)
