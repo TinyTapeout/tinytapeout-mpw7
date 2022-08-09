@@ -2,4 +2,5 @@
 urls = [
             'https://github.com/mattvenn/wokwi-verilog-gds-test',
             'https://github.com/mattvenn/animation_tinytapeout_demo',
+            'https://github.com/mattvenn/wokwi_inverters',
     ]
