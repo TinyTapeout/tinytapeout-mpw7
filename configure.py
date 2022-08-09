@@ -7,6 +7,7 @@ from signal import signal, SIGPIPE, SIG_DFL
 signal(SIGPIPE, SIG_DFL)
 
 NUM_PROJECTS = 498
+filler_project_url = 'https://github.com/mattvenn/wokwi_filler'
 
 
 class Projects():
@@ -26,9 +27,9 @@ class Projects():
                 logging.error("project cache {} not found, use --update-cache to build it".format(Projects.projects_db))
 
     def update_cache(self):
-        from project_urls import urls
+        from project_urls import project_urls
         self.wokwi_ids = []
-        for url in urls:
+        for url in [filler_project_url] + project_urls:
             self.wokwi_ids.append(self.install_artifacts(url))
 
         # cache it
