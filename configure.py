@@ -77,7 +77,7 @@ class Projects():
         repo = repo.replace('.git', '')
 
         # authenticate for rate limiting
-        auth_string = os.environ['USERNAME'] + ':' + os.environ['TOKEN']
+        auth_string = os.environ['GH_USERNAME'] + ':' + os.environ['GH_TOKEN']
         encoded = base64.b64encode(auth_string.encode('ascii'))
         headers = {
             "authorization" : 'Basic ' + encoded.decode('ascii'),
