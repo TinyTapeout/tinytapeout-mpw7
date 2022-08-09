@@ -156,7 +156,7 @@ class CaravelConfig():
         num_macros_placed = 0
 
         # macro.cfg: where macros are placed
-        logging.debug("creating macro.cfg")
+        logging.info("creating macro.cfg")
         with open("openlane/user_project_wrapper/macro.cfg", 'w') as fh:
             fh.write("scan_controller 80 80 N\n")
             for row in range(rows):
@@ -172,7 +172,7 @@ class CaravelConfig():
                     num_macros_placed += 1
 
         # macro_power.tcl: extra file for macro power hooks
-        logging.debug("creating macro_power.tcl")
+        logging.info("creating macro_power.tcl")
         with open("openlane/user_project_wrapper/macro_power.tcl", 'w') as fh:
             fh.write('set ::env(FP_PDN_MACRO_HOOKS) "\\\n')
             fh.write("	")
@@ -188,7 +188,7 @@ class CaravelConfig():
             fh.write('"\n')
 
         # extra_lef_gds.tcl
-        logging.debug("creating extra_lef_gds.tcl")
+        logging.info("creating extra_lef_gds.tcl")
         lefs = []
         gdss = []
         for i in range(NUM_PROJECTS):
@@ -219,7 +219,7 @@ class CaravelConfig():
 
     # instantiate inside user_project_wrapper
     def instantiate(self):
-        logging.debug("instantiating designs in user_project_wrapper.v")
+        logging.info("instantiating designs in user_project_wrapper.v")
         assigns = """
         localparam NUM_MACROS = {};
         wire [NUM_MACROS:0] data, scan, latch, clk;
