@@ -86,27 +86,46 @@ class Projects():
             "Accept"        : "application/vnd.github+json",
             }
 
-        api_url = 'https://api.github.com/repos/{}/{}/actions/artifacts'.format(user_name, repo)
+        # first fetch the git commit history
+        api_url = 'https://api.github.com/repos/{}/{}/commits'.format(user_name, repo)
         r = requests.get(api_url, headers=headers)
         requests_remaining = int(r.headers['X-RateLimit-Remaining'])
         if requests_remaining == 0:
             logging.error("no API requests remaining")
             exit(1)
 
+        commits = r.json()
+
+        # now get the artifacts
+        api_url = 'https://api.github.com/repos/{}/{}/actions/artifacts'.format(user_name, repo)
+        r = requests.get(api_url, headers=headers)
         data = r.json()
-        try:
-            if user_name == 'wokwi':
-                latest = data['artifacts'][1] #WTF!
-            else:
-                latest = data['artifacts'][0]
-        except IndexError:
+
+        # check there are some artifacts
+        if 'artifacts' not in data:
             logging.error("no artifact found for {}".format(self))
             exit(1)
+        else:
+            logging.debug("found {} artifacts".format(len(data['artifacts'])))
 
-        download_url = latest['archive_download_url']
+        # the latest artifact isn't necessarily the one related to the latest commit, as github
+        # could have taken longer to process an older commit than a newer one.
+        download_url = None
+        for commit in commits:
+            for artifact in data['artifacts']:
+                commit_sha = commit['sha']
+                action_sha = artifact['workflow_run']['head_sha']
+                logging.debug("commit {} action {}".format(commit_sha, action_sha))
+                if commit_sha == action_sha:
+                    download_url = artifact['archive_download_url']
+                    break
+            if download_url is not None:
+                break
+
         logging.info(download_url)
 
-        # had to enable actions access on the token to get the artifact , so it probably won't work for other people's repos
+        # need actions access on the token to get the artifact
+        # won't work on a pull request because they won't have the token
         r = requests.get(download_url, headers=headers)
         z = zipfile.ZipFile(io.BytesIO(r.content))
         z.extractall(tmp_dir)
