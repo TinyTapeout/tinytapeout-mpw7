@@ -1,12 +1,10 @@
 /* Automatically generated from https://wokwi.com/projects/335404063203000914 */
 
 module user_module_335404063203000914(
-  input reset,
-  input clk,
   input [7:0] io_in,
   output [7:0] io_out
 );
-  wire net1 = clk;
+  wire net1;
   wire net2;
   wire net3;
   wire net4;
@@ -36,26 +34,15 @@ module user_module_335404063203000914(
   wire net28;
   wire net29;
   wire net30;
-  wire net31;
+  wire net31 = 1'b0;
   wire net32;
   wire net33;
-  wire net34;
-  wire net35;
-  wire net36 = 1'b0;
-  wire net37;
-  wire net38;
-
-  assign io_out[0] = net31;
-  assign io_out[1] = net32;
-  assign io_out[2] = net33;
-  assign io_out[3] = net34;
-  assign io_out[4] = net35;
 
   dff_cell flipflop4 (
-    .d (net2),
-    .clk (net1),
+    .d (net1),
+    .clk (net2),
     .q (net3),
-    .notq (net2)
+    .notq (net1)
   );
   dff_cell flipflop5 (
     .d (net4),
@@ -146,12 +133,12 @@ module user_module_335404063203000914(
   dff_cell flipflop17 (
     .d (net28),
     .clk (net23),
-    .q (net37)
+    .q (net32)
   );
   dff_cell flipflop18 (
-    .d (net37),
+    .d (net32),
     .clk (net23),
-    .q (net38),
+    .q (net33),
     .notq (net29)
   );
 endmodule

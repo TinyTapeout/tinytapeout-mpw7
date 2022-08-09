@@ -77,8 +77,6 @@ module scan_wrapper_334445762078310996 (
 
     // instantiate the wokwi module
     user_module_334445762078310996 user_module(
-        .clk       (module_data_in[0]),
-        .reset     (module_data_in[1]),
         .io_in     (module_data_in),
         .io_out    (module_data_out)
     );
