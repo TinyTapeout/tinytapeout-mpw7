@@ -8,6 +8,7 @@ signal(SIGPIPE, SIG_DFL)
 
 NUM_PROJECTS = 498
 filler_project_url = 'https://github.com/mattvenn/wokwi_filler'
+tmp_dir = '/tmp/tt'
 
 
 class Projects():
@@ -105,10 +106,10 @@ class Projects():
         # had to enable actions access on the token to get the artifact , so it probably won't work for other people's repos
         r = requests.get(download_url, headers=headers)
         z = zipfile.ZipFile(io.BytesIO(r.content))
-        z.extractall('/tmp/tt')
+        z.extractall(tmp_dir)
 
         # get the wokwi id
-        with open('/tmp/tt/src/ID') as fh:
+        with open(os.path.join(tmp_dir, 'src/ID')) as fh:
             wokwi_id = fh.readline().strip()
 
         logging.info("wokwi id {}".format(wokwi_id))
@@ -127,6 +128,8 @@ class Projects():
             logging.debug("copy {} to {}".format(file[0], file[1]))
             shutil.copyfile(file[0], file[1])
 
+        # unlink temp directory
+        shutil.rmtree(tmp_dir)
         return wokwi_id
 
 
