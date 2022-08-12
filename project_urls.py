@@ -4,4 +4,5 @@ project_urls = [
             'https://github.com/mattvenn/animation_tinytapeout_demo',
             'https://github.com/mattvenn/wokwi_inverters',
             'https://github.com/wokwi/tiny-tapeout-test-simple',
+            'https://github.com/omerk/tinytapeout-demo1',
     ]

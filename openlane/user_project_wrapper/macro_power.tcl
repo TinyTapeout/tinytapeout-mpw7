@@ -5,7 +5,7 @@ set ::env(FP_PDN_MACRO_HOOKS) "\
 	scan_wrapper_335404063203000914_2 vccd1 vssd1 vccd1 vssd1, \
 	scan_wrapper_339439899388150354_3 vccd1 vssd1 vccd1 vssd1, \
 	scan_wrapper_339502597164499540_4 vccd1 vssd1 vccd1 vssd1, \
-	scan_wrapper_339501025136214612_5 vccd1 vssd1 vccd1 vssd1, \
+	scan_wrapper_339732875283792466_5 vccd1 vssd1 vccd1 vssd1, \
 	scan_wrapper_339501025136214612_6 vccd1 vssd1 vccd1 vssd1, \
 	scan_wrapper_339501025136214612_7 vccd1 vssd1 vccd1 vssd1, \
 	scan_wrapper_339501025136214612_8 vccd1 vssd1 vccd1 vssd1, \
