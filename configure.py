@@ -68,6 +68,16 @@ class Projects():
         except IndexError:
             return ''
 
+    # the latest artifact isn't necessarily the one related to the latest commit, as github
+    # could have taken longer to process an older commit than a newer one.
+    # so iterate through commits and return the artifact that matches
+    @classmethod
+    def get_most_recent_action_url(project, commits, artifacts):
+        release_sha_to_download_url = {artifact['workflow_run']['head_sha']: artifact['archive_download_url'] for artifact in artifacts}
+        for commit in commits:
+            if commit['sha'] in release_sha_to_download_url:
+                return release_sha_to_download_url[commit['sha']]
+
     # download the artifact for each project to get the gds & lef
     def install_artifacts(self, url):
         res = urlparse(url)
@@ -106,22 +116,10 @@ class Projects():
             logging.error("no artifact found for {}".format(self))
             exit(1)
         else:
-            logging.debug("found {} artifacts".format(len(data['artifacts'])))
+            artifacts = data['artifacts']
+            logging.debug("found {} artifacts".format(len(artifacts)))
 
-        # the latest artifact isn't necessarily the one related to the latest commit, as github
-        # could have taken longer to process an older commit than a newer one.
-        download_url = None
-        for commit in commits:
-            for artifact in data['artifacts']:
-                commit_sha = commit['sha']
-                action_sha = artifact['workflow_run']['head_sha']
-                logging.debug("commit {} action {}".format(commit_sha, action_sha))
-                if commit_sha == action_sha:
-                    download_url = artifact['archive_download_url']
-                    break
-            if download_url is not None:
-                break
-
+        download_url = Projects.get_most_recent_action_url(commits, artifacts)
         logging.info(download_url)
 
         # need actions access on the token to get the artifact
