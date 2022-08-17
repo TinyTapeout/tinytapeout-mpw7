@@ -50,6 +50,9 @@ module user_module_334445762078310996(
     .in (net7),
     .out (net5)
   );
+  buffer_cell gate6 (
+
+  );
   mux_cell mux1 (
     .a (net8),
     .b (net9),

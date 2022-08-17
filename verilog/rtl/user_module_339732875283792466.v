@@ -37,7 +37,7 @@ module user_module_339732875283792466(
   wire net29;
   wire net30;
 
-  assign io_out[6] = net2;
+  assign io_out[7] = net2;
 
   and_cell gate1 (
 
@@ -49,6 +49,9 @@ module user_module_339732875283792466(
 
   );
   not_cell gate5 (
+
+  );
+  buffer_cell gate6 (
 
   );
   mux_cell mux1 (

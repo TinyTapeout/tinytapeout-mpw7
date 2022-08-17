@@ -1,5 +1,7 @@
 /* Automatically generated from https://wokwi.com/projects/339439899388150354 */
 
+`default_nettype none
+
 module user_module_339439899388150354(
   input [7:0] io_in,
   output [7:0] io_out
@@ -44,5 +46,29 @@ module user_module_339439899388150354(
   not_cell not4 (
     .in (net4),
     .out (net12)
+  );
+  and_cell gate1 (
+
+  );
+  or_cell gate2 (
+
+  );
+  xor_cell gate3 (
+
+  );
+  nand_cell gate4 (
+
+  );
+  not_cell gate5 (
+
+  );
+  buffer_cell gate6 (
+
+  );
+  mux_cell mux1 (
+
+  );
+  dff_cell flipflop1 (
+
   );
 endmodule

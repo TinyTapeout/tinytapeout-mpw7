@@ -5,3 +5,6 @@
 `include "scan_wrapper_339439899388150354.v"
 `include "scan_wrapper_339502597164499540.v"
 `include "scan_wrapper_339732875283792466.v"
+`include "scan_wrapper_339865743461974612.v"
+`include "scan_wrapper_339898704941023827.v"
+`include "scan_wrapper_340218629792465491.v"
