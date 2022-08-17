@@ -7,4 +7,5 @@ project_urls = [
             'https://github.com/omerk/tinytapeout-demo1',
             'https://github.com/mattvenn/tinytapeout-7seg-decoder',
             'https://github.com/omerk/tinytapeout-verilog-test',
+            'https://github.com/gregdavill/tinytapeout_spin0',
     ]
