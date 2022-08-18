@@ -8,3 +8,4 @@
 `include "scan_wrapper_339865743461974612.v"
 `include "scan_wrapper_339898704941023827.v"
 `include "scan_wrapper_340218629792465491.v"
+`include "scan_wrapper_340318610245288530.v"
