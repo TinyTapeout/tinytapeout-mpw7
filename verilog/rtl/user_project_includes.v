@@ -9,3 +9,5 @@
 `include "scan_wrapper_339898704941023827.v"
 `include "scan_wrapper_340218629792465491.v"
 `include "scan_wrapper_340318610245288530.v"
+`include "scan_wrapper_340285391309374034.v"
+`include "scan_wrapper_340661930553246290.v"

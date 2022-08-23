@@ -218,7 +218,7 @@ module user_project_wrapper #(
             .latch_enable_out(latch[10])
             );
         
-        scan_wrapper_339501025136214612 #(.NUM_IOS(8)) scan_wrapper_339501025136214612_10 (
+        scan_wrapper_340285391309374034 #(.NUM_IOS(8)) scan_wrapper_340285391309374034_10 (
             .clk_in          (clk  [10]),
             .data_in         (data [10]),
             .scan_select_in  (scan [10]),
@@ -229,7 +229,7 @@ module user_project_wrapper #(
             .latch_enable_out(latch[11])
             );
         
-        scan_wrapper_339501025136214612 #(.NUM_IOS(8)) scan_wrapper_339501025136214612_11 (
+        scan_wrapper_340661930553246290 #(.NUM_IOS(8)) scan_wrapper_340661930553246290_11 (
             .clk_in          (clk  [11]),
             .data_in         (data [11]),
             .scan_select_in  (scan [11]),
