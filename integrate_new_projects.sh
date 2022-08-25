@@ -8,7 +8,7 @@
 make uncompress
 
 # fetch designs
-./configure.py --update-designs
+./configure.py --update-projects
 # update caravel config
 ./configure.py --update-caravel
 

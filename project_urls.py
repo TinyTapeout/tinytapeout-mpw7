@@ -11,4 +11,5 @@ project_urls = [
             'https://github.com/mole99/wokwi-1bit-alu',
             'https://github.com/ericsmi/tinytapeout_popcnt.git',
             'https://github.com/krasin/wokwi-guess-my-number',
+            'https://github.com/mattvenn/tinytapeout-7seg-seconds-counter',
     ]
