@@ -68,6 +68,12 @@ class Projects():
         except IndexError:
             return ''
 
+    def get_verilog_names(self, id):
+        try:
+            return ["scan_wrapper_{}.v".format(self.wokwi_ids[id]), "user_module_{}.v".format(self.wokwi_ids[id])]
+        except IndexError:
+            return []
+
     # the latest artifact isn't necessarily the one related to the latest commit, as github
     # could have taken longer to process an older commit than a newer one.
     # so iterate through commits and return the artifact that matches
@@ -310,6 +316,17 @@ class CaravelConfig():
             fh.write('`include "scan_controller/scan_controller.v"\n')
             for verilog in verilogs:
                 fh.write(verilog)
+
+        # build complete list of filenames for sim
+        verilog_files = []
+        for i in range(NUM_PROJECTS):
+            verilog_files += self.projects.get_verilog_names(i)
+        verilog_files = CaravelConfig.unique(verilog_files)
+        with open('verilog/includes/includes.rtl.caravel_user_project', 'w') as fh:
+            fh.write('-v $(USER_PROJECT_VERILOG)/rtl/user_project_wrapper.v\n')
+            fh.write('-v $(USER_PROJECT_VERILOG)/rtl/scan_controller/scan_controller.v\n')
+            for verilog in verilog_files:
+                fh.write('-v $(USER_PROJECT_VERILOG)/rtl/{}\n'.format(verilog))
 
 
 if __name__ == '__main__':
