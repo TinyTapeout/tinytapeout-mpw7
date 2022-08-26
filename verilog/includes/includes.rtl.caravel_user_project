@@ -1,6 +1,6 @@
 -v $(USER_PROJECT_VERILOG)/rtl/user_project_wrapper.v
--v $(USER_PROJECT_VERILOG)/rtl/cells.v
 -v $(USER_PROJECT_VERILOG)/rtl/scan_controller/scan_controller.v
+-v $(USER_PROJECT_VERILOG)/rtl/cells.v
 -v $(USER_PROJECT_VERILOG)/rtl/scan_wrapper_339501025136214612.v
 -v $(USER_PROJECT_VERILOG)/rtl/user_module_339501025136214612.v
 -v $(USER_PROJECT_VERILOG)/rtl/scan_wrapper_334445762078310996.v
