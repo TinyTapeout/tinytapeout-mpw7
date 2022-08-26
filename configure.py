@@ -325,7 +325,7 @@ class CaravelConfig():
         with open('verilog/includes/includes.rtl.caravel_user_project', 'w') as fh:
             fh.write('-v $(USER_PROJECT_VERILOG)/rtl/user_project_wrapper.v\n')
             fh.write('-v $(USER_PROJECT_VERILOG)/rtl/scan_controller/scan_controller.v\n')
-            fh.write('-v $(USER_PROJECT_VERILOG)/rtl/scan_controller/cells.v\n')
+            fh.write('-v $(USER_PROJECT_VERILOG)/rtl/cells.v\n')
             for verilog in verilog_files:
                 fh.write('-v $(USER_PROJECT_VERILOG)/rtl/{}\n'.format(verilog))
 
