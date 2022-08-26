@@ -1,11 +1,12 @@
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles
-from scan_wrapper import *
+#from scan_wrapper import *
 
 # utility functions. using 2nd bit as reset and 1st bit as clock for synchronous design examples
 async def reset(dut):
     for i in range(2):
+        print("reset cycle {}".format(i))
         await RisingEdge(dut.ready);
         dut.inputs.value = 0b10
         await RisingEdge(dut.ready);

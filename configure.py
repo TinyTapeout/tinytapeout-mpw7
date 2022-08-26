@@ -44,6 +44,12 @@ class Projects():
         except IndexError:
             return "scan_wrapper_{}_{}".format(self.wokwi_ids[self.default_project], id)
 
+    def get_wokwi_id(self, id):
+        try:
+            return self.wokwi_ids[id]
+        except IndexError:
+            return self.wokwi_ids[self.default_project]
+
     def get_macro_gds_name(self, id):
         try:
             return "scan_wrapper_{}.gds".format(self.wokwi_ids[id])
@@ -301,6 +307,7 @@ class CaravelConfig():
             fh.write(assigns.format(NUM_PROJECTS))
             fh.write(scan_controller_template)
             for i in range(NUM_PROJECTS):
+                logging.debug("instance {} {}".format(i, self.projects.get_macro_name(i)))
                 # instantiate template
                 instance = lesson_template.format(instance=self.projects.get_macro_instance(i), name=self.projects.get_macro_name(i), id=i, next_id=i + 1)
                 fh.write(instance)
