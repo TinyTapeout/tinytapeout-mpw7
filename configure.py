@@ -6,9 +6,9 @@ import argparse, requests, base64, zipfile, io, logging, pickle, shutil, sys, os
 from signal import signal, SIGPIPE, SIG_DFL
 signal(SIGPIPE, SIG_DFL)
 
-NUM_PROJECTS = 498
 filler_project_url = 'https://github.com/mattvenn/wokwi_filler'
 tmp_dir = '/tmp/tt'
+DEFAULT_NUM_PROJECTS = 498
 
 
 class Projects():
@@ -167,8 +167,9 @@ class Projects():
 
 class CaravelConfig():
 
-    def __init__(self, projects):
+    def __init__(self, projects, num_projects):
         self.projects = projects
+        self.num_projects = num_projects
 
     @classmethod
     def unique(cls, duplist):
@@ -215,11 +216,11 @@ class CaravelConfig():
             fh.write("scan_controller")
             fh.write(" vccd1 vssd1 vccd1 vssd1")
             fh.write(", \\\n")
-            for i in range(NUM_PROJECTS):
+            for i in range(self.num_projects):
                 fh.write("	")
                 fh.write(self.projects.get_macro_instance(i))
                 fh.write(" vccd1 vssd1 vccd1 vssd1")
-                if i != NUM_PROJECTS - 1:
+                if i != self.num_projects - 1:
                     fh.write(", \\\n")
             fh.write('"\n')
 
@@ -227,7 +228,7 @@ class CaravelConfig():
         logging.info("creating extra_lef_gds.tcl")
         lefs = []
         gdss = []
-        for i in range(NUM_PROJECTS):
+        for i in range(self.num_projects):
             lefs.append(self.projects.get_macro_lef_name(i))
             gdss.append(self.projects.get_macro_gds_name(i))
 
@@ -304,9 +305,9 @@ class CaravelConfig():
 
         with open('verilog/rtl/user_project_wrapper.v', 'w') as fh:
             fh.write(pre)
-            fh.write(assigns.format(NUM_PROJECTS))
+            fh.write(assigns.format(self.num_projects))
             fh.write(scan_controller_template)
-            for i in range(NUM_PROJECTS):
+            for i in range(self.num_projects):
                 logging.debug("instance {} {}".format(i, self.projects.get_macro_name(i)))
                 # instantiate template
                 instance = lesson_template.format(instance=self.projects.get_macro_instance(i), name=self.projects.get_macro_name(i), id=i, next_id=i + 1)
@@ -315,7 +316,7 @@ class CaravelConfig():
 
         # build the user_project_includes.v file - used for blackboxing when building the GDS
         verilogs = []
-        for i in range(NUM_PROJECTS):
+        for i in range(self.num_projects):
             verilogs.append(self.projects.get_verilog_include(i))
         verilogs = CaravelConfig.unique(verilogs)
 
@@ -326,7 +327,7 @@ class CaravelConfig():
 
         # build complete list of filenames for sim
         verilog_files = []
-        for i in range(NUM_PROJECTS):
+        for i in range(self.num_projects):
             verilog_files += self.projects.get_verilog_names(i)
         verilog_files = CaravelConfig.unique(verilog_files)
         with open('verilog/includes/includes.rtl.caravel_user_project', 'w') as fh:
@@ -343,6 +344,7 @@ if __name__ == '__main__':
     parser.add_argument('--list', help="list projects", action='store_const', const=True)
     parser.add_argument('--update-projects', help='fetch the project data', action='store_const', const=True)
     parser.add_argument('--update-caravel', help='configure caravel for build', action='store_const', const=True)
+    parser.add_argument('--limit-num-projects', help='only configure for the first n projects', type=int, default=DEFAULT_NUM_PROJECTS)
     parser.add_argument('--debug', help="debug logging", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.INFO)
 
     args = parser.parse_args()
@@ -364,7 +366,7 @@ if __name__ == '__main__':
     log.addHandler(ch)
 
     projects = Projects(update_cache=args.update_projects)
-    caravel = CaravelConfig(projects)
+    caravel = CaravelConfig(projects, num_projects=args.limit_num_projects)
 
     if args.update_caravel:
         caravel.create_macro_config()
