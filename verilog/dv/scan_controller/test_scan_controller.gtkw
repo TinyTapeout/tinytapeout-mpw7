@@ -1,27 +1,109 @@
 [*]
 [*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
-[*] Fri Aug 26 12:41:18 2022
+[*] Fri Aug 26 14:01:08 2022
 [*]
 [dumpfile] "/home/matt/work/asic-workshop/shuttle7/tinytapeout-mpw7/verilog/dv/scan_controller/test_scan_controller.vcd"
-[dumpfile_mtime] "Fri Aug 26 12:41:01 2022"
-[dumpfile_size] 7201446
+[dumpfile_mtime] "Fri Aug 26 13:59:55 2022"
+[dumpfile_size] 9424599
 [savefile] "/home/matt/work/asic-workshop/shuttle7/tinytapeout-mpw7/verilog/dv/scan_controller/test_scan_controller.gtkw"
 [timestart] 0
 [size] 1848 1016
 [pos] -1 -1
-*-28.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-36.000000 26800000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] test_scan_controller_tb.
-[sst_width] 233
-[signals_width] 174
+[treeopen] test_scan_controller_tb.user_project_wrapper.
+[treeopen] test_scan_controller_tb.user_project_wrapper.scan_wrapper_339501025136214612_0.
+[treeopen] test_scan_controller_tb.user_project_wrapper.scan_wrapper_340805072482992722_12.
+[treeopen] test_scan_controller_tb.user_project_wrapper.scan_wrapper_340805072482992722_12.user_module.
+[sst_width] 507
+[signals_width] 265
 [sst_expanded] 1
 [sst_vpaned_height] 289
-@22
-test_scan_controller_tb.user_project_wrapper.active_select[8:0]
-test_scan_controller_tb.user_project_wrapper.inputs[7:0]
-test_scan_controller_tb.user_project_wrapper.outputs[7:0]
 @28
-test_scan_controller_tb.user_project_wrapper.ready
 test_scan_controller_tb.clk
 test_scan_controller_tb.reset
+@24
+test_scan_controller_tb.user_project_wrapper.active_select[8:0]
+@c00022
+test_scan_controller_tb.user_project_wrapper.inputs[7:0]
+@28
+(0)test_scan_controller_tb.user_project_wrapper.inputs[7:0]
+(1)test_scan_controller_tb.user_project_wrapper.inputs[7:0]
+(2)test_scan_controller_tb.user_project_wrapper.inputs[7:0]
+(3)test_scan_controller_tb.user_project_wrapper.inputs[7:0]
+(4)test_scan_controller_tb.user_project_wrapper.inputs[7:0]
+(5)test_scan_controller_tb.user_project_wrapper.inputs[7:0]
+(6)test_scan_controller_tb.user_project_wrapper.inputs[7:0]
+(7)test_scan_controller_tb.user_project_wrapper.inputs[7:0]
+@1401200
+-group_end
+@800022
+test_scan_controller_tb.user_project_wrapper.outputs[7:0]
+@28
+(0)test_scan_controller_tb.user_project_wrapper.outputs[7:0]
+(1)test_scan_controller_tb.user_project_wrapper.outputs[7:0]
+(2)test_scan_controller_tb.user_project_wrapper.outputs[7:0]
+(3)test_scan_controller_tb.user_project_wrapper.outputs[7:0]
+(4)test_scan_controller_tb.user_project_wrapper.outputs[7:0]
+(5)test_scan_controller_tb.user_project_wrapper.outputs[7:0]
+(6)test_scan_controller_tb.user_project_wrapper.outputs[7:0]
+(7)test_scan_controller_tb.user_project_wrapper.outputs[7:0]
+@1001200
+-group_end
+@28
+test_scan_controller_tb.user_project_wrapper.ready
+@800200
+-scan controller
+@28
+test_scan_controller_tb.user_project_wrapper.scan_controller.state[2:0]
+@22
+test_scan_controller_tb.user_project_wrapper.scan_controller.current_design[8:0]
+@1000200
+-scan controller
+@c00200
+-module 0
+@28
+test_scan_controller_tb.user_project_wrapper.scan_wrapper_339501025136214612_0.data_in
+test_scan_controller_tb.user_project_wrapper.scan_wrapper_339501025136214612_0.data_out
+@800022
+test_scan_controller_tb.user_project_wrapper.scan_wrapper_339501025136214612_0.scan_data_in[7:0]
+@28
+(0)test_scan_controller_tb.user_project_wrapper.scan_wrapper_339501025136214612_0.scan_data_in[7:0]
+(1)test_scan_controller_tb.user_project_wrapper.scan_wrapper_339501025136214612_0.scan_data_in[7:0]
+(2)test_scan_controller_tb.user_project_wrapper.scan_wrapper_339501025136214612_0.scan_data_in[7:0]
+(3)test_scan_controller_tb.user_project_wrapper.scan_wrapper_339501025136214612_0.scan_data_in[7:0]
+(4)test_scan_controller_tb.user_project_wrapper.scan_wrapper_339501025136214612_0.scan_data_in[7:0]
+(5)test_scan_controller_tb.user_project_wrapper.scan_wrapper_339501025136214612_0.scan_data_in[7:0]
+(6)test_scan_controller_tb.user_project_wrapper.scan_wrapper_339501025136214612_0.scan_data_in[7:0]
+(7)test_scan_controller_tb.user_project_wrapper.scan_wrapper_339501025136214612_0.scan_data_in[7:0]
+test_scan_controller_tb.user_project_wrapper.scan_wrapper_339501025136214612_0.scan_select_in
+@1001200
+-group_end
+@1401200
+-module 0
+@800200
+-module 12
+@28
+test_scan_controller_tb.user_project_wrapper.scan_wrapper_339501025136214612_0.data_out
+@c00022
+test_scan_controller_tb.user_project_wrapper.scan_wrapper_340805072482992722_12.user_module.io_in[7:0]
+@28
+(0)test_scan_controller_tb.user_project_wrapper.scan_wrapper_340805072482992722_12.user_module.io_in[7:0]
+(1)test_scan_controller_tb.user_project_wrapper.scan_wrapper_340805072482992722_12.user_module.io_in[7:0]
+(2)test_scan_controller_tb.user_project_wrapper.scan_wrapper_340805072482992722_12.user_module.io_in[7:0]
+(3)test_scan_controller_tb.user_project_wrapper.scan_wrapper_340805072482992722_12.user_module.io_in[7:0]
+(4)test_scan_controller_tb.user_project_wrapper.scan_wrapper_340805072482992722_12.user_module.io_in[7:0]
+(5)test_scan_controller_tb.user_project_wrapper.scan_wrapper_340805072482992722_12.user_module.io_in[7:0]
+(6)test_scan_controller_tb.user_project_wrapper.scan_wrapper_340805072482992722_12.user_module.io_in[7:0]
+(7)test_scan_controller_tb.user_project_wrapper.scan_wrapper_340805072482992722_12.user_module.io_in[7:0]
+@1401200
+-group_end
+@22
+test_scan_controller_tb.user_project_wrapper.scan_wrapper_340805072482992722_12.user_module.io_out[7:0]
+@28
+test_scan_controller_tb.user_project_wrapper.scan_wrapper_340805072482992722_12.scan_select_in
+test_scan_controller_tb.user_project_wrapper.scan_wrapper_340805072482992722_12.latch_enable_in
+@1000200
+-module 12
 [pattern_trace] 1
 [pattern_trace] 0
