@@ -10,6 +10,7 @@ module test_scan_controller_tb(
 
     input wire [8:0] active_select,
     input wire [7:0] inputs,
+    input wire [4:0] clk_div,
     output wire [7:0] outputs,
     output wire ready
 );
@@ -22,8 +23,12 @@ module test_scan_controller_tb(
     // map inputs to user_project_wrapper signals
     assign io_in[20:12] = active_select;
     assign io_in[28:21] = inputs;
+    assign io_in[11:8]  = clk_div;
     assign outputs = io_out[36:29];
     assign ready = io_out[37];
+
+    // 7 seg signals
+    wire [6:0] seven_seg = outputs[6:0];
 
     `ifdef COCOTB
     initial begin

@@ -260,12 +260,13 @@ class CaravelConfig():
         assigns = """
         localparam NUM_MACROS = {};
         wire [NUM_MACROS:0] data, scan, latch, clk;
-        wire [8:0] active_select = io_in[20:12];
-        wire [7:0] inputs = io_in[28:21];
-        wire [7:0] outputs;
-        assign io_out[36:29] = outputs;
         wire ready;
-        assign io_out[37] = ready;
+        wire [8:0] active_select    = io_in[20:12];
+        wire [7:0] inputs           = io_in[28:21];
+        wire [3:0] clk_div          = io_in[11:8];
+        wire [7:0] outputs;
+        assign io_out[36:29]        = outputs;
+        assign io_out[37]           = ready;
         """
 
         scan_controller_template = """
@@ -276,6 +277,7 @@ class CaravelConfig():
             .inputs         (inputs),
             .outputs        (outputs),
             .ready          (ready),
+            .clk_div        (clk_div),
             .scan_clk       (clk[0]),
             .scan_data_out  (data[0]),
             .scan_data_in   (data[NUM_MACROS]),
