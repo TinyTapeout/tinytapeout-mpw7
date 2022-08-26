@@ -10,15 +10,35 @@ See https://tinytapeout.com for more information on the project and how to get i
 
 ## Fetch all the projects
 
-    ./configure --update-projects
+    ./configure.py --update-projects
 
 ## Configure Caravel
 
-    ./configure --update-caravel
+    ./configure.py --update-caravel
 
 ## Build the GDS
 
     make user_project_wrapper
+
+## Simulation
+
+There is a testbench that you can use to check the scan chain and controller is working.
+The default of 498 projects takes a very long time to simulate, so I advise overriding the configuration first:
+
+    # rebuild config with only 20 projects
+    ./configure.py --update-caravel --limit 20
+
+Then run the test:
+
+    cd verilog/dv/scan_controller
+    # you will also need to set your PDK_ROOT environment variable
+    make test_scan_controller
+
+You should get a VCD dump with a reset applied to input 1 for 2 clocks, and then 10 clocks applied to input 0.
+
+    gtkwave test_scan_controller.gtkw
+
+You can set the design that is active by changing the test_scan_controller.py file, update the assignment to active_select.
 
 ## Dev notes
 
