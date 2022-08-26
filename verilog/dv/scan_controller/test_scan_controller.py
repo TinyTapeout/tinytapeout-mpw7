@@ -26,14 +26,12 @@ async def test_lesson_1(dut):
     cocotb.fork(clock.start())
 
     dut.reset = 1
-    dut.active_select = 0
-    await ClockCycles(dut.clk, 1)
+    dut.active_select = 12 # 7 seg seconds
+    await ClockCycles(dut.clk, 10)
     dut.reset = 0
 
     dut.inputs = 0x00
-    await RisingEdge(dut.ready);
-    await RisingEdge(dut.ready);
-    assert dut.outputs == 0x00
+    for i in range(10):
+        print("clock {}".format(i))
+        await RisingEdge(dut.ready);
 
-    # wait one clock cycle to sync
-    await single_cycle(dut)

@@ -1,0 +1,27 @@
+[*]
+[*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
+[*] Fri Aug 26 12:41:18 2022
+[*]
+[dumpfile] "/home/matt/work/asic-workshop/shuttle7/tinytapeout-mpw7/verilog/dv/scan_controller/test_scan_controller.vcd"
+[dumpfile_mtime] "Fri Aug 26 12:41:01 2022"
+[dumpfile_size] 7201446
+[savefile] "/home/matt/work/asic-workshop/shuttle7/tinytapeout-mpw7/verilog/dv/scan_controller/test_scan_controller.gtkw"
+[timestart] 0
+[size] 1848 1016
+[pos] -1 -1
+*-28.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] test_scan_controller_tb.
+[sst_width] 233
+[signals_width] 174
+[sst_expanded] 1
+[sst_vpaned_height] 289
+@22
+test_scan_controller_tb.user_project_wrapper.active_select[8:0]
+test_scan_controller_tb.user_project_wrapper.inputs[7:0]
+test_scan_controller_tb.user_project_wrapper.outputs[7:0]
+@28
+test_scan_controller_tb.user_project_wrapper.ready
+test_scan_controller_tb.clk
+test_scan_controller_tb.reset
+[pattern_trace] 1
+[pattern_trace] 0

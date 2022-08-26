@@ -26,14 +26,14 @@ module test_scan_controller_tb(
     `ifdef COCOTB
     initial begin
         $dumpfile ("test_scan_controller.vcd");
-        $dumpvars (0, test_scan_controller);
+        $dumpvars (0, test_scan_controller_tb);
         #1;
     end
     `endif
 
     user_project_wrapper user_project_wrapper(
         .wb_clk_i   (clk),
-        .wb_rst_i   (rst),
+        .wb_rst_i   (reset),
         .io_in      (io_in),
         .io_out     (io_out),
         .io_oeb     (io_oeb));
