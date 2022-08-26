@@ -344,11 +344,31 @@ MACRO scan_controller
     END
   END scan_select
   PIN vccd1
-    DIRECTION INPUT ;
+    DIRECTION INOUT ;
     USE POWER ;
     PORT
       LAYER met4 ;
-        RECT 41.210 10.640 42.810 87.280 ;
+        RECT 32.090 10.640 33.690 87.280 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 86.830 10.640 88.430 87.280 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 141.570 10.640 143.170 87.280 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 196.310 10.640 197.910 87.280 ;
+    END
+  END vccd1
+  PIN vssd1
+    DIRECTION INOUT ;
+    USE GROUND ;
+    PORT
+      LAYER met4 ;
+        RECT 59.460 10.640 61.060 87.280 ;
     END
     PORT
       LAYER met4 ;
@@ -356,26 +376,18 @@ MACRO scan_controller
     END
     PORT
       LAYER met4 ;
-        RECT 187.185 10.640 188.785 87.280 ;
-    END
-  END vccd1
-  PIN vssd1
-    DIRECTION INPUT ;
-    USE GROUND ;
-    PORT
-      LAYER met4 ;
-        RECT 77.710 10.640 79.310 87.280 ;
+        RECT 168.940 10.640 170.540 87.280 ;
     END
     PORT
       LAYER met4 ;
-        RECT 150.695 10.640 152.295 87.280 ;
+        RECT 223.680 10.640 225.280 87.280 ;
     END
   END vssd1
   OBS
       LAYER li1 ;
         RECT 5.520 10.795 224.480 87.125 ;
       LAYER met1 ;
-        RECT 0.070 10.640 224.480 87.280 ;
+        RECT 0.070 10.640 225.280 87.280 ;
       LAYER met2 ;
         RECT 0.100 95.720 9.330 99.125 ;
         RECT 10.450 95.720 25.430 99.125 ;
@@ -391,8 +403,8 @@ MACRO scan_controller
         RECT 168.230 95.720 183.210 99.125 ;
         RECT 184.330 95.720 199.310 99.125 ;
         RECT 200.430 95.720 215.410 99.125 ;
-        RECT 216.530 95.720 221.170 99.125 ;
-        RECT 0.100 4.280 221.170 95.720 ;
+        RECT 216.530 95.720 225.250 99.125 ;
+        RECT 0.100 4.280 225.250 95.720 ;
         RECT 0.790 0.155 12.550 4.280 ;
         RECT 13.670 0.155 28.650 4.280 ;
         RECT 29.770 0.155 44.750 4.280 ;
@@ -407,7 +419,7 @@ MACRO scan_controller
         RECT 171.450 0.155 186.430 4.280 ;
         RECT 187.550 0.155 202.530 4.280 ;
         RECT 203.650 0.155 218.630 4.280 ;
-        RECT 219.750 0.155 221.170 4.280 ;
+        RECT 219.750 0.155 225.250 4.280 ;
       LAYER met3 ;
         RECT 4.400 97.940 225.600 99.105 ;
         RECT 4.000 86.340 226.000 97.940 ;
@@ -432,9 +444,6 @@ MACRO scan_controller
         RECT 4.400 12.940 226.000 14.940 ;
         RECT 4.000 1.340 226.000 12.940 ;
         RECT 4.000 0.175 225.600 1.340 ;
-      LAYER met4 ;
-        RECT 79.710 10.640 113.800 87.280 ;
-        RECT 116.200 10.640 150.295 87.280 ;
   END
 END scan_controller
 END LIBRARY

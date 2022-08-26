@@ -307,7 +307,7 @@ class CaravelConfig():
         verilogs = CaravelConfig.unique(verilogs)
 
         with open('verilog/rtl/user_project_includes.v', 'w') as fh:
-            fh.write('`include "scan_controller.v"\n')
+            fh.write('`include "scan_controller/scan_controller.v"\n')
             for verilog in verilogs:
                 fh.write(verilog)
 
