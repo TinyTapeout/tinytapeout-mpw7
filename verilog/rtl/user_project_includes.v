@@ -12,3 +12,4 @@
 `include "scan_wrapper_340285391309374034.v"
 `include "scan_wrapper_340661930553246290.v"
 `include "scan_wrapper_340805072482992722.v"
+`include "scan_wrapper_341136771628663380.v"
