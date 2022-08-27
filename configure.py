@@ -27,6 +27,9 @@ class Projects():
             except FileNotFoundError:
                 logging.error("project cache {} not found, use --update-cache to build it".format(Projects.projects_db))
 
+        # all ids must be unique
+        assert len(set(self.wokwi_ids)) == len(self.wokwi_ids)
+
     def update_cache(self):
         from project_urls import project_urls
         self.wokwi_ids = []
