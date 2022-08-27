@@ -14,8 +14,8 @@ module user_module_341154068332282450(
   pdm core(
     .pdm_input(io_in[7:3]),
     .write_en(io_in[2]),
-    .clk(io_in[1]),
-    .reset(io_in[0]),
+    .reset(io_in[1]),
+    .clk(io_in[0]),    
     .pdm_out(pdm_out)
   );
 

@@ -19,4 +19,11 @@ project_urls = [
             'https://github.com/H-S-S-11/tinytapeout-verilog-test',
             'https://github.com/skerr92/tinytapeout_frequency_div',
             'https://github.com/argunda/tinytapeout_dualedgedetector',
+            'https://github.com/libokuohai/tinytapeout-2022-08',
+            'https://github.com/jglim/tinytapeout_bcd-dec',
+            'https://github.com/jglim/tinytapeout_bcd-7seg',
+            'https://github.com/tkuester/wokwi-directghost',
+            'https://github.com/shahzaibk23/tinytapeout-barrel-shifter',
+            'https://github.com/tcptomato/tinytapeout',
+            'https://github.com/DaveyPocket/chaser',
     ]

@@ -332,7 +332,7 @@ module user_project_wrapper #(
             .latch_enable_out(latch[20])
             );
         
-        scan_wrapper_339501025136214612 #(.NUM_IOS(8)) scan_wrapper_339501025136214612_20 (
+        scan_wrapper_341160271679586899 #(.NUM_IOS(8)) scan_wrapper_341160271679586899_20 (
             .clk_in          (clk  [20]),
             .data_in         (data [20]),
             .scan_select_in  (scan [20]),
@@ -343,7 +343,7 @@ module user_project_wrapper #(
             .latch_enable_out(latch[21])
             );
         
-        scan_wrapper_339501025136214612 #(.NUM_IOS(8)) scan_wrapper_339501025136214612_21 (
+        scan_wrapper_341161378978988626 #(.NUM_IOS(8)) scan_wrapper_341161378978988626_21 (
             .clk_in          (clk  [21]),
             .data_in         (data [21]),
             .scan_select_in  (scan [21]),
@@ -354,7 +354,7 @@ module user_project_wrapper #(
             .latch_enable_out(latch[22])
             );
         
-        scan_wrapper_339501025136214612 #(.NUM_IOS(8)) scan_wrapper_339501025136214612_22 (
+        scan_wrapper_341152580068442706 #(.NUM_IOS(8)) scan_wrapper_341152580068442706_22 (
             .clk_in          (clk  [22]),
             .data_in         (data [22]),
             .scan_select_in  (scan [22]),
@@ -365,7 +365,7 @@ module user_project_wrapper #(
             .latch_enable_out(latch[23])
             );
         
-        scan_wrapper_339501025136214612 #(.NUM_IOS(8)) scan_wrapper_339501025136214612_23 (
+        scan_wrapper_341155178824598098 #(.NUM_IOS(8)) scan_wrapper_341155178824598098_23 (
             .clk_in          (clk  [23]),
             .data_in         (data [23]),
             .scan_select_in  (scan [23]),
@@ -376,7 +376,7 @@ module user_project_wrapper #(
             .latch_enable_out(latch[24])
             );
         
-        scan_wrapper_339501025136214612 #(.NUM_IOS(8)) scan_wrapper_339501025136214612_24 (
+        scan_wrapper_341167691532337747 #(.NUM_IOS(8)) scan_wrapper_341167691532337747_24 (
             .clk_in          (clk  [24]),
             .data_in         (data [24]),
             .scan_select_in  (scan [24]),
@@ -387,7 +387,7 @@ module user_project_wrapper #(
             .latch_enable_out(latch[25])
             );
         
-        scan_wrapper_339501025136214612 #(.NUM_IOS(8)) scan_wrapper_339501025136214612_25 (
+        scan_wrapper_341178154799333971 #(.NUM_IOS(8)) scan_wrapper_341178154799333971_25 (
             .clk_in          (clk  [25]),
             .data_in         (data [25]),
             .scan_select_in  (scan [25]),
@@ -398,7 +398,7 @@ module user_project_wrapper #(
             .latch_enable_out(latch[26])
             );
         
-        scan_wrapper_339501025136214612 #(.NUM_IOS(8)) scan_wrapper_339501025136214612_26 (
+        scan_wrapper_341178481588044372 #(.NUM_IOS(8)) scan_wrapper_341178481588044372_26 (
             .clk_in          (clk  [26]),
             .data_in         (data [26]),
             .scan_select_in  (scan [26]),

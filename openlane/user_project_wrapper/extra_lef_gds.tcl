@@ -19,7 +19,14 @@ $script_dir/../../lef/scan_wrapper_341154161238213203.lef \
 $script_dir/../../lef/scan_wrapper_341159915403870803.lef \
 $script_dir/../../lef/scan_wrapper_341154068332282450.lef \
 $script_dir/../../lef/scan_wrapper_341160201697624660.lef \
-$script_dir/../../lef/scan_wrapper_341163800289870419.lef"
+$script_dir/../../lef/scan_wrapper_341163800289870419.lef \
+$script_dir/../../lef/scan_wrapper_341160271679586899.lef \
+$script_dir/../../lef/scan_wrapper_341161378978988626.lef \
+$script_dir/../../lef/scan_wrapper_341152580068442706.lef \
+$script_dir/../../lef/scan_wrapper_341155178824598098.lef \
+$script_dir/../../lef/scan_wrapper_341167691532337747.lef \
+$script_dir/../../lef/scan_wrapper_341178154799333971.lef \
+$script_dir/../../lef/scan_wrapper_341178481588044372.lef"
 set ::env(EXTRA_GDS_FILES) "\
 $script_dir/../../gds/scan_controller.gds \
 $script_dir/../../gds/scan_wrapper_339501025136214612.gds \
@@ -41,4 +48,11 @@ $script_dir/../../gds/scan_wrapper_341154161238213203.gds \
 $script_dir/../../gds/scan_wrapper_341159915403870803.gds \
 $script_dir/../../gds/scan_wrapper_341154068332282450.gds \
 $script_dir/../../gds/scan_wrapper_341160201697624660.gds \
-$script_dir/../../gds/scan_wrapper_341163800289870419.gds"
+$script_dir/../../gds/scan_wrapper_341163800289870419.gds \
+$script_dir/../../gds/scan_wrapper_341160271679586899.gds \
+$script_dir/../../gds/scan_wrapper_341161378978988626.gds \
+$script_dir/../../gds/scan_wrapper_341152580068442706.gds \
+$script_dir/../../gds/scan_wrapper_341155178824598098.gds \
+$script_dir/../../gds/scan_wrapper_341167691532337747.gds \
+$script_dir/../../gds/scan_wrapper_341178154799333971.gds \
+$script_dir/../../gds/scan_wrapper_341178481588044372.gds"
