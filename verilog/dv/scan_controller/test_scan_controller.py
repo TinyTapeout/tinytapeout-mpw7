@@ -34,22 +34,31 @@ def decode_seg(value):
 
 @cocotb.test()
 async def test(dut):
-    clock = Clock(dut.clk, 10, units="us")
+    clock = Clock(dut.clk, 100, units="ns") # 10 MHz
     cocotb.fork(clock.start())
 
     dut.reset.value = 1
-    dut.clk_div.value = 5
+    dut.set_clk_div.value = 0
     dut.active_select.value = 12 # 7 seg seconds
-    dut.inputs.value = 0
     await ClockCycles(dut.clk, 10)
     dut.reset.value = 0
+    dut.inputs.value = 0
+    dut.set_clk_div.value = 1   # lock in the new clock divider value
+    await ClockCycles(dut.clk, 1)
+#    dut.set_clk_div.value = 0
+    dut.inputs.value = 0
 
-    # these are gonna need to know what the clock div is set to
-    await reset(dut)
-    await single_cycle(dut)
-    await single_cycle(dut)
+    # reset: set bit 1 high, wait for one cycle of slow_clk, then set bit 1 low
+    dut.inputs.value = 0b10
+    await RisingEdge(dut.slow_clk)
+    await FallingEdge(dut.slow_clk)
+    dut.inputs.value = 0
 
+    # sync to falling edge of slow clk
+    # this is because the design won't see the clock until it's sampled by the scan chain.
+    await FallingEdge(dut.slow_clk)
     for i in range(10):
         print("clock {:2} 7seg {}".format(i, decode_seg(dut.seven_seg.value)))
         #assert decode_seg(dut.seven_seg.value) == i
-        await single_cycle(dut)
+        #await single_cycle(dut)
+        await FallingEdge(dut.slow_clk)

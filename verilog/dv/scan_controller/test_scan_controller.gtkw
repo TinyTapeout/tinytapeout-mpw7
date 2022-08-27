@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
-[*] Fri Aug 26 20:20:26 2022
+[*] Sat Aug 27 08:27:55 2022
 [*]
 [dumpfile] "/home/matt/work/asic-workshop/shuttle7/tinytapeout-mpw7/verilog/dv/scan_controller/test_scan_controller.vcd"
-[dumpfile_mtime] "Fri Aug 26 20:17:53 2022"
-[dumpfile_size] 9542502
+[dumpfile_mtime] "Fri Aug 26 20:43:57 2022"
+[dumpfile_size] 7663258
 [savefile] "/home/matt/work/asic-workshop/shuttle7/tinytapeout-mpw7/verilog/dv/scan_controller/test_scan_controller.gtkw"
-[timestart] 0
+[timestart] 58546600000
 [size] 1848 1016
 [pos] -1 -1
-*-36.000000 48405000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-26.000000 58980000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] test_scan_controller_tb.
 [treeopen] test_scan_controller_tb.user_project_wrapper.
 [treeopen] test_scan_controller_tb.user_project_wrapper.scan_wrapper_339501025136214612_0.
@@ -53,13 +53,15 @@ test_scan_controller_tb.user_project_wrapper.outputs[7:0]
 test_scan_controller_tb.user_project_wrapper.ready
 @800200
 -scan controller
+@29
+test_scan_controller_tb.user_project_wrapper.scan_controller.scan_clk
 @22
 test_scan_controller_tb.user_project_wrapper.scan_controller.clk_div[3:0]
 @28
 test_scan_controller_tb.user_project_wrapper.scan_controller.clk_div_used
-@800023
+@800022
 test_scan_controller_tb.user_project_wrapper.scan_controller.inputs_and_clk[7:0]
-@29
+@28
 (0)test_scan_controller_tb.user_project_wrapper.scan_controller.inputs_and_clk[7:0]
 (1)test_scan_controller_tb.user_project_wrapper.scan_controller.inputs_and_clk[7:0]
 (2)test_scan_controller_tb.user_project_wrapper.scan_controller.inputs_and_clk[7:0]
@@ -68,7 +70,7 @@ test_scan_controller_tb.user_project_wrapper.scan_controller.inputs_and_clk[7:0]
 (5)test_scan_controller_tb.user_project_wrapper.scan_controller.inputs_and_clk[7:0]
 (6)test_scan_controller_tb.user_project_wrapper.scan_controller.inputs_and_clk[7:0]
 (7)test_scan_controller_tb.user_project_wrapper.scan_controller.inputs_and_clk[7:0]
-@1001201
+@1001200
 -group_end
 @28
 test_scan_controller_tb.user_project_wrapper.scan_controller.state[2:0]

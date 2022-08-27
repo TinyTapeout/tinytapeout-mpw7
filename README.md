@@ -40,6 +40,25 @@ You should get a VCD dump with a reset applied to input 1 for 2 clocks, and then
 
 You can set the design that is active by changing the test_scan_controller.py file, update the assignment to active_select.
 
+## Clocking
+
+Assuming:
+
+* 10MHz input clock, 
+* 8 ins & 8 outs
+* 2 clock cycles to push one bit through the scan chain (scan clock is half input clock rate)
+* 500 designs
+
+So the max refresh rate is 10MHz / (16 * 2 * 500) = 750Hz.
+
+## Clock divider
+
+The set_clk_div input will capture what is set on the input pins and use this as a divider for an internal slow clock that can be provided to the first input bit.
+
+The slow clock is only enabled if the set_clk_div is set, and the resulting clock is output on the slow_clk pin.
+
+As the refresh rate is 750Hz (see above) and the input clock is 10MHz, we add the input to 13, to create an adjustable divider between 14 and 22 bits. This results in an adjustable slow clock between ~600Hz & ~2Hz.
+
 ## Dev notes
 
 * PDN hang issues https://github.com/The-OpenROAD-Project/OpenLane/issues/1173
