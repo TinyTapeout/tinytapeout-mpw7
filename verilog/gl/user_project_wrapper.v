@@ -53,6 +53,7 @@ module user_project_wrapper (user_clock2,
  output [31:0] wbs_dat_o;
  input [3:0] wbs_sel_i;
 
+ wire slow_clk;
  wire ready;
  wire \clk[0] ;
  wire \clk[100] ;
@@ -2059,6 +2060,8 @@ module user_project_wrapper (user_clock2,
     .scan_data_out(\data[0] ),
     .scan_latch_enable(\latch[0] ),
     .scan_select(\scan[0] ),
+    .set_clk_div(io_in[11]),
+    .slow_clk(slow_clk),
     .vccd1(vccd1),
     .vssd1(vssd1),
     .active_select({io_in[20],
@@ -7075,5 +7078,6 @@ module user_project_wrapper (user_clock2,
     .scan_select_out(\scan[13] ),
     .vccd1(vccd1),
     .vssd1(vssd1));
+ assign io_out[10] = slow_clk;
  assign io_out[37] = ready;
 endmodule

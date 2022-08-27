@@ -56,7 +56,8 @@
 + clk inputs[0] inputs[1] inputs[2] inputs[3] inputs[4] inputs[5] inputs[6] inputs[7]
 + oeb[0] oeb[1] oeb[2] oeb[3] oeb[4] oeb[5] oeb[6] oeb[7] oeb[8] outputs[0] outputs[1]
 + outputs[2] outputs[3] outputs[4] outputs[5] outputs[6] outputs[7] ready reset scan_clk
-+ scan_data_in scan_data_out scan_latch_enable scan_select vccd1 vssd1
++ scan_data_in scan_data_out scan_latch_enable scan_select set_clk_div slow_clk vccd1
++ vssd1
 .ends
 
 * Black-box entry subcircuit for scan_wrapper_339439899388150354 abstract view
@@ -2329,7 +2330,7 @@ Xscan_controller io_in[12] io_in[13] io_in[14] io_in[15] io_in[16] io_in[17] io_
 + io_oeb[35] io_oeb[36] io_oeb[37] io_out[29] io_out[30] io_out[31] io_out[32] io_out[33]
 + io_out[34] io_out[35] io_out[36] io_out[37] wb_rst_i scan_controller/scan_clk scan_controller/scan_data_in
 + scan_controller/scan_data_out scan_controller/scan_latch_enable scan_controller/scan_select
-+ vccd1 vssd1 scan_controller
++ io_in[11] io_out[10] vccd1 vssd1 scan_controller
 Xscan_wrapper_339501025136214612_397 scan_wrapper_339501025136214612_397/clk_in scan_wrapper_339501025136214612_398/clk_in
 + scan_wrapper_339501025136214612_397/data_in scan_wrapper_339501025136214612_398/data_in
 + scan_wrapper_339501025136214612_397/latch_enable_in scan_wrapper_339501025136214612_398/latch_enable_in
