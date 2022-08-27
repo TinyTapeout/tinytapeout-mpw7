@@ -17,4 +17,6 @@ project_urls = [
             'https://github.com/GuzTech/wokwi-ripple-carry-adder',
             'https://github.com/kbeckmann/tinytapeout_kbeckmann1',
             'https://github.com/H-S-S-11/tinytapeout-verilog-test',
+            'https://github.com/skerr92/tinytapeout_frequency_div',
+            'https://github.com/argunda/tinytapeout_dualedgedetector',
     ]

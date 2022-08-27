@@ -17,3 +17,5 @@
 `include "scan_wrapper_341154161238213203.v"
 `include "scan_wrapper_341159915403870803.v"
 `include "scan_wrapper_341154068332282450.v"
+`include "scan_wrapper_341160201697624660.v"
+`include "scan_wrapper_341163800289870419.v"
