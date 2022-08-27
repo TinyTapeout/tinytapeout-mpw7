@@ -25,9 +25,9 @@ set ::env(FP_SIZING) absolute
 
 set ::env(SYNTH_DEFINES) "NUM_DESIGNS=498"
 
-# clock period is ns
+# clock period is ns - 100MHz
 set ::env(CLOCK_PERIOD) "10"
-set ::env(CLOCK_PORT) "clk_in"
+set ::env(CLOCK_PORT) "clk"
 
 # macro needs to work inside Caravel, so can't be core and can't use metal 5
 set ::env(DESIGN_IS_CORE) 0
