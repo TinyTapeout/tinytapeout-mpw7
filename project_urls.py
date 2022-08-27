@@ -13,4 +13,8 @@ project_urls = [
             'https://github.com/krasin/wokwi-guess-my-number',
             'https://github.com/mattvenn/tinytapeout-7seg-seconds-counter',
             'https://github.com/johshoff/barrelshifter-wokwi-gds',
+            'https://github.com/pretentious7/tinytapeout',
+            'https://github.com/GuzTech/wokwi-ripple-carry-adder',
+            'https://github.com/kbeckmann/tinytapeout_kbeckmann1',
+            'https://github.com/H-S-S-11/tinytapeout-verilog-test',
     ]

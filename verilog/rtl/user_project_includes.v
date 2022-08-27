@@ -13,3 +13,7 @@
 `include "scan_wrapper_340661930553246290.v"
 `include "scan_wrapper_340805072482992722.v"
 `include "scan_wrapper_341136771628663380.v"
+`include "scan_wrapper_339800239192932947.v"
+`include "scan_wrapper_341154161238213203.v"
+`include "scan_wrapper_341159915403870803.v"
+`include "scan_wrapper_341154068332282450.v"
