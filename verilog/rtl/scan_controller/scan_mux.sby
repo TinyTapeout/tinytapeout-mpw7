@@ -1,0 +1,13 @@
+[options]
+mode prove
+
+[engines]
+smtbmc
+
+[script]
+read -formal -DMPRJ_IO_PADS=38 scan_controller.v
+prep -top scan_controller
+
+[files]
+scan_controller.v
+properties.v

@@ -11,14 +11,14 @@ module scan_controller (
     output wire ready,                  // debug output that goes high once per refresh
     output wire slow_clk,               // debug clock divider output
 
-    output wire scan_clk,               // scan chain interface for the tiny designs
+    output wire scan_clk,               // scan chain interface for the tiny designs, from perspective of this module
     output wire scan_data_out,          // see diagrams below for how the scan chain works
     input  wire scan_data_in,           // will be driven by internal driver, external gpio pins, or Caravel logic analyser
     output wire scan_select,            // external scan chain driver muxes with ins/outs, eg microcontroller outside the ASIC
     output wire scan_latch_en,
 
     input  wire la_scan_clk,            // logic analyser scan chain driver, driven by firmware running on Caravel's VexRisc 
-    input  wire la_scan_data_in,
+    input  wire la_scan_data_in,        // signal names from perspective of this module
     output wire la_scan_data_out,
     input  wire la_scan_select,
     input  wire la_scan_latch_en,
@@ -40,18 +40,25 @@ module scan_controller (
     localparam LATCH = 4;
                     
     // scan chain muxing
-    wire ext_scan_clk;
-    wire ext_scan_data_out;
-    wire ext_scan_data_in;
-    wire ext_scan_select;
-    wire ext_scan_latch_en;
+    // signal names in perspective of this module
+    wire ext_scan_clk       = inputs[0];
+    wire ext_scan_data_in   = inputs[1];
+    wire ext_scan_data_out  = scan_data_in;
+    wire ext_scan_select    = inputs[2];   
+    wire ext_scan_latch_en  = inputs[3];
 
     assign scan_clk         = driver_sel == 2'b00 ? ext_scan_clk      : driver_sel == 2'b01 ? int_scan_clk      : la_scan_clk;
-    assign scan_data_out    = driver_sel == 2'b00 ? ext_scan_data_out : driver_sel == 2'b01 ? int_scan_data_out : la_scan_data_out;
+    assign scan_data_out    = driver_sel == 2'b00 ? ext_scan_data_in  : driver_sel == 2'b01 ? int_scan_data_out : la_scan_data_in;
     assign scan_select      = driver_sel == 2'b00 ? ext_scan_select   : driver_sel == 2'b01 ? int_scan_select   : la_scan_select;
     assign scan_latch_en    = driver_sel == 2'b00 ? ext_scan_latch_en : driver_sel == 2'b01 ? int_scan_latch_en : la_scan_latch_en;
 
-    wire   int_scan_data_in = scan_data_in;
+    wire int_scan_data_in   = scan_data_in;
+    wire la_scan_data_out   = scan_data_in;
+    assign outputs          = driver_sel == 2'b01 ? outputs_r : {7'b0, ext_scan_data_out};
+
+    `ifdef FORMAL
+        `include "properties.v"
+    `endif
 
     // reg
     reg [8:0] current_design;
@@ -65,7 +72,6 @@ module scan_controller (
     reg [7:0] output_buf;
 
     // wires
-    assign outputs = outputs_r;
     wire [8:0] active_select_rev = NUM_DESIGNS - 1 - active_select;
     assign ready = state == START;
     wire int_scan_latch_en = state == LATCH;
@@ -114,7 +120,7 @@ module scan_controller (
 
     */
 
-    // FSM
+    // FSM, only run it if driver_sel is set to internal
     always @(posedge clk) begin
         if(reset) begin
             current_design <= 0;
@@ -124,7 +130,7 @@ module scan_controller (
             scan_clk_r <= 0;
             num_io <= 0;
             output_buf <= 0;
-        end else begin
+        end else if (driver_sel == 2'b01) begin
             case(state)
                 START: begin
                     state <= LOAD;
