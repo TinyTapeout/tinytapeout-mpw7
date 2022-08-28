@@ -1,4 +1,4 @@
-* NGSPICE file created from user_project_wrapper.ext - technology: sky130B
+* NGSPICE file created from user_project_wrapper.ext - technology: sky130A
 
 * Black-box entry subcircuit for scan_wrapper_339501025136214612 abstract view
 .subckt scan_wrapper_339501025136214612 clk_in clk_out data_in data_out latch_enable_in
@@ -118,11 +118,14 @@
 * Black-box entry subcircuit for scan_controller abstract view
 .subckt scan_controller active_select[0] active_select[1] active_select[2] active_select[3]
 + active_select[4] active_select[5] active_select[6] active_select[7] active_select[8]
-+ clk inputs[0] inputs[1] inputs[2] inputs[3] inputs[4] inputs[5] inputs[6] inputs[7]
-+ oeb[0] oeb[1] oeb[2] oeb[3] oeb[4] oeb[5] oeb[6] oeb[7] oeb[8] outputs[0] outputs[1]
-+ outputs[2] outputs[3] outputs[4] outputs[5] outputs[6] outputs[7] ready reset scan_clk
-+ scan_data_in scan_data_out scan_latch_enable scan_select set_clk_div slow_clk vccd1
-+ vssd1
++ clk driver_sel[0] driver_sel[1] inputs[0] inputs[1] inputs[2] inputs[3] inputs[4]
++ inputs[5] inputs[6] inputs[7] la_scan_clk la_scan_data_in la_scan_data_out la_scan_latch_en
++ la_scan_select oeb[0] oeb[10] oeb[11] oeb[12] oeb[13] oeb[14] oeb[15] oeb[16] oeb[17]
++ oeb[18] oeb[19] oeb[1] oeb[20] oeb[21] oeb[22] oeb[23] oeb[24] oeb[25] oeb[26] oeb[27]
++ oeb[28] oeb[29] oeb[2] oeb[30] oeb[31] oeb[32] oeb[33] oeb[34] oeb[35] oeb[36] oeb[37]
++ oeb[3] oeb[4] oeb[5] oeb[6] oeb[7] oeb[8] oeb[9] outputs[0] outputs[1] outputs[2]
++ outputs[3] outputs[4] outputs[5] outputs[6] outputs[7] ready reset scan_clk scan_data_in
++ scan_data_out scan_latch_en scan_select set_clk_div slow_clk vccd1 vssd1
 .ends
 
 * Black-box entry subcircuit for scan_wrapper_341159915403870803 abstract view
@@ -457,7 +460,7 @@ Xscan_wrapper_339501025136214612_60 scan_wrapper_339501025136214612_60/clk_in sc
 + scan_wrapper_339501025136214612_60/scan_select_in scan_wrapper_339501025136214612_61/scan_select_in
 + vccd1 vssd1 scan_wrapper_339501025136214612
 Xscan_wrapper_339501025136214612_0 scan_controller/scan_clk scan_wrapper_334445762078310996_1/clk_in
-+ scan_controller/scan_data_out scan_wrapper_334445762078310996_1/data_in scan_controller/scan_latch_enable
++ scan_controller/scan_data_out scan_wrapper_334445762078310996_1/data_in scan_controller/scan_latch_en
 + scan_wrapper_334445762078310996_1/latch_enable_in scan_controller/scan_select scan_wrapper_334445762078310996_1/scan_select_in
 + vccd1 vssd1 scan_wrapper_339501025136214612
 Xscan_wrapper_341155178824598098_23 scan_wrapper_341155178824598098_23/clk_in scan_wrapper_341167691532337747_24/clk_in
@@ -2390,11 +2393,16 @@ Xscan_wrapper_339501025136214612_193 scan_wrapper_339501025136214612_193/clk_in 
 + scan_wrapper_339501025136214612_193/scan_select_in scan_wrapper_339501025136214612_194/scan_select_in
 + vccd1 vssd1 scan_wrapper_339501025136214612
 Xscan_controller io_in[12] io_in[13] io_in[14] io_in[15] io_in[16] io_in[17] io_in[18]
-+ io_in[19] io_in[20] wb_clk_i io_in[21] io_in[22] io_in[23] io_in[24] io_in[25] io_in[26]
-+ io_in[27] io_in[28] io_oeb[29] io_oeb[30] io_oeb[31] io_oeb[32] io_oeb[33] io_oeb[34]
-+ io_oeb[35] io_oeb[36] io_oeb[37] io_out[29] io_out[30] io_out[31] io_out[32] io_out[33]
-+ io_out[34] io_out[35] io_out[36] io_out[37] wb_rst_i scan_controller/scan_clk scan_controller/scan_data_in
-+ scan_controller/scan_data_out scan_controller/scan_latch_enable scan_controller/scan_select
++ io_in[19] io_in[20] wb_clk_i io_in[8] io_in[9] io_in[21] io_in[22] io_in[23] io_in[24]
++ io_in[25] io_in[26] io_in[27] io_in[28] la_data_in[0] la_data_in[1] la_data_out[0]
++ la_data_in[3] la_data_in[2] io_oeb[0] io_oeb[10] io_oeb[11] io_oeb[12] io_oeb[13]
++ io_oeb[14] io_oeb[15] io_oeb[16] io_oeb[17] io_oeb[18] io_oeb[19] io_oeb[1] io_oeb[20]
++ io_oeb[21] io_oeb[22] io_oeb[23] io_oeb[24] io_oeb[25] io_oeb[26] io_oeb[27] io_oeb[28]
++ io_oeb[29] io_oeb[2] io_oeb[30] io_oeb[31] io_oeb[32] io_oeb[33] io_oeb[34] io_oeb[35]
++ io_oeb[36] io_oeb[37] io_oeb[3] io_oeb[4] io_oeb[5] io_oeb[6] io_oeb[7] io_oeb[8]
++ io_oeb[9] io_out[29] io_out[30] io_out[31] io_out[32] io_out[33] io_out[34] io_out[35]
++ io_out[36] io_out[37] wb_rst_i scan_controller/scan_clk scan_controller/scan_data_in
++ scan_controller/scan_data_out scan_controller/scan_latch_en scan_controller/scan_select
 + io_in[11] io_out[10] vccd1 vssd1 scan_controller
 Xscan_wrapper_339501025136214612_397 scan_wrapper_339501025136214612_397/clk_in scan_wrapper_339501025136214612_398/clk_in
 + scan_wrapper_339501025136214612_397/data_in scan_wrapper_339501025136214612_398/data_in

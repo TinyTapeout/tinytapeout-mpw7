@@ -1,4 +1,4 @@
-setuptokens.py
+setuptokens.sh
 gds/*gds
 /.idea/
 /precheck_results/
@@ -8,3 +8,7 @@ gds/*gds
 *.lst
 *.vcd
 *.gtkw
+results.xml
+sim_build
+__pycache__
+scan_mux
