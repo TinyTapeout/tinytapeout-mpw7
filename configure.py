@@ -263,32 +263,34 @@ class CaravelConfig():
         assigns = """
         localparam NUM_MACROS = {};
         wire [NUM_MACROS:0] data, scan, latch, clk;
-        wire ready, slow_clk;
-        wire [8:0] active_select    = io_in[20:12];
-        wire [7:0] inputs           = io_in[28:21];
-        wire set_clk_div            = io_in[11];
-        wire [7:0] outputs;
-        assign io_out[36:29]        = outputs;
-        assign io_out[37]           = ready;
-        assign io_out[10]           = slow_clk;
         """
 
         scan_controller_template = """
         scan_controller #(.NUM_DESIGNS(NUM_MACROS)) scan_controller(
-            .clk            (wb_clk_i),
-            .reset          (wb_rst_i),
-            .active_select  (active_select),
-            .inputs         (inputs),
-            .outputs        (outputs),
-            .ready          (ready),
-            .slow_clk       (slow_clk),
-            .set_clk_div    (set_clk_div),
-            .scan_clk       (clk[0]),
-            .scan_data_out  (data[0]),
-            .scan_data_in   (data[NUM_MACROS]),
-            .scan_select    (scan[0]),
-            .scan_latch_enable(latch[0]),
-            .oeb            (io_oeb[37:29])
+            .clk                    (wb_clk_i),
+            .reset                  (wb_rst_i),
+            .active_select          (io_in[20:12]),
+            .inputs                 (io_in[28:21]),
+            .outputs                (io_out[36:29]),
+            .ready                  (io_out[37]),
+            .slow_clk               (io_out[10]),
+            .set_clk_div            (io_in[11]),
+
+            .scan_clk               (clk[0]),
+            .scan_data_out          (data[0]),
+            .scan_data_in           (data[NUM_MACROS]),
+            .scan_select            (scan[0]),
+            .scan_latch_en          (latch[0]),
+
+            .la_scan_clk            (la_data_in[0]),
+            .la_scan_data_in        (la_data_in[1]),
+            .la_scan_data_out       (la_data_out[0]),
+            .la_scan_select         (la_data_in[2]),
+            .la_scan_latch_en       (la_data_in[3]),
+
+            .driver_sel             (io_in[9:8]),
+
+            .oeb                    (io_oeb)
         );
 
         """

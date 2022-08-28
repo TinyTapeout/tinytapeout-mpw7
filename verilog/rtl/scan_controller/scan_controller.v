@@ -5,22 +5,30 @@ module scan_controller (
     input  wire reset,
 
     input  wire [8:0] active_select,    // which design is connected to the inputs and outputs
-    input  wire [7:0] inputs,           // inputs to the design
+    input  wire [7:0] inputs,           // inputs to the design (or external scan chain)
     input  wire set_clk_div,            // set clock divider. See module below
-    output wire [7:0] outputs,          // outputs from the design
+    output wire [7:0] outputs,          // outputs from the design (or external scan chain)
     output wire ready,                  // debug output that goes high once per refresh
     output wire slow_clk,               // debug clock divider output
 
-    output wire scan_clk,               // see diagrams below for how the scan chain works
-    output wire scan_data_out,
-    input  wire scan_data_in,
-    output wire scan_select,
-    output wire scan_latch_enable,
+    output wire scan_clk,               // scan chain interface for the tiny designs
+    output wire scan_data_out,          // see diagrams below for how the scan chain works
+    input  wire scan_data_in,           // will be driven by internal driver, external gpio pins, or Caravel logic analyser
+    output wire scan_select,            // external scan chain driver muxes with ins/outs, eg microcontroller outside the ASIC
+    output wire scan_latch_en,
 
-    output wire [8:0] oeb               // caravel harness needs output enable bar set low to enable outputs
+    input  wire la_scan_clk,            // logic analyser scan chain driver, driven by firmware running on Caravel's VexRisc 
+    input  wire la_scan_data_in,
+    output wire la_scan_data_out,
+    input  wire la_scan_select,
+    input  wire la_scan_latch_en,
+
+    input  wire [1:0] driver_sel,       // 00 = external, 01 = internal, 10 = logic analyser
+
+    output wire [`MPRJ_IO_PADS-1:0] oeb // caravel harness needs output enable bar set low to enable outputs
     );
 
-    assign oeb = 8'b0;
+    assign oeb = {`MPRJ_IO_PADS{1'b0}};
 
     parameter NUM_DESIGNS = 8; 
     parameter NUM_IOS     = 8;
@@ -31,6 +39,19 @@ module scan_controller (
     localparam CAPTURE_STATE = 3;
     localparam LATCH = 4;
                     
+    // scan chain muxing
+    wire ext_scan_clk;
+    wire ext_scan_data_out;
+    wire ext_scan_data_in;
+    wire ext_scan_select;
+    wire ext_scan_latch_en;
+
+    assign scan_clk         = driver_sel == 2'b00 ? ext_scan_clk      : driver_sel == 2'b01 ? int_scan_clk      : la_scan_clk;
+    assign scan_data_out    = driver_sel == 2'b00 ? ext_scan_data_out : driver_sel == 2'b01 ? int_scan_data_out : la_scan_data_out;
+    assign scan_select      = driver_sel == 2'b00 ? ext_scan_select   : driver_sel == 2'b01 ? int_scan_select   : la_scan_select;
+    assign scan_latch_en    = driver_sel == 2'b00 ? ext_scan_latch_en : driver_sel == 2'b01 ? int_scan_latch_en : la_scan_latch_en;
+
+    wire   int_scan_data_in = scan_data_in;
 
     // reg
     reg [8:0] current_design;
@@ -47,10 +68,10 @@ module scan_controller (
     assign outputs = outputs_r;
     wire [8:0] active_select_rev = NUM_DESIGNS - 1 - active_select;
     assign ready = state == START;
-    assign scan_latch_enable = state == LATCH;
-    assign scan_clk = scan_clk_r;
-    assign scan_data_out = (state == LOAD && current_design == active_select_rev ) ? inputs_r[NUM_IOS-1-num_io] : 0;
-    assign scan_select = scan_select_out_r;
+    wire int_scan_latch_en = state == LATCH;
+    wire int_scan_clk = scan_clk_r;
+    wire int_scan_data_out = (state == LOAD && current_design == active_select_rev ) ? inputs_r[NUM_IOS-1-num_io] : 0;
+    wire int_scan_select = scan_select_out_r;
 
     // clock divider
     clk_divider clk_divider (
@@ -141,7 +162,7 @@ module scan_controller (
                     if(scan_clk_r) begin
                         num_io <= num_io + 1;
                         if(current_design == active_select_rev)
-                            output_buf[NUM_IOS-1-num_io] <= scan_data_in;
+                            output_buf[NUM_IOS-1-num_io] <= int_scan_data_in;
 
                         if(num_io == NUM_IOS - 1) begin
                             num_io <= 0;

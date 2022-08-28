@@ -8,6 +8,7 @@ module test_scan_controller_tb(
     input wire clk,
     input wire reset,
 
+    input wire [1:0] driver_sel,
     input wire [8:0] active_select,
     input wire [7:0] inputs,
     input wire set_clk_div,
@@ -25,6 +26,7 @@ module test_scan_controller_tb(
     assign io_in[20:12] = active_select;
     assign io_in[28:21] = inputs;
     assign io_in[11]    = set_clk_div;
+    assign io_in[9:8]  = driver_sel;
     assign outputs = io_out[36:29];
     assign ready = io_out[37];
     assign slow_clk = io_out[10];

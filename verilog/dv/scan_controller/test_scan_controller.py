@@ -33,12 +33,13 @@ def decode_seg(value):
         return '?'
 
 @cocotb.test()
-async def test(dut):
+async def internal_controller(dut):
     clock = Clock(dut.clk, 100, units="ns") # 10 MHz
     cocotb.fork(clock.start())
 
     dut.reset.value = 1
     dut.set_clk_div.value = 0
+    dut.driver_sel.value = 0b01   # internal controller
     dut.active_select.value = 12 # 7 seg seconds
     await ClockCycles(dut.clk, 10)
     dut.reset.value = 0
@@ -62,3 +63,4 @@ async def test(dut):
         #assert decode_seg(dut.seven_seg.value) == i
         #await single_cycle(dut)
         await FallingEdge(dut.slow_clk)
+
