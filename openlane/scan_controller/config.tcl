@@ -9,7 +9,9 @@ set ::env(RUN_KLAYOUT_XOR) 0
 set ::env(RUN_KLAYOUT_DRC) 0
 
 # add your source files here
-set ::env(VERILOG_FILES) "$script_dir/../../verilog/rtl/scan_controller/scan_controller.v"
+set ::env(VERILOG_FILES) "\
+    $script_dir/../../caravel/verilog/rtl/defines.v \
+    $script_dir/../../verilog/rtl/scan_controller/scan_controller.v" 
 
 # target density, change this if you can't get your design to fit
 #set ::env(PL_TARGET_DENSITY) 0.4
@@ -23,7 +25,7 @@ set ::env(FP_CORE_UTIL) 45
 set ::env(DIE_AREA) "0 0 230 100"
 set ::env(FP_SIZING) absolute
 
-set ::env(SYNTH_DEFINES) "NUM_DESIGNS=498"
+set ::env(SYNTH_PARAMETERS) "NUM_DESIGNS=498"
 
 # clock period is ns - 100MHz
 set ::env(CLOCK_PERIOD) "10"
