@@ -1,0 +1,58 @@
+[*]
+[*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
+[*] Sun Aug 28 04:38:22 2022
+[*]
+[dumpfile] "/home/matt/work/asic-workshop/shuttle7/tinytapeout-mpw7/verilog/dv/scan_controller_int/scan_controller_tb.vcd"
+[dumpfile_mtime] "Sun Aug 28 04:37:55 2022"
+[dumpfile_size] 1813865
+[savefile] "/home/matt/work/asic-workshop/shuttle7/tinytapeout-mpw7/verilog/dv/scan_controller_int/scan_controller_int.gtkw"
+[timestart] 0
+[size] 1848 1016
+[pos] -1 -1
+*-29.000000 696514800 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] scan_controller_tb.
+[treeopen] scan_controller_tb.uut.
+[treeopen] scan_controller_tb.uut.mprj.
+[treeopen] scan_controller_tb.uut.mprj.scan_controller.
+[sst_width] 423
+[signals_width] 261
+[sst_expanded] 1
+[sst_vpaned_height] 254
+@28
+scan_controller_tb.clk
+@22
+scan_controller_tb.active_sel[8:0]
+@28
+scan_controller_tb.driver_sel[1:0]
+scan_controller_tb.fw_ready
+scan_controller_tb.ready
+@22
+scan_controller_tb.inputs[7:0]
+scan_controller_tb.outputs[7:0]
+@28
+scan_controller_tb.set_clk_div
+scan_controller_tb.slow_clk
+@800200
+-scan chain
+@28
+scan_controller_tb.uut.mprj.scan_controller.scan_clk
+scan_controller_tb.uut.mprj.scan_controller.scan_data_in
+scan_controller_tb.uut.mprj.scan_controller.scan_data_out
+scan_controller_tb.uut.mprj.scan_controller.scan_latch_en
+scan_controller_tb.uut.mprj.scan_controller.scan_select
+@1000200
+-scan chain
+@22
+scan_controller_tb.uut.mprj.scan_controller.active_select[8:0]
+scan_controller_tb.uut.mprj.scan_controller.inputs[7:0]
+scan_controller_tb.uut.mprj.scan_controller.outputs[7:0]
+@28
+scan_controller_tb.uut.mprj.scan_controller.clk_divider.last_set
+@22
+scan_controller_tb.uut.mprj.scan_controller.clk_divider.compare[7:0]
+@8024
+scan_controller_tb.uut.mprj.scan_controller.clk_divider.counter[21:0]
+@20000
+-
+[pattern_trace] 1
+[pattern_trace] 0
