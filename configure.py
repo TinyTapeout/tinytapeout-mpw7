@@ -367,7 +367,7 @@ class CaravelConfig():
         with open("README.md", 'w') as fh:
             fh.write(readme)
             for wokwi_id, project_url in zip(self.projects.get_wokwi_ids(), self.projects.get_project_urls()):
-                fh.write("* {} {}\n".format(Projects.build_wokwi_url(wokwi_id), project_url))
+                fh.write("* [{}]({}) {}\n".format(wokwi_id, Projects.build_wokwi_url(wokwi_id), project_url))
 
 
 if __name__ == '__main__':
