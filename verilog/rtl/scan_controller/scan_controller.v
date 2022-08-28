@@ -53,7 +53,7 @@ module scan_controller (
     assign scan_latch_en    = driver_sel == 2'b00 ? ext_scan_latch_en : driver_sel == 2'b01 ? int_scan_latch_en : la_scan_latch_en;
 
     wire int_scan_data_in   = scan_data_in;
-    wire la_scan_data_out   = scan_data_in;
+    assign la_scan_data_out = scan_data_in;
     assign outputs          = driver_sel == 2'b01 ? outputs_r : {7'b0, ext_scan_data_out};
 
     `ifdef FORMAL
