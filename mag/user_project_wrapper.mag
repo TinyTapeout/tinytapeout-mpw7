@@ -1,7 +1,7 @@
 magic
-tech sky130A
+tech sky130B
 magscale 1 2
-timestamp 1661663228
+timestamp 1661712243
 << metal1 >>
 rect 148318 700816 148324 700868
 rect 148376 700856 148382 700868

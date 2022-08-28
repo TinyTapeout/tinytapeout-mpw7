@@ -1,4 +1,4 @@
-* NGSPICE file created from user_project_wrapper.ext - technology: sky130A
+* NGSPICE file created from user_project_wrapper.ext - technology: sky130B
 
 * Black-box entry subcircuit for scan_wrapper_339501025136214612 abstract view
 .subckt scan_wrapper_339501025136214612 clk_in clk_out data_in data_out latch_enable_in
