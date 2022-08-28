@@ -2,75 +2,56 @@
 
 # TinyTapeout
 
-See https://tinytapeout.com for more information on the project and how to get involved.
+* See https://tinytapeout.com for more information on the project and how to get involved.
+* See [INFO](INFO.md) for how the project is built and technical project notes.
+
+# GDS layout of all projects
 
 ![tiny tapeout](tinytapeout.png)
 
-# Instructions to build
+# Project Index
 
-## Fetch all the projects
-
-    ./configure.py --update-projects
-
-## Configure Caravel
-
-    ./configure.py --update-caravel
-
-## Build the GDS
-
-    make user_project_wrapper
-
-## Simulation
-
-There is a testbench that you can use to check the scan chain and controller is working.
-The default of 498 projects takes a very long time to simulate, so I advise overriding the configuration first:
-
-    # rebuild config with only 20 projects
-    ./configure.py --update-caravel --limit 20
-
-Then run the test:
-
-    cd verilog/dv/scan_controller
-    # you will also need to set your PDK_ROOT environment variable
-    make test_scan_controller
-
-You should get a VCD dump with a reset applied to input 1 for 2 clocks, and then 10 clocks applied to input 0.
-
-    gtkwave test_scan_controller.gtkw
-
-You can set the design that is active by changing the test_scan_controller.py file, update the assignment to active_select.
-
-## Clocking
-
-Assuming:
-
-* 10MHz input clock, 
-* 8 ins & 8 outs
-* 2 clock cycles to push one bit through the scan chain (scan clock is half input clock rate)
-* 500 designs
-
-So the max refresh rate is 10MHz / (16 * 2 * 500) = 750Hz.
-
-## Clock divider
-
-The set_clk_div input will capture what is set on the input pins and use this as a divider for an internal slow clock that can be provided to the first input bit.
-
-The slow clock is only enabled if the set_clk_div is set, and the resulting clock is output on the slow_clk pin.
-
-As the refresh rate is 750Hz (see above) and the input clock is 10MHz, we add the input to 13, to create an adjustable divider between 14 and 22 bits. This results in an adjustable slow clock between ~600Hz & ~2Hz.
-
-## Dev notes
-
-* PDN hang issues https://github.com/The-OpenROAD-Project/OpenLane/issues/1173
-* Also discovered PDN hangs if extra lefs/defs are not deduplicated
-* with PDN set so dense, tapeout job fails with density checks
-* with unused PDN straps turned off, precheck fails
-* copied the erased version (just power rings) and deleted the first digital power rings, copy pasted that over final gds
-* precheck fails with missing power ports
-* manually added missing power ports to gl verilog of user_project_wrapper
-* precheck passes. Will try tapeout job
-* tapeout job failed with DRC, was because outer power ring was too thin. I think due to configuration rather than being cutoff for precheck
-* updated missing_power_rings with correct rings and repeated, this time tapeout passes
-* Tim suggests doing this as a module/cell to make it easier to reproduce
-* Maximo suggests editing pdn_cfg.tcl and using the -nets option with add_pdn_stripe to force only 1st voltage domain
-* This worked, see the new openlane/user_project_wrapper/pdn_cfg.tcl config
+* https://wokwi.com/projects/339501025136214612 https://github.com/mattvenn/wokwi_filler
+* https://wokwi.com/projects/334445762078310996 https://github.com/mattvenn/wokwi-verilog-gds-test
+* https://wokwi.com/projects/335404063203000914 https://github.com/mattvenn/animation_tinytapeout_demo
+* https://wokwi.com/projects/339439899388150354 https://github.com/mattvenn/wokwi_inverters
+* https://wokwi.com/projects/339502597164499540 https://github.com/wokwi/tiny-tapeout-test-simple
+* https://wokwi.com/projects/339732875283792466 https://github.com/omerk/tinytapeout-demo1
+* https://wokwi.com/projects/339865743461974612 https://github.com/mattvenn/tinytapeout-7seg-decoder
+* https://wokwi.com/projects/339898704941023827 https://github.com/omerk/tinytapeout-verilog-test
+* https://wokwi.com/projects/340218629792465491 https://github.com/gregdavill/tinytapeout_spin0
+* https://wokwi.com/projects/340318610245288530 https://github.com/mole99/wokwi-1bit-alu
+* https://wokwi.com/projects/340285391309374034 https://github.com/ericsmi/tinytapeout_popcnt.git
+* https://wokwi.com/projects/340661930553246290 https://github.com/krasin/wokwi-guess-my-number
+* https://wokwi.com/projects/340805072482992722 https://github.com/mattvenn/tinytapeout-7seg-seconds-counter
+* https://wokwi.com/projects/341136771628663380 https://github.com/johshoff/barrelshifter-wokwi-gds
+* https://wokwi.com/projects/339800239192932947 https://github.com/pretentious7/tinytapeout
+* https://wokwi.com/projects/341154161238213203 https://github.com/GuzTech/wokwi-ripple-carry-adder
+* https://wokwi.com/projects/341159915403870803 https://github.com/kbeckmann/tinytapeout_kbeckmann1
+* https://wokwi.com/projects/341154068332282450 https://github.com/H-S-S-11/tinytapeout-verilog-test
+* https://wokwi.com/projects/341160201697624660 https://github.com/skerr92/tinytapeout_frequency_div
+* https://wokwi.com/projects/341163800289870419 https://github.com/argunda/tinytapeout_dualedgedetector
+* https://wokwi.com/projects/341160271679586899 https://github.com/libokuohai/tinytapeout-2022-08
+* https://wokwi.com/projects/341161378978988626 https://github.com/jglim/tinytapeout_bcd-dec
+* https://wokwi.com/projects/341152580068442706 https://github.com/jglim/tinytapeout_bcd-7seg
+* https://wokwi.com/projects/341155178824598098 https://github.com/tkuester/wokwi-directghost
+* https://wokwi.com/projects/341167691532337747 https://github.com/shahzaibk23/tinytapeout-barrel-shifter
+* https://wokwi.com/projects/341178154799333971 https://github.com/tcptomato/tinytapeout
+* https://wokwi.com/projects/341178481588044372 https://github.com/DaveyPocket/chaser
+* https://wokwi.com/projects/341176884318437971 https://github.com/GuzTech/tinytapeout-4x4-multiplier
+* https://wokwi.com/projects/341182944314917460 https://github.com/derhexenmeister/tinytapeout_nco
+* https://wokwi.com/projects/341188777753969234 https://github.com/mbalestrini/tinytapeout_rgb_lut_test
+* https://wokwi.com/projects/341194143598379604 https://github.com/derhexenmeister/tinytapeout_updwnbcd
+* https://wokwi.com/projects/341205508016833108 https://github.com/bradysalz/pll_tiny_tapeout_demo
+* https://wokwi.com/projects/341162950004834900 https://github.com/pramitpal/tinytapeout_pramit
+* https://wokwi.com/projects/341202178192441940 https://github.com/gregdavill/tinytapeout-verilog-fifo
+* https://wokwi.com/projects/341191836498395731 https://github.com/gregdavill/tinytapeout-wokwi-74x1G00
+* https://wokwi.com/projects/341192113929585235 https://github.com/gregdavill/tinytapeout-wokwi-74x1G02
+* https://wokwi.com/projects/341192621088047698 https://github.com/gregdavill/tinytapeout-wokwi-74xG198
+* https://wokwi.com/projects/340579111348994642 https://github.com/gregdavill/tinytapeout-verilog-7seg-clock
+* https://wokwi.com/projects/341224613878956628 https://github.com/alanvgreen/tinytapeout4bitadder
+* https://wokwi.com/projects/341235973870322258 https://github.com/benlaurie/twistedringcounter
+* https://wokwi.com/projects/341235575572922964 https://github.com/sureshsugumar/tinytapeout_counter
+* https://wokwi.com/projects/341164910646919762 https://github.com/daniestevez/tinytapeout-verilog
+* https://wokwi.com/projects/341233739099013714 https://github.com/pkuligowski/tinytapeout_tmr
+* https://wokwi.com/projects/341240110454407762 https://github.com/chiplet/tinytapeout-snake

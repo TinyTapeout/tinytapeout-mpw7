@@ -31,10 +31,13 @@ class Projects():
         assert len(set(self.wokwi_ids)) == len(self.wokwi_ids)
 
     def update_cache(self):
-        from project_urls import project_urls
         self.wokwi_ids = []
-        for url in [filler_project_url] + project_urls:
-            self.wokwi_ids.append(self.install_artifacts(url))
+        for url in self.get_project_urls():
+            wokwi_id = self.install_artifacts(url)
+            if wokwi_id in self.wokwi_ids:
+                logging.error("wokwi id already exists!")
+                exit(1)
+            self.wokwi_ids.append(wokwi_id)
 
         # cache it
         with open(Projects.projects_db, 'wb') as fh:
@@ -82,6 +85,17 @@ class Projects():
             return ["scan_wrapper_{}.v".format(self.wokwi_ids[id]), "user_module_{}.v".format(self.wokwi_ids[id])]
         except IndexError:
             return []
+
+    def get_wokwi_ids(self):
+        return self.wokwi_ids
+
+    @classmethod
+    def build_wokwi_url(Project, wokwi_id):
+        return "https://wokwi.com/projects/{}".format(wokwi_id)
+
+    def get_project_urls(self):
+        from project_urls import project_urls
+        return [filler_project_url] + project_urls
 
     # the latest artifact isn't necessarily the one related to the latest commit, as github
     # could have taken longer to process an older commit than a newer one.
@@ -346,6 +360,15 @@ class CaravelConfig():
             for verilog in verilog_files:
                 fh.write('-v $(USER_PROJECT_VERILOG)/rtl/{}\n'.format(verilog))
 
+    def build_docs(self):
+        logging.info("building doc index")
+        with open("README_init.md") as fh:
+            readme = fh.read()
+        with open("README.md", 'w') as fh:
+            fh.write(readme)
+            for wokwi_id, project_url in zip(self.projects.get_wokwi_ids(), self.projects.get_project_urls()):
+                fh.write("* {} {}\n".format(Projects.build_wokwi_url(wokwi_id), project_url))
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="TinyTapeout")
@@ -380,3 +403,4 @@ if __name__ == '__main__':
     if args.update_caravel:
         caravel.create_macro_config()
         caravel.instantiate()
+        caravel.build_docs()

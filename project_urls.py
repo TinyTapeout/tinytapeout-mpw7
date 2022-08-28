@@ -38,11 +38,9 @@ project_urls = [
             'https://github.com/gregdavill/tinytapeout-wokwi-74xG198',
             'https://github.com/gregdavill/tinytapeout-verilog-7seg-clock',
             'https://github.com/alanvgreen/tinytapeout4bitadder',
-            'https://github.com/tcptomato/tinytapeout',
             'https://github.com/benlaurie/twistedringcounter',
             'https://github.com/sureshsugumar/tinytapeout_counter',
             'https://github.com/daniestevez/tinytapeout-verilog',
             'https://github.com/pkuligowski/tinytapeout_tmr',
             'https://github.com/chiplet/tinytapeout-snake',
-            'https://github.com/SMSajadi99',
     ]

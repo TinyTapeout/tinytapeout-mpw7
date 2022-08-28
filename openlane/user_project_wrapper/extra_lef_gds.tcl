@@ -26,7 +26,24 @@ $script_dir/../../lef/scan_wrapper_341152580068442706.lef \
 $script_dir/../../lef/scan_wrapper_341155178824598098.lef \
 $script_dir/../../lef/scan_wrapper_341167691532337747.lef \
 $script_dir/../../lef/scan_wrapper_341178154799333971.lef \
-$script_dir/../../lef/scan_wrapper_341178481588044372.lef"
+$script_dir/../../lef/scan_wrapper_341178481588044372.lef \
+$script_dir/../../lef/scan_wrapper_341176884318437971.lef \
+$script_dir/../../lef/scan_wrapper_341182944314917460.lef \
+$script_dir/../../lef/scan_wrapper_341188777753969234.lef \
+$script_dir/../../lef/scan_wrapper_341194143598379604.lef \
+$script_dir/../../lef/scan_wrapper_341205508016833108.lef \
+$script_dir/../../lef/scan_wrapper_341162950004834900.lef \
+$script_dir/../../lef/scan_wrapper_341202178192441940.lef \
+$script_dir/../../lef/scan_wrapper_341191836498395731.lef \
+$script_dir/../../lef/scan_wrapper_341192113929585235.lef \
+$script_dir/../../lef/scan_wrapper_341192621088047698.lef \
+$script_dir/../../lef/scan_wrapper_340579111348994642.lef \
+$script_dir/../../lef/scan_wrapper_341224613878956628.lef \
+$script_dir/../../lef/scan_wrapper_341235973870322258.lef \
+$script_dir/../../lef/scan_wrapper_341235575572922964.lef \
+$script_dir/../../lef/scan_wrapper_341164910646919762.lef \
+$script_dir/../../lef/scan_wrapper_341233739099013714.lef \
+$script_dir/../../lef/scan_wrapper_341240110454407762.lef"
 set ::env(EXTRA_GDS_FILES) "\
 $script_dir/../../gds/scan_controller.gds \
 $script_dir/../../gds/scan_wrapper_339501025136214612.gds \
@@ -55,4 +72,21 @@ $script_dir/../../gds/scan_wrapper_341152580068442706.gds \
 $script_dir/../../gds/scan_wrapper_341155178824598098.gds \
 $script_dir/../../gds/scan_wrapper_341167691532337747.gds \
 $script_dir/../../gds/scan_wrapper_341178154799333971.gds \
-$script_dir/../../gds/scan_wrapper_341178481588044372.gds"
+$script_dir/../../gds/scan_wrapper_341178481588044372.gds \
+$script_dir/../../gds/scan_wrapper_341176884318437971.gds \
+$script_dir/../../gds/scan_wrapper_341182944314917460.gds \
+$script_dir/../../gds/scan_wrapper_341188777753969234.gds \
+$script_dir/../../gds/scan_wrapper_341194143598379604.gds \
+$script_dir/../../gds/scan_wrapper_341205508016833108.gds \
+$script_dir/../../gds/scan_wrapper_341162950004834900.gds \
+$script_dir/../../gds/scan_wrapper_341202178192441940.gds \
+$script_dir/../../gds/scan_wrapper_341191836498395731.gds \
+$script_dir/../../gds/scan_wrapper_341192113929585235.gds \
+$script_dir/../../gds/scan_wrapper_341192621088047698.gds \
+$script_dir/../../gds/scan_wrapper_340579111348994642.gds \
+$script_dir/../../gds/scan_wrapper_341224613878956628.gds \
+$script_dir/../../gds/scan_wrapper_341235973870322258.gds \
+$script_dir/../../gds/scan_wrapper_341235575572922964.gds \
+$script_dir/../../gds/scan_wrapper_341164910646919762.gds \
+$script_dir/../../gds/scan_wrapper_341233739099013714.gds \
+$script_dir/../../gds/scan_wrapper_341240110454407762.gds"
