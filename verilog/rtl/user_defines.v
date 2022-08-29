@@ -53,9 +53,9 @@
 
 // refer to verilog/dv/scan_controller_ext/scan_controller.c
 
-// 8 & 9 for scan driver select
-`define USER_CONFIG_GPIO_8_INIT  `GPIO_MODE_USER_STD_INPUT_NOPULL
-`define USER_CONFIG_GPIO_9_INIT  `GPIO_MODE_USER_STD_INPUT_NOPULL
+// 8 & 9 for scan driver select, both 0 is external control
+`define USER_CONFIG_GPIO_8_INIT  `GPIO_MODE_USER_STD_INPUT_PULLDOWN
+`define USER_CONFIG_GPIO_9_INIT  `GPIO_MODE_USER_STD_INPUT_PULLDOWN
 
 `define USER_CONFIG_GPIO_10_INIT `GPIO_MODE_MGMT_STD_INPUT_NOPULL
 `define USER_CONFIG_GPIO_11_INIT `GPIO_MODE_MGMT_STD_INPUT_NOPULL
