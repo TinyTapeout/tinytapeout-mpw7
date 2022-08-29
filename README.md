@@ -55,3 +55,13 @@
 * [341164910646919762](https://wokwi.com/projects/341164910646919762) https://github.com/daniestevez/tinytapeout-verilog
 * [341233739099013714](https://wokwi.com/projects/341233739099013714) https://github.com/pkuligowski/tinytapeout_tmr
 * [341240110454407762](https://wokwi.com/projects/341240110454407762) https://github.com/chiplet/tinytapeout-snake
+* [341264068701586004](https://wokwi.com/projects/341264068701586004) https://github.com/derhexenmeister/tinytapeout_pwm
+* [341164228775772755](https://wokwi.com/projects/341164228775772755) https://github.com/raha96/tinycharacters-locked
+* [341262321634509394](https://wokwi.com/projects/341262321634509394) https://github.com/nathancheek/tinytapeout-loop
+* [341174563322724948](https://wokwi.com/projects/341174563322724948) https://github.com/andars/universal-turing-machine-w5s8
+* [341271902949474898](https://wokwi.com/projects/341271902949474898) https://github.com/vmunoz82/tinytapeout_euler1
+* [bc4d7220e4fdbf20a574d56ea112a8e1](https://wokwi.com/projects/bc4d7220e4fdbf20a574d56ea112a8e1) https://github.com/mikenet213/mikenet213-tt1-verilog
+* [341178296293130834](https://wokwi.com/projects/341178296293130834) https://github.com/veremenko-y/tinytapeout-ue14500
+* [1f985e14df1ed789231bb6e0189d6e39](https://wokwi.com/projects/1f985e14df1ed789231bb6e0189d6e39) https://github.com/mikenet213/mikenet213-tt2-verilog
+* [341277789473735250](https://wokwi.com/projects/341277789473735250) https://github.com/aiunderstand/tinytapeout_asyncbinterconvcomp.git
+* [341296149788885588](https://wokwi.com/projects/341296149788885588) https://github.com/nwtechguy/tinytapeout_BCD_counter
