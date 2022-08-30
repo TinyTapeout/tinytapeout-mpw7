@@ -123,3 +123,5 @@ set ::env(FILL_INSERTION) 0
 set ::env(TAP_DECAP_INSERTION) 0
 set ::env(CLOCK_TREE_SYNTH) 0
 
+# Custom SDC
+set ::env(BASE_SDC_FILE) $::env(DESIGN_DIR)/base.sdc
