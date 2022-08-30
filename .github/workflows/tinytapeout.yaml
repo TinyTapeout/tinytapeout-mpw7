@@ -71,6 +71,14 @@ jobs:
       run: make run-precheck
 
     # archive the results
+    - name: Archive debug
+      uses: actions/upload-artifact@v2
+      with:
+          name: Debug Run
+          path: |
+            openlane/user_project_wrapper/runs/*
+
+    # archive the results
     - name: Archive Wrapper GDS
       uses: actions/upload-artifact@v2
       with:
