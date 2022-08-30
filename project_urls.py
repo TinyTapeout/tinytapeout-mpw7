@@ -54,4 +54,5 @@ project_urls = [
             'https://github.com/aiunderstand/tinytapeout_asyncbinterconvcomp.git',
     #        'https://github.com/smunaut/tinytapeout-fifo',
             'https://github.com/nwtechguy/tinytapeout_BCD_counter',
+            'https://github.com/ericsmi/tinytapeout-verilog-div3.git'
     ]
