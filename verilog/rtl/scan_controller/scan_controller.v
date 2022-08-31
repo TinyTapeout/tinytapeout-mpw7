@@ -426,7 +426,7 @@ module clk_divider #(
     assign active = set_sync[2];
 
     // Latch divider
-    always @(posedge clk or posedge reset)
+    always @(posedge clk)
         if (set_now)
             compare <= divider;
 
