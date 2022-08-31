@@ -43,13 +43,18 @@ async def test_start(dut):
     assert dut.outputs.value == 0xAA
 
     # use the clock divider
+    await ClockCycles(dut.clk, 100)
     print("checking clock divider")
+    dut.RSTB.value = 0
     await RisingEdge(dut.clk)
     dut.inputs.value = 1
     dut.set_clk_div.value = 1
+    await ClockCycles(dut.clk, 100)
+    dut.RSTB.value = 1
     await ClockCycles(dut.clk, 2)
     dut.inputs.value = 0
 
+    print("waiting for slow clock")
     # check slow clock output
     for i in range(2):
         await RisingEdge(dut.slow_clk)
