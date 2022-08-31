@@ -7,7 +7,7 @@ async def test_start(dut):
     clock = Clock(dut.clk, 25, units="ns") # 40M
     cocotb.fork(clock.start())
    
-    dut.driver_sel.value = 0b01 # internal
+    dut.driver_sel.value = 0b10 # internal
     dut.set_clk_div.value = 0
     dut.inputs.value = 0
     dut.active_sel.value = 0
