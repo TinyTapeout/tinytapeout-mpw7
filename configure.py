@@ -15,10 +15,10 @@ class Projects():
 
     projects_db = "projects.pkl"
 
-    def __init__(self, update_cache=False):
+    def __init__(self, update_cache=False, update_single=None):
         self.default_project = 0
         if update_cache:
-            self.update_cache()
+            self.update_cache(update_single)
         else:
             # load projects from cache
             try:
@@ -30,9 +30,12 @@ class Projects():
         # all ids must be unique
         assert len(set(self.wokwi_ids)) == len(self.wokwi_ids)
 
-    def update_cache(self):
+    def update_cache(self, update_single=None):
         self.wokwi_ids = []
         for url in self.get_project_urls():
+            if update_single is not None:
+                if url != update_single:
+                    continue
             wokwi_id = self.install_artifacts(url)
             if wokwi_id in self.wokwi_ids:
                 logging.error("wokwi id already exists!")
@@ -145,7 +148,8 @@ class Projects():
             logging.error("no artifact found for {}".format(self))
             exit(1)
         else:
-            artifacts = data['artifacts']
+            # only get artifacts called GDS
+            artifacts = [ a for a in data['artifacts'] if a['name'] == 'GDS']
             logging.debug("found {} artifacts".format(len(artifacts)))
 
         download_url = Projects.get_most_recent_action_url(commits, artifacts)
@@ -295,6 +299,7 @@ class CaravelConfig():
             .scan_data_in           (data[NUM_MACROS]),
             .scan_select            (scan[0]),
             .scan_latch_en          (latch[0]),
+            .scan_clk_in            (clk[NUM_MACROS]),
 
             .la_scan_clk            (la_data_in[0]),
             .la_scan_data_in        (la_data_in[1]),
@@ -375,6 +380,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--list', help="list projects", action='store_const', const=True)
     parser.add_argument('--update-projects', help='fetch the project data', action='store_const', const=True)
+    parser.add_argument('--update-single', help='only fetch a single repo for debug')
     parser.add_argument('--update-caravel', help='configure caravel for build', action='store_const', const=True)
     parser.add_argument('--limit-num-projects', help='only configure for the first n projects', type=int, default=DEFAULT_NUM_PROJECTS)
     parser.add_argument('--debug', help="debug logging", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.INFO)
@@ -397,7 +403,7 @@ if __name__ == '__main__':
     ch.setFormatter(log_format)
     log.addHandler(ch)
 
-    projects = Projects(update_cache=args.update_projects)
+    projects = Projects(update_cache=args.update_projects, update_single=args.update_single)
     caravel = CaravelConfig(projects, num_projects=args.limit_num_projects)
 
     if args.update_caravel:
