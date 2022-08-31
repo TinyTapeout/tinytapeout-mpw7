@@ -38,6 +38,7 @@ module scan_controller #(
 
     // Signals
     // -------
+    assign ready = active && state == ST_IDLE;
 
     // Reset
     reg  [2:0]  rst_shift;
