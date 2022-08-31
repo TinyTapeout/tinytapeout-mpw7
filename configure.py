@@ -290,13 +290,14 @@ class CaravelConfig():
             .slow_clk               (io_out[10]),
             .set_clk_div            (io_in[11]),
 
-            .scan_clk               (clk[0]),
+            .scan_clk_in            (clk[0]),
+            .scan_clk_out           (clk[NUM_MACROS]),
             .scan_data_out          (data[0]),
             .scan_data_in           (data[NUM_MACROS]),
             .scan_select            (scan[0]),
             .scan_latch_en          (latch[0]),
 
-            .la_scan_clk            (la_data_in[0]),
+            .la_scan_clk_in         (la_data_in[0]),
             .la_scan_data_in        (la_data_in[1]),
             .la_scan_data_out       (la_data_out[0]),
             .la_scan_select         (la_data_in[2]),
