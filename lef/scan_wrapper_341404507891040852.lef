@@ -1,0 +1,143 @@
+VERSION 5.7 ;
+  NOWIREEXTENSIONATPIN ON ;
+  DIVIDERCHAR "/" ;
+  BUSBITCHARS "[]" ;
+MACRO scan_wrapper_341404507891040852
+  CLASS BLOCK ;
+  FOREIGN scan_wrapper_341404507891040852 ;
+  ORIGIN 0.000 0.000 ;
+  SIZE 100.000 BY 100.000 ;
+  PIN clk_in
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER met2 ;
+        RECT 96.690 96.000 96.970 100.000 ;
+    END
+  END clk_in
+  PIN clk_out
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    PORT
+      LAYER met2 ;
+        RECT 48.390 0.000 48.670 4.000 ;
+    END
+  END clk_out
+  PIN data_in
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER met3 ;
+        RECT 96.000 47.640 100.000 48.240 ;
+    END
+  END data_in
+  PIN data_out
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    PORT
+      LAYER met3 ;
+        RECT 0.000 51.040 4.000 51.640 ;
+    END
+  END data_out
+  PIN latch_enable_in
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER met2 ;
+        RECT 0.090 0.000 0.370 4.000 ;
+    END
+  END latch_enable_in
+  PIN latch_enable_out
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    PORT
+      LAYER met2 ;
+        RECT 0.090 96.000 0.370 100.000 ;
+    END
+  END latch_enable_out
+  PIN scan_select_in
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER met2 ;
+        RECT 48.390 96.000 48.670 100.000 ;
+    END
+  END scan_select_in
+  PIN scan_select_out
+    DIRECTION OUTPUT TRISTATE ;
+    USE SIGNAL ;
+    PORT
+      LAYER met2 ;
+        RECT 96.690 0.000 96.970 4.000 ;
+    END
+  END scan_select_out
+  PIN vccd1
+    DIRECTION INOUT ;
+    USE POWER ;
+    PORT
+      LAYER met4 ;
+        RECT 15.840 5.200 17.440 92.720 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 38.080 5.200 39.680 92.720 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 60.320 5.200 61.920 92.720 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 82.560 5.200 84.160 92.720 ;
+    END
+  END vccd1
+  PIN vssd1
+    DIRECTION INOUT ;
+    USE GROUND ;
+    PORT
+      LAYER met4 ;
+        RECT 26.960 5.200 28.560 92.720 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 49.200 5.200 50.800 92.720 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 71.440 5.200 73.040 92.720 ;
+    END
+  END vssd1
+  OBS
+      LAYER li1 ;
+        RECT 5.520 5.355 94.300 92.565 ;
+      LAYER met1 ;
+        RECT 0.070 2.080 99.750 94.480 ;
+      LAYER met2 ;
+        RECT 0.650 95.720 48.110 96.290 ;
+        RECT 48.950 95.720 96.410 96.290 ;
+        RECT 97.250 95.720 99.720 96.290 ;
+        RECT 0.090 4.280 99.720 95.720 ;
+        RECT 0.650 1.895 48.110 4.280 ;
+        RECT 48.950 1.895 96.410 4.280 ;
+        RECT 97.250 1.895 99.720 4.280 ;
+      LAYER met3 ;
+        RECT 0.065 52.040 99.295 93.665 ;
+        RECT 4.400 50.640 99.295 52.040 ;
+        RECT 0.065 48.640 99.295 50.640 ;
+        RECT 0.065 47.240 95.600 48.640 ;
+        RECT 0.065 2.215 99.295 47.240 ;
+      LAYER met4 ;
+        RECT 3.055 93.120 90.785 93.665 ;
+        RECT 3.055 4.800 15.440 93.120 ;
+        RECT 17.840 4.800 26.560 93.120 ;
+        RECT 28.960 4.800 37.680 93.120 ;
+        RECT 40.080 4.800 48.800 93.120 ;
+        RECT 51.200 4.800 59.920 93.120 ;
+        RECT 62.320 4.800 71.040 93.120 ;
+        RECT 73.440 4.800 82.160 93.120 ;
+        RECT 84.560 4.800 90.785 93.120 ;
+        RECT 3.055 2.895 90.785 4.800 ;
+  END
+END scan_wrapper_341404507891040852
+END LIBRARY
+

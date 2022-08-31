@@ -58,7 +58,7 @@ async def internal_controller(dut):
     # sync to falling edge of slow clk
     # this is because the design won't see the clock until it's sampled by the scan chain.
     await FallingEdge(dut.slow_clk)
-    for i in range(10):
+    for i in range(2):
         print("clock {:2} 7seg {}".format(i, decode_seg(dut.seven_seg.value)))
         #assert decode_seg(dut.seven_seg.value) == i
         #await single_cycle(dut)

@@ -153,7 +153,7 @@ class Projects():
             logging.debug("found {} artifacts".format(len(artifacts)))
 
         download_url = Projects.get_most_recent_action_url(commits, artifacts)
-        logging.info(download_url)
+        logging.debug(download_url)
 
         # need actions access on the token to get the artifact
         # won't work on a pull request because they won't have the token
@@ -165,7 +165,7 @@ class Projects():
         with open(os.path.join(tmp_dir, 'src/ID')) as fh:
             wokwi_id = fh.readline().strip()
 
-        logging.info("wokwi id {}".format(wokwi_id))
+        logging.info("wokwi id {} github url {}".format(wokwi_id, url))
 
         # copy all important files to the correct places. Everything is dependent on the id
         files = [
@@ -176,7 +176,7 @@ class Projects():
             ("/tmp/tt/src/user_module_{}.v".format(wokwi_id), "verilog/rtl/user_module_{}.v".format(wokwi_id)),
             ]
 
-        logging.info("copying files into position")
+        logging.debug("copying files into position")
         for file in files:
             logging.debug("copy {} to {}".format(file[0], file[1]))
             shutil.copyfile(file[0], file[1])
@@ -299,7 +299,6 @@ class CaravelConfig():
             .scan_data_in           (data[NUM_MACROS]),
             .scan_select            (scan[0]),
             .scan_latch_en          (latch[0]),
-            .scan_clk_in            (clk[NUM_MACROS]),
 
             .la_scan_clk            (la_data_in[0]),
             .la_scan_data_in        (la_data_in[1]),

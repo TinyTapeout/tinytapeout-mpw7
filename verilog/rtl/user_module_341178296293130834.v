@@ -38,7 +38,6 @@ module user_module_341178296293130834(
   reg IEN;
   reg OEN;
   reg SKZ;
-  reg PHASE;
 
   `define I_NOP0  4'b0000
   `define I_LD    4'b0001
@@ -65,24 +64,24 @@ module user_module_341178296293130834(
 
   always@(posedge RST)
   begin
-    IEN <= 0;
-    OEN <= 0;
-    SKZ <= 0;
-    FL0 <= 0;
-    JMP <= 0;
-    RTN <= 0;
-    FLF <= 0;
-    RR <= 0;
-    C <= 0;
-    WRT <= 0;
-    PHASE <= 0;
+
   end
 
   always@(posedge CLK)
   begin
-    if(!PHASE)
+    if(RST)
     begin
-      PHASE <= 1;
+      IEN <= 0;
+      OEN <= 0;
+      SKZ <= 0;
+      FL0 <= 0;
+      JMP <= 0;
+      RTN <= 0;
+      FLF <= 0;
+      RR <= 0;
+      C <= 0;
+      WRT <= 0;
+    end else begin
       FL0 <= 0;
       JMP <= 0;
       RTN <= 0;
@@ -92,11 +91,6 @@ module user_module_341178296293130834(
       case (IR)
         `I_NOP0:
           FL0 <= 1;
-        `I_ONE:
-          begin
-            RR <= 1;
-            C <= 0;
-          end
         `I_STO:
           if(OEN)
             DATAOUT <= RR;
@@ -106,48 +100,55 @@ module user_module_341178296293130834(
         `I_JMP:
           JMP <= 1;
         `I_RTN:
-            RTN <= 1;
+          RTN <= 1;
         `I_NOPF:
           if(!SKZ) FLF <= 1;
       endcase
-    end else begin
-      PHASE <= 0;
-      case (IR)
-        `I_LD:
-            RR <= DATAIFEN;
-        `I_ADD:
-          begin
-            RR <= DATAIFEN ^ RR ^ C; 
-            C <= DATAIFEN & RR | C & RR | C & DATAIFEN;
-          end
-        `I_SUB:
-          begin
-            RR <= !DATAIFEN ^ RR ^ C; 
-            C <= DATAIFEN & RR | C & RR | C & DATAIFEN;
-          end
-        `I_NAND:
-            RR <= !(RR & DATAIFEN);
-        `I_OR:
-            RR <= RR | DATAIFEN;
-        `I_XOR:
-            RR <= RR ^ DATAIFEN;
-        `I_STO:
-          if(OEN)
-            WRT <= 1;
-        `I_STOC:
-          if(OEN)
-            WRT <= 1;
-        `I_IEN:
-          IEN <= DATAIN;
-        `I_OEN:
-          OEN <= DATAIN;
-        `I_RTN:
-            SKZ <= 1;
-        `I_SKZ:
-          if(!RR) SKZ <= 1;          
-        `I_NOPF:
-          if(SKZ) SKZ <= 0;
-      endcase 
     end
+  end
+
+  always@(negedge CLK)
+  begin
+    case (IR)
+      `I_LD:
+          RR <= DATAIFEN;
+      `I_ADD:
+        begin
+          RR <= DATAIFEN ^ RR ^ C; 
+          C <= DATAIFEN & RR | C & RR | C & DATAIFEN;
+        end
+      `I_SUB:
+        begin
+          RR <= !DATAIFEN ^ RR ^ C; 
+          C <= !DATAIFEN & RR | C & RR | C & !DATAIFEN;
+        end
+      `I_ONE:
+        begin
+          RR <= 1;
+          C <= 0;
+        end                
+      `I_NAND:
+          RR <= !(RR & DATAIFEN);
+      `I_OR:
+          RR <= RR | DATAIFEN;
+      `I_XOR:
+          RR <= RR ^ DATAIFEN;
+      `I_STO:
+        if(OEN)
+          WRT <= 1;
+      `I_STOC:
+        if(OEN)
+          WRT <= 1;
+      `I_IEN:
+        IEN <= DATAIN;
+      `I_OEN:
+        OEN <= DATAIN;
+      `I_RTN:
+          SKZ <= 1;
+      `I_SKZ:
+        if(!RR) SKZ <= 1;          
+      `I_NOPF:
+        if(SKZ) SKZ <= 0;
+    endcase 
   end
 endmodule
