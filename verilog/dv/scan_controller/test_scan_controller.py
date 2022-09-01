@@ -1,6 +1,6 @@
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles
+from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles, with_timeout
 
 # utility functions. using 2nd bit as reset and 1st bit as clock for synchronous design examples
 async def reset(dut):
@@ -37,41 +37,38 @@ async def internal_controller(dut):
     clock = Clock(dut.clk, 100, units="ns") # 10 MHz
     cocotb.fork(clock.start())
 
-    print("reset")
     dut.reset.value = 1
     dut.set_clk_div.value = 0
     dut.driver_sel.value = 0b10   # internal controller
-    
-    print("set 7 seg design active")
     dut.active_select.value = 1 # 7 seg seconds
     await ClockCycles(dut.clk, 10)
     dut.reset.value = 0
-
-    print("setup clock divider")
-    #
-    #dut.inputs.value = 0
-    #dut.set_clk_div.value = 1   # lock in the new clock divider value
-    ##await ClockCycles(dut.clk, 1)
-    #dut.inputs.value = 0
-
-    print("reset 7 seg with 2nd input")
-    dut.inputs.value = 0b10
-    await FallingEdge(dut.ready) #slow_clk)
-    await FallingEdge(dut.ready) #slow_clk)
-#    await RisingEdge(dut.slow_clk)
-#    await FallingEdge(dut.slow_clk)
+    dut.inputs.value = 0
+    dut.set_clk_div.value = 1   # lock in the new clock divider value
+    await ClockCycles(dut.clk, 1)
     dut.inputs.value = 0
 
-    """
-    print("7 seg test")
-    # sync to falling edge of slow clk
-    # this is because the design won't see the clock until it's sampled by the scan chain.
+    # reset: set bit 1 high, wait for one cycle of slow_clk, then set bit 1 low
+    dut.inputs.value = 0b10
+    await RisingEdge(dut.slow_clk)
+    await RisingEdge(dut.slow_clk)
     await FallingEdge(dut.slow_clk)
+    dut.inputs.value = 0
+
+    # sync to display, GL and RTL have different times to start
+    print("sync to display")
+    count = 10
+    while count > 0:
+        await FallingEdge(dut.slow_clk)
+        if decode_seg(dut.seven_seg.value) == 0:
+            break
+        count -= 1
+
+    # check all segments
     for i in range(10):
         print("clock {:2} 7seg {}".format(i, decode_seg(dut.seven_seg.value)))
         assert decode_seg(dut.seven_seg.value) == i
-        await FallingEdge(dut.ready) #slow_clk)
-    """
+        await FallingEdge(dut.slow_clk)
 
     print("straight test")
     dut.set_clk_div.value = 0   # no clock div
@@ -81,8 +78,8 @@ async def internal_controller(dut):
         dut.inputs.value = i
         await FallingEdge(dut.ready)
         print(i, int(dut.outputs))
-    #    if i > 0:
-    #        assert i == int(dut.outputs) + 1
+        if i > 0:
+            assert i == int(dut.outputs) + 1
 
     print("invert test")
     dut.active_select.value = 2 # invert
@@ -93,8 +90,8 @@ async def internal_controller(dut):
         dut.inputs.value = i
         await FallingEdge(dut.ready)
         print(i, int(dut.outputs))
-    #    if i > 0:
-    #        assert 256 - i == int(dut.outputs)
+        if i > 0:
+            assert 256 - i == int(dut.outputs)
 
     for design in range(10): # next 10 designs are all straight
         print("straight test at pos {}".format(design))
