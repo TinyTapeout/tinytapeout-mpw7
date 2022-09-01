@@ -243,9 +243,10 @@ class CaravelConfig():
                     if row == 0 and col <= 1:
                         continue
 
-                    macro_instance = self.projects.get_macro_instance(num_macros_placed)
-                    instance = "{} {:<4} {:<4} N\n".format(macro_instance, start_x + col * step_x, start_y + row * step_y)
-                    fh.write(instance)
+                    if num_macros_placed < self.num_projects:
+                        macro_instance = self.projects.get_macro_instance(num_macros_placed)
+                        instance = "{} {:<4} {:<4} N\n".format(macro_instance, start_x + col * step_x, start_y + row * step_y)
+                        fh.write(instance)
 
                     num_macros_placed += 1
 
