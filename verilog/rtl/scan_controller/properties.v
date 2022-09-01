@@ -7,16 +7,16 @@ always @(*) begin
         assert(scan_select   == inputs[2]);
         assert(scan_latch_en == inputs[3]);
     end else
-    if(driver_sel == 2'b10) begin // external driver
+    if(driver_sel == 2'b01) begin // la
         assert(la_scan_data_out == scan_data_in);
-        assert(scan_clk_out  == la_scan_clk);
+        assert(scan_clk_out  == la_scan_clk_in);
         assert(scan_data_out == la_scan_data_in);
         assert(scan_select   == la_scan_select);
         assert(scan_latch_en == la_scan_latch_en);
     end else
-    if(driver_sel == 2'b01) begin // internal driver
+    if(driver_sel == 2'b10) begin // internal driver
         assert(int_scan_data_out == scan_data_out);
-        assert(scan_clk__out == int_scan_clk_out);
+        assert(scan_clk_out  == int_scan_clk_out);
         assert(scan_data_in  == int_scan_data_in);
         assert(scan_clk_in   == int_scan_clk_in);
         assert(scan_select   == int_scan_select);
