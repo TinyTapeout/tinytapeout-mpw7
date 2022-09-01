@@ -43,6 +43,10 @@ module test_scan_controller_tb(
     `endif
 
     user_project_wrapper user_project_wrapper(
+    `ifdef GL_TEST
+        .vccd1( 1'b1),
+        .vssd1( 1'b0),
+    `endif
         .wb_clk_i   (clk),
         .wb_rst_i   (reset),
         .io_in      (io_in),
