@@ -1,3 +1,5 @@
-# Caravel user project includes	     
--v $(USER_PROJECT_VERILOG)/gl/user_project_wrapper.v	     
--v $(USER_PROJECT_VERILOG)/gl/user_proj_example.v     
+-v $(USER_PROJECT_VERILOG)/gl/user_project_wrapper.v
+-v $(USER_PROJECT_VERILOG)/gl/scan_controller.v
+-v $(USER_PROJECT_VERILOG)/gl/scan_wrapper_339501025136214612.v
+-v $(USER_PROJECT_VERILOG)/gl/scan_wrapper_340805072482992722.v
+-v $(USER_PROJECT_VERILOG)/gl/scan_wrapper_341535056611770964.v
