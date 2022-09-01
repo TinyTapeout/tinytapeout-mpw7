@@ -25,7 +25,7 @@ set ::env(FP_CORE_UTIL) 45
 set ::env(DIE_AREA) "0 0 230 100"
 set ::env(FP_SIZING) absolute
 
-set ::env(SYNTH_PARAMETERS) "NUM_DESIGNS=498"
+set ::env(SYNTH_PARAMETERS) "NUM_DESIGNS=20"
 
 # clock period is ns - 100MHz
 set ::env(CLOCK_PERIOD) "10"
