@@ -62,7 +62,7 @@ Assuming:
 * 2 clock cycles to push one bit through the scan chain (scan clock is half input clock rate)
 * 500 designs
 
-So the max refresh rate is 100MHz / (16 * 2 * 500) = 7500Hz.
+So the max refresh rate is 100MHz / (16 * 2 * 500) = 6250Hz.
 
 ## Clock divider
 
@@ -70,7 +70,7 @@ The set_clk_div input will capture what is set on the input pins and use this as
 
 The slow clock is only enabled if the set_clk_div is set, and the resulting clock is output on the slow_clk pin.
 
-As the refresh rate is 7500Hz (see above) and the input clock is 100MHz, we add the input to 13, to create an adjustable divider between 14 and 22 bits. This results in an adjustable slow clock between ~6000Hz & ~20Hz.
+As the refresh rate is 6250Hz (see above) and the input clock is 100MHz, we add the input to 13, to create an adjustable divider between 14 and 22 bits. This results in an adjustable slow clock between ~4800Hz & ~16Hz.
 
 ## Pinout
 
