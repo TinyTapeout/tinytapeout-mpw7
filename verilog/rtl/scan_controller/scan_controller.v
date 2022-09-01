@@ -130,7 +130,7 @@ module scan_controller #(
 
     // Generate our own reset, with de-assertion
     // synchronized to clock
-    always @(posedge clk or posedge reset)
+    always @(negedge clk or posedge reset)
         if (reset)
             rst_shift <= 3'b111;
         else
