@@ -12,8 +12,6 @@ DEFAULT_NUM_PROJECTS = 498
 
 class Projects():
 
-    projects_db = "projects.pkl"
-
     def __init__(self, update_cache=False, update_single=None, test=False):
         self.default_project = 0
         self.test = test
@@ -22,10 +20,10 @@ class Projects():
         else:
             # load projects from cache
             try:
-                self.wokwi_ids = pickle.load(open(Projects.projects_db, 'rb'))
+                self.wokwi_ids = pickle.load(open(self.get_projects_db(), 'rb'))
                 logging.info("loaded {} projects".format(len(self.wokwi_ids)))
             except FileNotFoundError:
-                logging.error("project cache {} not found, use --update-cache to build it".format(Projects.projects_db))
+                logging.error("project cache {} not found, use --update-cache to build it".format(self.get_projects_db()))
 
         # all ids must be unique
         assert len(set(self.wokwi_ids)) == len(self.wokwi_ids)
@@ -43,8 +41,14 @@ class Projects():
             self.wokwi_ids.append(wokwi_id)
 
         # cache it
-        with open(Projects.projects_db, 'wb') as fh:
+        with open(self.get_projects_db(), 'wb') as fh:
             pickle.dump(self.wokwi_ids, fh)
+
+    def get_projects_db(self):
+        if self.test:
+            return "projects_test.pkl"
+        else:
+            return "projects.pkl"
 
     # filling the space with default projects is handled by returning the default on exception
     def get_macro_instance(self, id):
