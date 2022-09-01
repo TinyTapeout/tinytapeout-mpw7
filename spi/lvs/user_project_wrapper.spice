@@ -444,13 +444,14 @@
 .subckt scan_controller active_select[0] active_select[1] active_select[2] active_select[3]
 + active_select[4] active_select[5] active_select[6] active_select[7] active_select[8]
 + clk driver_sel[0] driver_sel[1] inputs[0] inputs[1] inputs[2] inputs[3] inputs[4]
-+ inputs[5] inputs[6] inputs[7] la_scan_clk la_scan_data_in la_scan_data_out la_scan_latch_en
++ inputs[5] inputs[6] inputs[7] la_scan_clk_in la_scan_data_in la_scan_data_out la_scan_latch_en
 + la_scan_select oeb[0] oeb[10] oeb[11] oeb[12] oeb[13] oeb[14] oeb[15] oeb[16] oeb[17]
 + oeb[18] oeb[19] oeb[1] oeb[20] oeb[21] oeb[22] oeb[23] oeb[24] oeb[25] oeb[26] oeb[27]
 + oeb[28] oeb[29] oeb[2] oeb[30] oeb[31] oeb[32] oeb[33] oeb[34] oeb[35] oeb[36] oeb[37]
 + oeb[3] oeb[4] oeb[5] oeb[6] oeb[7] oeb[8] oeb[9] outputs[0] outputs[1] outputs[2]
-+ outputs[3] outputs[4] outputs[5] outputs[6] outputs[7] ready reset scan_clk scan_data_in
-+ scan_data_out scan_latch_en scan_select set_clk_div slow_clk vccd1 vssd1
++ outputs[3] outputs[4] outputs[5] outputs[6] outputs[7] ready reset scan_clk_in scan_clk_out
++ scan_data_in scan_data_out scan_latch_en scan_select set_clk_div slow_clk vccd1
++ vssd1
 .ends
 
 * Black-box entry subcircuit for scan_wrapper_341262321634509394 abstract view
@@ -809,7 +810,7 @@ Xscan_wrapper_339501025136214612_199 scan_wrapper_339501025136214612_199/clk_in 
 + scan_wrapper_339501025136214612_199/latch_enable_in scan_wrapper_339501025136214612_200/latch_enable_in
 + scan_wrapper_339501025136214612_199/scan_select_in scan_wrapper_339501025136214612_200/scan_select_in
 + vccd1 vssd1 scan_wrapper_339501025136214612
-Xscan_wrapper_339501025136214612_0 scan_controller/scan_clk scan_wrapper_334445762078310996_1/clk_in
+Xscan_wrapper_339501025136214612_0 scan_controller/scan_clk_out scan_wrapper_334445762078310996_1/clk_in
 + scan_controller/scan_data_out scan_wrapper_334445762078310996_1/data_in scan_controller/scan_latch_en
 + scan_wrapper_334445762078310996_1/latch_enable_in scan_controller/scan_select scan_wrapper_334445762078310996_1/scan_select_in
 + vccd1 vssd1 scan_wrapper_339501025136214612
@@ -1428,7 +1429,7 @@ Xscan_wrapper_341440114308678227_80 scan_wrapper_341440114308678227_80/clk_in sc
 + scan_wrapper_341440114308678227_80/latch_enable_in scan_wrapper_341496918381167187_81/latch_enable_in
 + scan_wrapper_341440114308678227_80/scan_select_in scan_wrapper_341496918381167187_81/scan_select_in
 + vccd1 vssd1 scan_wrapper_341440114308678227
-Xscan_wrapper_339501025136214612_497 scan_wrapper_339501025136214612_497/clk_in scan_wrapper_339501025136214612_497/clk_out
+Xscan_wrapper_339501025136214612_497 scan_wrapper_339501025136214612_497/clk_in scan_controller/scan_clk_in
 + scan_wrapper_339501025136214612_497/data_in scan_controller/scan_data_in scan_wrapper_339501025136214612_497/latch_enable_in
 + scan_wrapper_339501025136214612_497/latch_enable_out scan_wrapper_339501025136214612_497/scan_select_in
 + scan_wrapper_339501025136214612_497/scan_select_out vccd1 vssd1 scan_wrapper_339501025136214612
@@ -2741,9 +2742,9 @@ Xscan_controller io_in[12] io_in[13] io_in[14] io_in[15] io_in[16] io_in[17] io_
 + io_oeb[29] io_oeb[2] io_oeb[30] io_oeb[31] io_oeb[32] io_oeb[33] io_oeb[34] io_oeb[35]
 + io_oeb[36] io_oeb[37] io_oeb[3] io_oeb[4] io_oeb[5] io_oeb[6] io_oeb[7] io_oeb[8]
 + io_oeb[9] io_out[29] io_out[30] io_out[31] io_out[32] io_out[33] io_out[34] io_out[35]
-+ io_out[36] io_out[37] wb_rst_i scan_controller/scan_clk scan_controller/scan_data_in
-+ scan_controller/scan_data_out scan_controller/scan_latch_en scan_controller/scan_select
-+ io_in[11] io_out[10] vccd1 vssd1 scan_controller
++ io_out[36] io_out[37] wb_rst_i scan_controller/scan_clk_in scan_controller/scan_clk_out
++ scan_controller/scan_data_in scan_controller/scan_data_out scan_controller/scan_latch_en
++ scan_controller/scan_select io_in[11] io_out[10] vccd1 vssd1 scan_controller
 Xscan_wrapper_341262321634509394_46 scan_wrapper_341262321634509394_46/clk_in scan_wrapper_341174563322724948_47/clk_in
 + scan_wrapper_341262321634509394_46/data_in scan_wrapper_341174563322724948_47/data_in
 + scan_wrapper_341262321634509394_46/latch_enable_in scan_wrapper_341174563322724948_47/latch_enable_in
