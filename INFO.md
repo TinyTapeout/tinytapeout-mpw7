@@ -12,13 +12,15 @@
 
     make user_project_wrapper
 
-## Simulation
+## Simulations
 
-There is a testbench that you can use to check the scan chain and controller is working.
+### Scan controller
+
+There are some testbenches that you can use to check the scan chain and controller is working.
 The default of 498 projects takes a very long time to simulate, so I advise overriding the configuration first:
 
     # rebuild config with only 20 projects
-    ./configure.py --update-caravel --limit 20
+    ./configure.py --test --update-caravel --limit 20
 
 Then run the test:
 
@@ -26,22 +28,41 @@ Then run the test:
     # you will also need to set your PDK_ROOT environment variable
     make test_scan_controller
 
-You should get a VCD dump with a reset applied to input 1 for 2 clocks, and then 10 clocks applied to input 0.
+The Gate Level version (requires scan_controller and user_project_wrapper to be re-hardened to get the correct gate level netlists. These files are avaialable in the gl_test branch).
 
-    gtkwave test_scan_controller.gtkw
+    make test_scan_controller_gl
 
-You can set the design that is active by changing the test_scan_controller.py file, update the assignment to active_select.
+### Top level test: internal control
+
+Uses the scan controller.
+
+    cd verilog/dv/scan_controller_int
+    make coco_test
+
+### Top level test: external control
+
+Uses external signals to control the scan chain.
+
+    cd verilog/dv/scan_controller_ext
+    make coco_test
+
+### Top level test: logic analyser control
+
+Uses the RISCV co-processor to drive the scanchain with firmware.
+
+    cd verilog/dv/scan_controller_la
+    make coco_test
 
 ## Clocking
 
 Assuming:
 
-* 10MHz input clock, 
+* 100MHz input clock
 * 8 ins & 8 outs
 * 2 clock cycles to push one bit through the scan chain (scan clock is half input clock rate)
 * 500 designs
 
-So the max refresh rate is 10MHz / (16 * 2 * 500) = 750Hz.
+So the max refresh rate is 100MHz / (16 * 2 * 500) = 7500Hz.
 
 ## Clock divider
 
@@ -49,7 +70,37 @@ The set_clk_div input will capture what is set on the input pins and use this as
 
 The slow clock is only enabled if the set_clk_div is set, and the resulting clock is output on the slow_clk pin.
 
-As the refresh rate is 750Hz (see above) and the input clock is 10MHz, we add the input to 13, to create an adjustable divider between 14 and 22 bits. This results in an adjustable slow clock between ~600Hz & ~2Hz.
+As the refresh rate is 7500Hz (see above) and the input clock is 100MHz, we add the input to 13, to create an adjustable divider between 14 and 22 bits. This results in an adjustable slow clock between ~6000Hz & ~20Hz.
+
+## Pinout
+
+    PIN     NAME                DESCRIPTION
+    20:12   active_select       9 bit input to set which design is active
+    28:21   inputs              8 inputs
+    36:29   outputs             8 outputs
+    37      ready               goes high for one cycle everytime the scanchain is refreshed
+    10      slow_clk            slow clock from internal clock divider
+    11      set_clk_div         enable clock divider
+    9:8     driver_sel          which scan chain driver: 00 = external, 01 = logic analyzer, 1x = internal
+
+    21      ext_scan_clk_out    for external driver, clk input
+    22      ext_scan_data_out   data input
+    23      ext_scan_select     scan select
+    24      ext_scan_latch_en   latch
+    29      ext_scan_clk_in     clk output from end of chain
+    30      ext_scan_data_in    data output from end of chain
+
+## Scan chain structure
+
+![block diagram](pics/block_diagram.png)
+
+![read](pics/read.png)
+
+[read wavedrom diagram](https://wavedrom.com/editor.html?%7Bsignal%3A%20%5B%0A%20%20%7Bname%3A%20%27clk%27%2C%20wave%3A%20%27p.....%27%7D%2C%0A%20%20%7Bname%3A%20%27scan%20en%27%2C%20wave%3A%20%27010...%27%7D%2C%0A%20%20%7Bname%3A%20%27latch%27%2C%20wave%3A%20%270.....%27%7D%2C%0A%20%20%7Bname%3A%20%27data%20o%27%2C%20wave%3A%20%27x.....%27%7D%2C%0A%20%20%7Bname%3A%20%27data%20i%27%2C%20wave%3A%20%270.1010%27%7D%2C%0A%5D%2C%0Ahead%3A%7B%0A%20%20%20text%3A%27Capture%20outputs%201010%27%2C%0A%20%20%20tick%3A0%2C%0A%20%20%20every%3A1%0A%20%7D%7D%0A)
+
+![load](pics/load.png)
+
+[load wavedrom diagram](https://wavedrom.com/editor.html?%7Bsignal%3A%20%5B%0A%20%20%7Bname%3A%20%27clk%27%2C%20wave%3A%20%27p...l.%27%7D%2C%0A%20%20%7Bname%3A%20%27scan%20en%27%2C%20wave%3A%20%270.....%27%7D%2C%0A%20%20%7Bname%3A%20%27latch%27%2C%20wave%3A%20%270...10%27%7D%2C%0A%20%20%7Bname%3A%20%27data%20o%27%2C%20wave%3A%20%2701010.%27%7D%2C%0A%20%20%7Bname%3A%20%27data%20i%27%2C%20wave%3A%20%27x.....%27%7D%2C%0A%0A%5D%2C%0Ahead%3A%7B%0A%20%20%20text%3A%27Load%20inputs%20with%200101%27%2C%0A%20%20%20tick%3A0%2C%0A%20%20%20every%3A1%0A%20%7D%7D%0A)
 
 ## Dev notes
 
