@@ -31,6 +31,11 @@ set ::env(SYNTH_PARAMETERS) "NUM_DESIGNS=498"
 set ::env(CLOCK_PERIOD) "10"
 set ::env(CLOCK_PORT) "clk"
 
+set ::env(BASE_SDC_FILE) $::env(DESIGN_DIR)/base.sdc
+
+set ::env(SYNTH_CLOCK_UNCERTAINITY) 0.20
+set ::env(SYNTH_CLOCK_TRANSITION)   0.15
+
 # macro needs to work inside Caravel, so can't be core and can't use metal 5
 set ::env(DESIGN_IS_CORE) 0
 set ::env(RT_MAX_LAYER) {met4}

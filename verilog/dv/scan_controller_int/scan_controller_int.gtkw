@@ -1,23 +1,23 @@
 [*]
 [*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
-[*] Sun Aug 28 04:38:22 2022
+[*] Wed Aug 31 20:59:40 2022
 [*]
 [dumpfile] "/home/matt/work/asic-workshop/shuttle7/tinytapeout-mpw7/verilog/dv/scan_controller_int/scan_controller_tb.vcd"
-[dumpfile_mtime] "Sun Aug 28 04:37:55 2022"
-[dumpfile_size] 1813865
+[dumpfile_mtime] "Wed Aug 31 20:58:10 2022"
+[dumpfile_size] 830785
 [savefile] "/home/matt/work/asic-workshop/shuttle7/tinytapeout-mpw7/verilog/dv/scan_controller_int/scan_controller_int.gtkw"
 [timestart] 0
 [size] 1848 1016
 [pos] -1 -1
-*-29.000000 696514800 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-28.000000 744000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] scan_controller_tb.
 [treeopen] scan_controller_tb.uut.
 [treeopen] scan_controller_tb.uut.mprj.
 [treeopen] scan_controller_tb.uut.mprj.scan_controller.
-[sst_width] 423
-[signals_width] 261
+[sst_width] 708
+[signals_width] 329
 [sst_expanded] 1
-[sst_vpaned_height] 254
+[sst_vpaned_height] 646
 @28
 scan_controller_tb.clk
 @22
@@ -32,10 +32,14 @@ scan_controller_tb.outputs[7:0]
 @28
 scan_controller_tb.set_clk_div
 scan_controller_tb.slow_clk
+scan_controller_tb.uut.mprj.scan_controller.slow_clk
+scan_controller_tb.uut.mprj.scan_controller.slow_clk_ena
+scan_controller_tb.uut.mprj.scan_controller.reset
+scan_controller_tb.uut.mprj.scan_controller.clk_divider_I.reset
+scan_controller_tb.uut.mprj.scan_controller.clk_divider_I.clk
 @800200
 -scan chain
 @28
-scan_controller_tb.uut.mprj.scan_controller.scan_clk
 scan_controller_tb.uut.mprj.scan_controller.scan_data_in
 scan_controller_tb.uut.mprj.scan_controller.scan_data_out
 scan_controller_tb.uut.mprj.scan_controller.scan_latch_en
@@ -46,13 +50,16 @@ scan_controller_tb.uut.mprj.scan_controller.scan_select
 scan_controller_tb.uut.mprj.scan_controller.active_select[8:0]
 scan_controller_tb.uut.mprj.scan_controller.inputs[7:0]
 scan_controller_tb.uut.mprj.scan_controller.outputs[7:0]
-@28
-scan_controller_tb.uut.mprj.scan_controller.clk_divider.last_set
-@22
-scan_controller_tb.uut.mprj.scan_controller.clk_divider.compare[7:0]
-@8024
-scan_controller_tb.uut.mprj.scan_controller.clk_divider.counter[21:0]
 @20000
 -
+@28
+scan_controller_tb.uut.mprj.scan_wrapper_339501025136214612_0.data_in
+scan_controller_tb.uut.mprj.scan_controller.clk_divider_I.slow_clk
+>-4100000
+scan_controller_tb.uut.mprj.scan_controller.clk_divider_I.match
+@22
+>0
+scan_controller_tb.uut.mprj.scan_controller.clk_divider_I.compare[7:0]
+scan_controller_tb.uut.mprj.scan_controller.clk_divider_I.counter[7:0]
 [pattern_trace] 1
 [pattern_trace] 0

@@ -6,7 +6,6 @@ import argparse, requests, base64, zipfile, io, logging, pickle, shutil, sys, os
 from signal import signal, SIGPIPE, SIG_DFL
 signal(SIGPIPE, SIG_DFL)
 
-filler_project_url = 'https://github.com/mattvenn/wokwi_filler'
 tmp_dir = '/tmp/tt'
 DEFAULT_NUM_PROJECTS = 498
 
@@ -15,8 +14,9 @@ class Projects():
 
     projects_db = "projects.pkl"
 
-    def __init__(self, update_cache=False, update_single=None):
+    def __init__(self, update_cache=False, update_single=None, test=False):
         self.default_project = 0
+        self.test = test
         if update_cache:
             self.update_cache(update_single)
         else:
@@ -92,12 +92,22 @@ class Projects():
     def get_wokwi_ids(self):
         return self.wokwi_ids
 
+    def get_giturl(self, id):
+        try:
+            return self.get_project_urls()[id]
+        except IndexError:
+            return self.get_project_urls()[self.default_project]
+
     @classmethod
     def build_wokwi_url(Project, wokwi_id):
         return "https://wokwi.com/projects/{}".format(wokwi_id)
 
     def get_project_urls(self):
-        from project_urls import project_urls
+        if self.test:
+            from project_urls_test import project_urls, filler_project_url
+        else:
+            from project_urls import project_urls, filler_project_url
+
         return [filler_project_url] + project_urls
 
     # the latest artifact isn't necessarily the one related to the latest commit, as github
@@ -149,7 +159,7 @@ class Projects():
             exit(1)
         else:
             # only get artifacts called GDS
-            artifacts = [ a for a in data['artifacts'] if a['name'] == 'GDS']
+            artifacts = [a for a in data['artifacts'] if a['name'] == 'GDS']
             logging.debug("found {} artifacts".format(len(artifacts)))
 
         download_url = Projects.get_most_recent_action_url(commits, artifacts)
@@ -294,13 +304,14 @@ class CaravelConfig():
             .slow_clk               (io_out[10]),
             .set_clk_div            (io_in[11]),
 
-            .scan_clk               (clk[0]),
+            .scan_clk_out           (clk[0]),
+            .scan_clk_in            (clk[NUM_MACROS]),
             .scan_data_out          (data[0]),
             .scan_data_in           (data[NUM_MACROS]),
             .scan_select            (scan[0]),
             .scan_latch_en          (latch[0]),
 
-            .la_scan_clk            (la_data_in[0]),
+            .la_scan_clk_in         (la_data_in[0]),
             .la_scan_data_in        (la_data_in[1]),
             .la_scan_data_out       (la_data_out[0]),
             .la_scan_select         (la_data_in[2]),
@@ -313,6 +324,7 @@ class CaravelConfig():
 
         """
         lesson_template = """
+        // {giturl}
         {name} #(.NUM_IOS(8)) {instance} (
             .clk_in          (clk  [{id}]),
             .data_in         (data [{id}]),
@@ -337,7 +349,7 @@ class CaravelConfig():
             for i in range(self.num_projects):
                 logging.debug("instance {} {}".format(i, self.projects.get_macro_name(i)))
                 # instantiate template
-                instance = lesson_template.format(instance=self.projects.get_macro_instance(i), name=self.projects.get_macro_name(i), id=i, next_id=i + 1)
+                instance = lesson_template.format(giturl=self.projects.get_giturl(i), instance=self.projects.get_macro_instance(i), name=self.projects.get_macro_name(i), id=i, next_id=i + 1)
                 fh.write(instance)
             fh.write(post)
 
@@ -382,6 +394,7 @@ if __name__ == '__main__':
     parser.add_argument('--update-single', help='only fetch a single repo for debug')
     parser.add_argument('--update-caravel', help='configure caravel for build', action='store_const', const=True)
     parser.add_argument('--limit-num-projects', help='only configure for the first n projects', type=int, default=DEFAULT_NUM_PROJECTS)
+    parser.add_argument('--test', help='use test projects', action='store_const', const=True)
     parser.add_argument('--debug', help="debug logging", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.INFO)
 
     args = parser.parse_args()
@@ -402,7 +415,7 @@ if __name__ == '__main__':
     ch.setFormatter(log_format)
     log.addHandler(ch)
 
-    projects = Projects(update_cache=args.update_projects, update_single=args.update_single)
+    projects = Projects(update_cache=args.update_projects, test=args.test, update_single=args.update_single)
     caravel = CaravelConfig(projects, num_projects=args.limit_num_projects)
 
     if args.update_caravel:

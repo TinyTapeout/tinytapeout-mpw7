@@ -7,7 +7,7 @@ async def test_start(dut):
     clock = Clock(dut.clk, 25, units="ns") # 40M
     cocotb.fork(clock.start())
    
-    dut.driver_sel.value = 0b10 # logic analyser
+    dut.driver_sel.value = 0b01 # logic analyser
     dut.RSTB.value = 0
     dut.power1.value = 0
     dut.power2.value = 0
