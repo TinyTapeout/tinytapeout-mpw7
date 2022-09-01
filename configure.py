@@ -87,6 +87,12 @@ class Projects():
         except IndexError:
             return ''
 
+    def get_gl_verilog_names(self, id):
+        try:
+            return ['scan_wrapper_{}.v'.format(self.wokwi_ids[id])]
+        except IndexError:
+            return []
+        
     def get_verilog_names(self, id):
         try:
             return ["scan_wrapper_{}.v".format(self.wokwi_ids[id]), "user_module_{}.v".format(self.wokwi_ids[id])]
@@ -379,6 +385,17 @@ class CaravelConfig():
             fh.write('-v $(USER_PROJECT_VERILOG)/rtl/cells.v\n')
             for verilog in verilog_files:
                 fh.write('-v $(USER_PROJECT_VERILOG)/rtl/{}\n'.format(verilog))
+
+        # build GL includes
+        verilog_files = []
+        for i in range(self.num_projects):
+            verilog_files += self.projects.get_gl_verilog_names(i)
+        verilog_files = CaravelConfig.unique(verilog_files)
+        with open('verilog/includes/includes.gl.caravel_user_project', 'w') as fh:
+            fh.write('-v $(USER_PROJECT_VERILOG)/gl/user_project_wrapper.v\n')
+            fh.write('-v $(USER_PROJECT_VERILOG)/gl/scan_controller.v\n')
+            for verilog in verilog_files:
+                fh.write('-v $(USER_PROJECT_VERILOG)/gl/{}\n'.format(verilog))
 
     def build_docs(self):
         logging.info("building doc index")
