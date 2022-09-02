@@ -240,9 +240,11 @@ class CaravelConfig():
             for row in range(rows):
                 if(row%2 == 0):
                     col_order = range(cols)
+                    orientation = 'N'
                 else:
                     #reverse odd rows to place instances in a zig zag pattern, shortening the scan chain wires
                     col_order = range(cols-1, -1, -1)
+                    orientation = 'S'
                 for col in col_order:
                     # skip the space where the scan controller goes on the first row
                     if row == 0 and col <= 1:
@@ -250,7 +252,9 @@ class CaravelConfig():
 
                     if num_macros_placed < self.num_projects:
                         macro_instance = self.projects.get_macro_instance(num_macros_placed)
-                        instance = "{} {:<4} {:<4} N\n".format(macro_instance, start_x + col * step_x, start_y + row * step_y)
+                        instance = "{} {:<4} {:<4} {}\n".format(
+                            macro_instance, start_x + col * step_x, start_y + row * step_y, orientation
+                        )
                         fh.write(instance)
 
                     num_macros_placed += 1
