@@ -2,7 +2,7 @@
 `default_nettype none
 
 module scan_controller #(
-    parameter integer NUM_DESIGNS = 8,
+    parameter integer NUM_DESIGNS = 498,
     parameter integer NUM_IOS     = 8,
 
     // auto-set
