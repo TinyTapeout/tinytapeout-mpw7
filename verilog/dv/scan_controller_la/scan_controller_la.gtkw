@@ -1,22 +1,22 @@
 [*]
-[*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
-[*] Sun Aug 28 03:36:21 2022
+[*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
+[*] Fri Sep  2 13:07:34 2022
 [*]
 [dumpfile] "/home/matt/work/asic-workshop/shuttle7/tinytapeout-mpw7/verilog/dv/scan_controller_la/scan_controller_tb.vcd"
-[dumpfile_mtime] "Sun Aug 28 03:33:58 2022"
-[dumpfile_size] 1544765
+[dumpfile_mtime] "Fri Sep  2 13:04:53 2022"
+[dumpfile_size] 5702199
 [savefile] "/home/matt/work/asic-workshop/shuttle7/tinytapeout-mpw7/verilog/dv/scan_controller_la/scan_controller_la.gtkw"
 [timestart] 0
-[size] 1795 917
+[size] 2149 1120
 [pos] -1 -1
-*-29.000000 1829000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-32.000000 3039550000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] scan_controller_tb.
 [treeopen] scan_controller_tb.uut.
 [treeopen] scan_controller_tb.uut.mprj.
 [sst_width] 423
-[signals_width] 261
+[signals_width] 463
 [sst_expanded] 1
-[sst_vpaned_height] 254
+[sst_vpaned_height] 323
 @28
 scan_controller_tb.clk
 scan_controller_tb.driver_sel[1:0]
@@ -27,8 +27,8 @@ scan_controller_tb.uut.mprj.scan_controller.driver_sel[1:0]
 @800200
 -la scan chain
 @28
-scan_controller_tb.uut.mprj.scan_controller.la_scan_clk
 scan_controller_tb.uut.mprj.scan_controller.la_scan_data_in
+scan_controller_tb.uut.mprj.scan_controller.la_scan_clk_in
 scan_controller_tb.uut.mprj.scan_controller.la_scan_data_out
 scan_controller_tb.uut.mprj.scan_controller.la_scan_latch_en
 scan_controller_tb.uut.mprj.scan_controller.la_scan_select
@@ -36,8 +36,9 @@ scan_controller_tb.uut.mprj.scan_controller.la_scan_select
 -la scan chain
 @800200
 -scan chain
-@28
-scan_controller_tb.uut.mprj.scan_controller.scan_clk
+@29
+scan_controller_tb.uut.mprj.scan_controller.scan_clk_in
+scan_controller_tb.uut.mprj.scan_controller.scan_clk_out
 scan_controller_tb.uut.mprj.scan_controller.scan_data_in
 scan_controller_tb.uut.mprj.scan_controller.scan_data_out
 scan_controller_tb.uut.mprj.scan_controller.scan_latch_en

@@ -32,6 +32,7 @@
 #define FW_READY    12
 #define FW_DONE     13
 #define DATA_RX     14
+#define TB_CLK      15
 
 void main()
 {
@@ -59,10 +60,13 @@ void main()
     reg_mprj_io_12 = GPIO_MODE_MGMT_STD_OUTPUT; // fw ready
     reg_mprj_io_13 = GPIO_MODE_MGMT_STD_OUTPUT; // fw done
     reg_mprj_io_14 = GPIO_MODE_MGMT_STD_OUTPUT; // data rx
+    reg_mprj_io_15 = GPIO_MODE_MGMT_STD_OUTPUT; // tb clk
 
     /* Apply configuration */
     reg_mprj_xfer = 1;
     while (reg_mprj_xfer == 1);
+
+    CLR(reg_mprj_datal, DATA_RX);
 
     reg_la0_iena = 0x0; // input enable on
     reg_la0_oenb = 0xFFFFFFFF; // enable all of bank0 logic analyser outputs (ignore the name, 1 is on, 0 off)
@@ -87,15 +91,22 @@ void main()
     // clock the data out of the modules into the chain
     SET(reg_la0_data, SCAN);
     SET(reg_la0_data, CLK);
-    CLR(reg_la0_data, CLK);
     CLR(reg_la0_data, SCAN);
+
     // wait for some data to arrive
-    for(i = 0; i < 8; i ++)
+    for(i = 0; i < 8*20; i ++)
     {
         SET(reg_la0_data, CLK);
         CLR(reg_la0_data, CLK);
-        if(GET(reg_la0_data_in, DATA_IN))
-            reg_mprj_datal |= 1 << DATA_RX;
+
+        if(GET(reg_la0_data_in, DATA_IN)) // returns 1 even if we see x in the trace
+            SET(reg_mprj_datal, DATA_RX);
+        else
+            CLR(reg_mprj_datal, DATA_RX);
+
+        // sync to tb
+        SET(reg_mprj_datal, TB_CLK);
+        CLR(reg_mprj_datal, TB_CLK);
     }
 
 	reg_mprj_datal |= 1 << FW_DONE;

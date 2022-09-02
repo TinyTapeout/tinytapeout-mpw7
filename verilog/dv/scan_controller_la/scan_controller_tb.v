@@ -39,6 +39,7 @@ module scan_controller_tb;
     wire fw_ready = mprj_io[12];
     wire fw_done = mprj_io[13];
     wire data_rx = mprj_io[14];
+    wire tb_clk = mprj_io[15];
 
     wire [1:0] driver_sel;
     assign mprj_io[9:8] = driver_sel;
