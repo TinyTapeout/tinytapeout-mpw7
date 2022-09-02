@@ -37,7 +37,8 @@ module scan_controller_tb;
     ///// convenience signals that match what the cocotb test modules are looking for
     // change to suit your project. Here's how we can make some nicer named signals for inputs & outputs
     wire fw_ready = mprj_io[12];
-    wire ext_data_out = mprj_io[29];
+    wire ext_clk_out = mprj_io[29];
+    wire ext_data_out = mprj_io[30];
 
     wire [1:0] driver_sel;
     wire ext_clk, ext_latch, ext_scan, ext_data_in;

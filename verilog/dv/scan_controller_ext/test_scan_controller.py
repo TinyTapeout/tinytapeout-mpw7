@@ -58,14 +58,13 @@ async def test_start(dut):
     dut.ext_scan.value = 0
 
     # drive the data out
-    for i in range(8):
+    for i in range(8*20):
         dut.ext_clk.value = 1
         await ClockCycles(dut.clk, 1)
         dut.ext_clk.value = 0
         await ClockCycles(dut.clk, 1)
-        print(dut.ext_data_out.value)
-        if i < 4:
+        if i in [152, 153, 154, 155]:
             assert(dut.ext_data_out.value == 1)
-        else:
+        elif i in [156, 157, 158, 159]:
             assert(dut.ext_data_out.value == 0)
 

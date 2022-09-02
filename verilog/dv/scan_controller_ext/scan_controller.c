@@ -51,9 +51,12 @@ void main()
     outputs                (io_out[36:29]),
     ext_scan_clk       = inputs[0];
     ext_scan_data_in   = inputs[1];
-    ext_scan_data_out  = outputs[0]
+    ext_scan_clk_in    = outputs[0]
+    ext_scan_data_in   = outputs[1]
     ext_scan_select    = inputs[2];   
     ext_scan_latch_en  = inputs[3];
+
+    assign outputs = driver_sel[1] ? aio_output_reg : {6'b0, ext_scan_data_in, ext_scan_clk_in};
     */
 
     reg_mprj_io_21 = GPIO_MODE_USER_STD_INPUT_NOPULL; // clk
@@ -61,7 +64,8 @@ void main()
     reg_mprj_io_23 = GPIO_MODE_USER_STD_INPUT_NOPULL; // scan
     reg_mprj_io_24 = GPIO_MODE_USER_STD_INPUT_NOPULL; // latch
 
-    reg_mprj_io_29 = GPIO_MODE_USER_STD_OUTPUT; // data out
+    reg_mprj_io_29 = GPIO_MODE_USER_STD_OUTPUT; // clk  out
+    reg_mprj_io_30 = GPIO_MODE_USER_STD_OUTPUT; // data out
 
     // outputs for testbench control
     reg_mprj_io_12 = GPIO_MODE_MGMT_STD_OUTPUT; // fw ready
