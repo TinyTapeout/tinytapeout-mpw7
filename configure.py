@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from urllib.parse import urlparse
-import argparse, requests, base64, zipfile, io, logging, pickle, shutil, sys, os
+import argparse, requests, base64, zipfile, io, logging, pickle, shutil, sys, os, collections
 
 # pipe handling
 from signal import signal, SIGPIPE, SIG_DFL
@@ -119,6 +119,13 @@ class Projects():
             from project_urls import project_urls, filler_project_url
 
         return [filler_project_url] + project_urls
+
+    def check_dupes(self):
+        project_urls = self.get_project_urls()
+        duplicates = [item for item, count in collections.Counter(project_urls).items() if count > 1]
+        if duplicates:
+            logging.error("duplicate projects: {}".format(duplicates))
+            exit(1)
 
     # the latest artifact isn't necessarily the one related to the latest commit, as github
     # could have taken longer to process an older commit than a newer one.
@@ -447,6 +454,8 @@ if __name__ == '__main__':
     log.addHandler(ch)
 
     projects = Projects(update_cache=args.update_projects, test=args.test, update_single=args.update_single)
+    projects.check_dupes()
+
     caravel = CaravelConfig(projects, num_projects=args.limit_num_projects)
 
     if args.update_caravel:
