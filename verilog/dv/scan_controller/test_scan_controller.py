@@ -56,7 +56,7 @@ async def internal_controller(dut):
     dut.inputs.value = 0
 
     # sync to display, GL and RTL have different times to start
-    print("sync to display")
+    print("sync to 7seg at pos 1")
     count = 10
     while count > 0:
         await FallingEdge(dut.slow_clk)
@@ -70,7 +70,7 @@ async def internal_controller(dut):
         assert decode_seg(dut.seven_seg.value) == i
         await FallingEdge(dut.slow_clk)
 
-    print("straight test")
+    print("straight test at pos 0")
     dut.set_clk_div.value = 0   # no clock div
     dut.active_select.value = 0 # straight
     await FallingEdge(dut.ready)
@@ -81,7 +81,7 @@ async def internal_controller(dut):
         if i > 0:
             assert i == int(dut.outputs) + 1
 
-    print("invert test")
+    print("invert test at pos 2")
     dut.active_select.value = 2 # invert
     dut.inputs.value = 0
     await FallingEdge(dut.ready)
@@ -93,9 +93,9 @@ async def internal_controller(dut):
         if i > 0:
             assert 256 - i == int(dut.outputs)
 
-    for design in range(10): # next 10 designs are all straight
+    for design in range(3,20): # next designs are all straight
         print("straight test at pos {}".format(design))
-        dut.active_select.value = 3 + design 
+        dut.active_select.value = design 
         await FallingEdge(dut.ready)
         for i in range(11):
             dut.inputs.value = i
