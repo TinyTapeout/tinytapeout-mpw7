@@ -238,7 +238,12 @@ class CaravelConfig():
         with open("openlane/user_project_wrapper/macro.cfg", 'w') as fh:
             fh.write("scan_controller 80 80 N\n")
             for row in range(rows):
-                for col in range(cols):
+                if(row%2 == 0):
+                    col_order = range(cols)
+                else:
+                    #reverse odd rows to place instances in a zig zag pattern, shortening the scan chain wires
+                    col_order = range(cols-1, -1, -1)
+                for col in col_order:
                     # skip the space where the scan controller goes on the first row
                     if row == 0 and col <= 1:
                         continue
