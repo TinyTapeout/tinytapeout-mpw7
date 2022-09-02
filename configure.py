@@ -92,7 +92,7 @@ class Projects():
             return ['scan_wrapper_{}.v'.format(self.wokwi_ids[id])]
         except IndexError:
             return []
-        
+
     def get_verilog_names(self, id):
         try:
             return ["scan_wrapper_{}.v".format(self.wokwi_ids[id]), "user_module_{}.v".format(self.wokwi_ids[id])]
@@ -238,12 +238,12 @@ class CaravelConfig():
         with open("openlane/user_project_wrapper/macro.cfg", 'w') as fh:
             fh.write("scan_controller 80 80 N\n")
             for row in range(rows):
-                if(row%2 == 0):
+                if(row % 2 == 0):
                     col_order = range(cols)
                     orientation = 'N'
                 else:
-                    #reverse odd rows to place instances in a zig zag pattern, shortening the scan chain wires
-                    col_order = range(cols-1, -1, -1)
+                    # reverse odd rows to place instances in a zig zag pattern, shortening the scan chain wires
+                    col_order = range(cols - 1, -1, -1)
                     orientation = 'S'
                 for col in col_order:
                     # skip the space where the scan controller goes on the first row
