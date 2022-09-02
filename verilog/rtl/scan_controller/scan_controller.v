@@ -326,7 +326,7 @@ module scan_controller #(
     // Input
     always @(posedge clk)
         if (aio_input_ld)
-            aio_input_shift <= slow_clk_ena ? { aio_input_reg[PL-1:1], slow_clk } : aio_input_reg;
+            aio_input_shift <= slow_clk_ena ? { aio_input_reg[PL:1], slow_clk } : aio_input_reg;
         else if (aio_input_sh)
             aio_input_shift <= { aio_input_shift[PL-1:0], 1'b0 };
 
