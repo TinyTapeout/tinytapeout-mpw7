@@ -76,6 +76,8 @@ The scan controller allows a configurable delay on the latch and scan select pul
 There are some testbenches that you can use to check the scan chain and controller is working.
 The default of 498 projects takes a very long time to simulate, so I advise overriding the configuration first:
 
+    # fetch the test projects
+    ./configure.py --test --update-projects
     # rebuild config with only 20 projects
     ./configure.py --test --update-caravel --limit 20
 
@@ -85,8 +87,17 @@ Then run the test:
     # you will also need to set your PDK_ROOT environment variable
     make test_scan_controller
 
-The Gate Level version (requires scan_controller and user_project_wrapper to be re-hardened to get the correct gate level netlists. These files are avaialable in the gl_test branch).
+The Gate Level simulation requires scan_controller and user_project_wrapper to be re-hardened to get the correct gate level netlists: 
 
+* Edit openlane/scan_controller/config.tcl and change NUM_DESIGNS=498 to NUM_DESIGNS=20.
+* Then from the top level directory:
+
+    make scan_controller
+    make user_project_wrapper
+
+* Then run the GL test
+
+    cd verilog/dv/scan_controller
     make test_scan_controller_gl
 
 ### Top level test: internal control
