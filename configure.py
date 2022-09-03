@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from urllib.parse import urlparse
-import argparse, requests, base64, zipfile, io, logging, pickle, shutil, sys, os, collections
+import argparse, requests, base64, zipfile, io, logging, pickle, shutil, sys, os, collections, subprocess
 
 # pipe handling
 from signal import signal, SIGPIPE, SIG_DFL
@@ -44,6 +44,59 @@ class Projects():
         with open(self.get_projects_db(), 'wb') as fh:
             pickle.dump(self.wokwi_ids, fh)
 
+    def get_dir_name(self, url, number):
+        user_name, repo = Projects.split_git_url(url)
+        top_dir = 'repos3'
+        dir_name = os.path.join(top_dir, "{:03d}_{}_{}".format(number, user_name, repo))
+        logging.info(dir_name)
+        return dir_name
+
+    def clone_projects(self):
+        for number, url in enumerate(self.get_project_urls()):
+            dir_name = self.get_dir_name(url, number)
+            logging.info("cloning {}".format(url))
+            subprocess.run(['git', 'clone', url, dir_name], check=True)
+     
+    def apply_git_patch(self):
+        cwd = os.getcwd()
+        for number, url in enumerate(self.get_project_urls()):
+            logging.info(url)
+            if url not in [ 'https://github.com/mattvenn/tinytapeout_m_segments',
+#                    'https://github.com/smunaut/tinytapeout-fifo',
+                    'https://github.com/gatecat/tinytapeout-fpga-test',
+                    'https://github.com/smunaut/tinytapeout-misc-1',
+                    'https://github.com/mattvenn/tinytapeout-laura', 
+                    'https://github.com/smunaut/tinytapeout-smolram' ]:
+                os.chdir(self.get_dir_name(url, number))
+                subprocess.run(['../../update_repo.sh'], check=True)
+                os.chdir(cwd)
+
+    def harden(self):
+        cwd = os.getcwd()
+        for number, url in enumerate(self.get_project_urls()):
+            #if number >= 0 and number < 50:
+            #if number >= 50 and number < 100:
+            if number >= 100:
+                os.chdir(self.get_dir_name(url, number))
+                subprocess.run(['make', 'fetch'])
+                subprocess.run(['make', 'harden'])
+                os.chdir(cwd)
+                
+    def formal_scan(self):
+        import glob
+        cwd = os.getcwd()
+        formal_dir = 'tinytapeout_scan'
+        for number, url in enumerate(self.get_project_urls()):
+            gl_dir = os.path.join(self.get_dir_name(url, number), 'runs/wokwi/results/final/verilog/gl')
+            gl_filename = glob.glob(gl_dir + '/*')[0]
+            gl_name = os.path.basename(gl_filename)
+            shutil.copyfile(gl_filename, os.path.join(formal_dir, gl_name))
+            os.chdir(formal_dir)
+            commands = ['sby', '-f', 'tinytapeout_scan.sby', gl_name.rstrip('.v')]
+            logging.info(commands)
+            subprocess.run(commands, check=True)
+            os.chdir(cwd)
+        
     def get_projects_db(self):
         if self.test:
             return "projects_test.pkl"
@@ -137,8 +190,8 @@ class Projects():
             if commit['sha'] in release_sha_to_download_url:
                 return release_sha_to_download_url[commit['sha']]
 
-    # download the artifact for each project to get the gds & lef
-    def install_artifacts(self, url):
+    @classmethod
+    def split_git_url(Project, url):
         res = urlparse(url)
         try:
             _, user_name, repo = res.path.split('/')
@@ -146,6 +199,11 @@ class Projects():
             logging.error("couldn't split repo from {}".format(url))
             exit(1)
         repo = repo.replace('.git', '')
+        return user_name, repo
+
+    # download the artifact for each project to get the gds & lef
+    def install_artifacts(self, url):
+        user_name, repo = Projects.split_git_url(url)
 
         # authenticate for rate limiting
         auth_string = os.environ['GH_USERNAME'] + ':' + os.environ['GH_TOKEN']
@@ -435,6 +493,12 @@ if __name__ == '__main__':
     parser.add_argument('--test', help='use test projects', action='store_const', const=True)
     parser.add_argument('--debug', help="debug logging", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.INFO)
 
+    # stuff for help with applying patches to all designs and re-hardening
+    parser.add_argument('--clone-all', help="clone all projects", action="store_const", const=True)
+    parser.add_argument('--apply-git-patch', help="git patch", action="store_const", const=True)
+    parser.add_argument('--harden', help="harden", action="store_const", const=True)
+    parser.add_argument('--formal', help="formal scan proof", action="store_const", const=True)
+
     args = parser.parse_args()
 
     # setup log
@@ -455,6 +519,15 @@ if __name__ == '__main__':
 
     projects = Projects(update_cache=args.update_projects, test=args.test, update_single=args.update_single)
     projects.check_dupes()
+
+    if args.clone_all:
+        projects.clone_projects()
+    if args.apply_git_patch:
+        projects.apply_git_patch()
+    if args.harden:
+        projects.harden()
+    if args.formal:
+        projects.formal_scan()
 
     caravel = CaravelConfig(projects, num_projects=args.limit_num_projects)
 
