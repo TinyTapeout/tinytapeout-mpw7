@@ -30,11 +30,11 @@ class Projects():
 
     def update_cache(self, update_single=None):
         self.wokwi_ids = []
-        for url in self.get_project_urls():
+        for number, url in enumerate(self.get_project_urls()):
             if update_single is not None:
                 if url != update_single:
                     continue
-            wokwi_id = self.install_artifacts(url)
+            wokwi_id = self.install_local_artifacts(number, url)
             if wokwi_id in self.wokwi_ids:
                 logging.error("wokwi id already exists!")
                 exit(1)
@@ -48,7 +48,7 @@ class Projects():
         user_name, repo = Projects.split_git_url(url)
         top_dir = 'repos3'
         dir_name = os.path.join(top_dir, "{:03d}_{}_{}".format(number, user_name, repo))
-        logging.info(dir_name)
+        logging.debug(dir_name)
         return dir_name
 
     def clone_projects(self):
@@ -270,6 +270,30 @@ class Projects():
         shutil.rmtree(tmp_dir)
         return wokwi_id
 
+    def install_local_artifacts(self, number, url):
+        dir_name = self.get_dir_name(url, number)
+        logging.info(dir_name)
+        with open(os.path.join(dir_name, 'src/ID')) as fh:
+            wokwi_id = fh.readline().strip()
+
+        logging.info("wokwi id {} github url {}".format(wokwi_id, url))
+
+        # copy all important files to the correct places. Everything is dependent on the id
+        files = [
+            ("runs/wokwi/results/final/gds/scan_wrapper_{}.gds".format(wokwi_id), "gds/scan_wrapper_{}.gds".format(wokwi_id)),
+            ("runs/wokwi/results/final/lef/scan_wrapper_{}.lef".format(wokwi_id), "lef/scan_wrapper_{}.lef".format(wokwi_id)),
+            ("runs/wokwi/results/final/verilog/gl/scan_wrapper_{}.v".format(wokwi_id), "verilog/gl/scan_wrapper_{}.v".format(wokwi_id)),
+            ("src/scan_wrapper_{}.v".format(wokwi_id), "verilog/rtl/scan_wrapper_{}.v".format(wokwi_id)),
+            ("src/user_module_{}.v".format(wokwi_id), "verilog/rtl/user_module_{}.v".format(wokwi_id)),
+            ]
+
+        logging.debug("copying files into position")
+        for file in files:
+            from_path = os.path.join(dir_name, file[0])
+            logging.debug("copy {} to {}".format(from_path, file[1]))
+            shutil.copyfile(from_path, file[1])
+
+        return wokwi_id
 
 class CaravelConfig():
 
