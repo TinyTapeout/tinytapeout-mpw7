@@ -21,6 +21,9 @@ module SPIMaster_341450853309219412(
 
   localparam TX_COUNTER_MAX = 3'h7;
 
+  // number of cycles-1 to wait after asserting / before deasserting CS 
+  localparam CS_COUNTER_MAX = 4'd10;
+
   reg [1:0] state;
   reg [7:0] tx_byte_reg;
   reg sclk_mask;
@@ -29,6 +32,7 @@ module SPIMaster_341450853309219412(
   reg [2:0] tx_counter_reg;
   reg n_cs_reg;
   reg tx_clear_cs_reg;
+  reg [3:0] cs_delay_counter;
 
   assign tx_ready = tx_ready_reg;
   assign sclk = ~clock & sclk_mask;
@@ -46,6 +50,7 @@ module SPIMaster_341450853309219412(
       tx_counter_reg <= 3'd0;
       n_cs_reg <= 1'b1;
       tx_clear_cs_reg <= 1'b1;
+      cs_delay_counter <= 4'd0;
 
     end else begin
 
@@ -72,10 +77,17 @@ module SPIMaster_341450853309219412(
 
       end else if (state == STATE_CS_ASSERT) begin
 
-        // assert CS for one cycle before transitioning to TX
-        state <= STATE_TX;
-        sclk_mask <= 1'b1;
-        mosi_mask <= 1'b1;
+        // assert CS before transitioning to TX
+        if (cs_delay_counter == CS_COUNTER_MAX) begin
+
+          cs_delay_counter <= 4'd0;
+          state <= STATE_TX;
+          sclk_mask <= 1'b1;
+          mosi_mask <= 1'b1;
+
+        end else begin
+          cs_delay_counter <= cs_delay_counter + 4'd1;
+        end
 
       end else if (state == STATE_TX) begin
 
@@ -98,9 +110,25 @@ module SPIMaster_341450853309219412(
 
       end else if (state == STATE_CS_DEASSERT) begin
 
-        // wait one cycle before deasserting CS and transitioning to idle
-        state <= STATE_IDLE;
-        n_cs_reg <= 1'b1;
+        // wait before deasserting CS and transitioning to idle
+
+        if (cs_delay_counter == CS_COUNTER_MAX) begin
+
+          if (n_cs_reg == 1'b0) begin
+
+            cs_delay_counter <= 4'd0;
+            n_cs_reg <= 1'b1;
+
+          end else begin
+
+            cs_delay_counter <= 4'd0;
+            state <= STATE_IDLE;
+
+          end
+
+        end else begin
+          cs_delay_counter <= cs_delay_counter + 4'd1;
+        end
 
       end
     end
@@ -108,6 +136,39 @@ module SPIMaster_341450853309219412(
 
 endmodule
 
+// Combinational logic to compute current color given row/column indices
+module LEDColor_341450853309219412(
+  input [2:0]   row_idx,
+  input [2:0]   col_idx,
+  input [5:0]   pixel_offset,
+
+  output [7:0]  pixel
+);
+
+  wire [2:0] red;
+  wire [2:0] green;
+  wire [1:0] blue;
+  wire is_diagonal;
+
+  wire [5:0] green_sum;
+  wire [5:0] blue_sum;
+
+  assign green_sum = {3'd0, col_idx} + pixel_offset;
+  assign blue_sum = {3'd0, row_idx} + pixel_offset;
+
+  // generate moving diagonal
+  assign is_diagonal = ((row_idx + col_idx) == pixel_offset[2:0]) ? 1'b1 : 1'b0;
+
+  // generate white when on diagonal, otherwise moving blend of green/blue
+  assign red = (is_diagonal == 1'b1) ? 3'd7 : 3'd0;
+  assign green = (is_diagonal == 1'b1) ? 3'd7 : green_sum[2:0];
+  assign blue = (is_diagonal == 1'b1) ? 2'd3 : blue_sum[1:0];
+
+  assign pixel = {red, 5'd0} | {3'd0, green, 2'd0} | {6'd0, blue};
+
+endmodule
+
+// Matrix driver
 module LEDMatrix_341450853309219412(
   input         clock,
   input         reset,
@@ -134,10 +195,19 @@ module LEDMatrix_341450853309219412(
   reg [5:0] pixel_offset;
 
   reg tx_valid;
-  reg [7:0] tx_byte;
   reg tx_clear_cs;
 
   wire tx_ready;
+  wire [7:0] tx_byte;
+
+  wire [2:0] row_idx;
+  wire [2:0] col_idx;
+  wire [7:0] pixel;
+
+  assign tx_byte = (state == STATE_RESET_FRAME_INDEX) ? CMD_RESET_FRAME_INDEX : pixel;
+
+  assign row_idx = pixel_counter[5:3];
+  assign col_idx = pixel_counter[2:0];
 
   SPIMaster_341450853309219412 spi_master_inst(
     .clock(clock),
@@ -153,6 +223,14 @@ module LEDMatrix_341450853309219412(
     .n_cs(n_cs)
   );
 
+  LEDColor_341450853309219412 led_color_inst(
+    .row_idx(row_idx),
+    .col_idx(col_idx),
+    .pixel_offset(pixel_offset),
+
+    .pixel(pixel)
+  );
+
   always @(posedge clock) begin
     if (reset) begin
       state <= STATE_RESET_FRAME_INDEX;
@@ -161,7 +239,6 @@ module LEDMatrix_341450853309219412(
       pixel_offset <= 6'h0;
 
       tx_valid <= 1'b0;
-      tx_byte <= 8'h0;
       tx_clear_cs <= 1'b0;
     end else begin
 
@@ -172,7 +249,6 @@ module LEDMatrix_341450853309219412(
           // send command to reset frame index
 
           tx_valid <= 1'b1;
-          tx_byte <= CMD_RESET_FRAME_INDEX;
           tx_clear_cs <= 1'b1;
         end else if (tx_valid == 1'b1) begin
           
@@ -189,7 +265,6 @@ module LEDMatrix_341450853309219412(
           // send pixel data
 
           tx_valid <= 1'b1;
-          tx_byte <= {2'b0, pixel_counter + pixel_offset};
 
           if (pixel_counter == PIXEL_MAX) begin
             // sending last pixel, so clear CS after
@@ -220,32 +295,133 @@ module LEDMatrix_341450853309219412(
 
 endmodule
 
+// simple animation on 7-seg display
+module SevenSeg_341450853309219412(
+  input         clock,
+  input         reset,
+
+  output        up,
+  output        right,
+  output        down,
+  output        left
+);
+
+  localparam COUNTER_MAX = 8'hff;
+
+  // counter to increment upon every clock
+  reg [7:0] counter;
+
+  // state to increment upon every counter wrap
+  reg [1:0] state;
+
+  // set outputs using combinational logic based on state
+  assign up = (state == 2'd0) ? 1'b1 : 1'b0;
+  assign right = (state == 2'd1) ? 1'b1 : 1'b0;
+  assign down = (state == 2'd2) ? 1'b1 : 1'b0;
+  assign left = (state == 2'd3) ? 1'b1 : 1'b0;
+
+  always @(posedge clock) begin
+    if (reset) begin
+
+      counter <= 8'h0;
+      state <= 2'h0;
+      
+    end else begin
+
+      // increment counter upon clock cycle
+      counter <= counter + 8'd1;
+
+      // increment state upon counter wrap
+      if (counter == COUNTER_MAX) begin
+        state <= state + 2'd1;
+      end
+
+    end
+  end
+
+endmodule
+
+// Reset synchroniser
+module AsyncReset_341450853309219412(
+  input   clock,
+  input   reset_async,
+
+  output  reset_sync
+);
+
+  reg [2:0] reset_fifo;
+
+  assign reset_sync = reset_fifo[0];
+
+  always @(posedge clock or posedge reset_async) begin
+    if (reset_async == 1'b1) begin
+      reset_fifo <= 3'h7;
+    end else begin
+      reset_fifo <= {1'b0, reset_fifo[2:1]};
+    end
+  end
+
+endmodule
+
 module user_module_341450853309219412(
   input [7:0] io_in,
   output [7:0] io_out
 );
 
   wire clock;
-  wire reset;
+  wire reset_async;
+  wire reset_sync;
 
+  // LED matrix wires
   wire sclk;
   wire mosi;
   wire n_cs;
 
-  assign clock = io_in[0];
-  assign reset = io_in[1];
+  // 7-seg wires
+  wire up;
+  wire right;
+  wire down;
+  wire left;
 
-  assign sclk = io_out[0];
-  assign mosi = io_out[1];
-  assign n_cs = io_out[2];
+  assign clock = io_in[0];
+  assign reset_async = io_in[1];
+
+  // drive LED matrix
+  assign io_out[0] = sclk;
+  assign io_out[1] = mosi;
+  assign io_out[5] = n_cs;
+
+  // use lower 7-seg LEDs for animation
+  assign io_out[6] = up;
+  assign io_out[2] = right;
+  assign io_out[3] = down;
+  assign io_out[4] = left;
+
+  assign io_out[7] = 1'b1;
+
+  AsyncReset_341450853309219412 async_reset_inst(
+    .clock(clock),
+    .reset_async(reset_async),
+    .reset_sync(reset_sync)
+  );
 
   LEDMatrix_341450853309219412 ledmatrix_inst(
     .clock(clock),
-    .reset(reset),
+    .reset(reset_sync),
 
     .sclk(sclk),
     .mosi(mosi),
     .n_cs(n_cs)
+  );
+
+  SevenSeg_341450853309219412 sevenseg_inst(
+    .clock(clock),
+    .reset(reset_sync),
+
+    .up(up),
+    .right(right),
+    .down(down),
+    .left(left)
   );
 
 endmodule

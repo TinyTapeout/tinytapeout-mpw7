@@ -5,10 +5,10 @@ module user_module_341063825089364563(
   input [7:0] io_in,
   output [7:0] io_out
 );
-  parameter COUNTER_WIDTH = 23;
-  parameter FADE_COUNTER_WIDTH = 22;
+  parameter COUNTER_WIDTH = 11;
+  parameter FADE_COUNTER_WIDTH = 10;
   parameter FADE_WIDTH = 4;
-  parameter PWM_COUNTER_WIDTH = 11;
+  parameter PWM_COUNTER_WIDTH = 4; // Can't be less than FADE_WIDTH
 
   // using io_in[0] as clk, io_in[1] as reset
   wire clk;
@@ -23,12 +23,12 @@ module user_module_341063825089364563(
   reg [2:0] state;
   reg [6:0] led_out;
   reg [FADE_WIDTH-1:0] segments [6:0];
-  reg [COUNTER_WIDTH-1:0] counter; // XXX: What is the clk freq for TT?
+  reg [COUNTER_WIDTH-1:0] counter;
   wire [FADE_COUNTER_WIDTH-1:0] fade_counter;
-  wire [4:0] pwm_counter_slice;
+  wire [FADE_WIDTH-1:0] pwm_counter_slice;
   wire [COUNTER_WIDTH-1:0] counter_speed;
 
-  assign pwm_counter_slice = counter[PWM_COUNTER_WIDTH-4:PWM_COUNTER_WIDTH-4-5];
+  assign pwm_counter_slice = counter[PWM_COUNTER_WIDTH-1:PWM_COUNTER_WIDTH-FADE_WIDTH];
   assign counter_speed = {counter_speed_prefix, {COUNTER_WIDTH-1-3{1'b1}}};
   assign fade_counter = counter[FADE_COUNTER_WIDTH-1:0];
   assign io_out = {0, led_out} ^ {8{led_invert}};
@@ -87,13 +87,13 @@ module user_module_341063825089364563(
         segments[6] <= segments[6] >> 1;
       end
     end else begin
-      segments[0] <= 4'b0000;
-      segments[1] <= 4'b0000;
-      segments[2] <= 4'b0000;
-      segments[3] <= 4'b0000;
-      segments[4] <= 4'b0000;
-      segments[5] <= 4'b0000;
-      segments[6] <= 4'b0000;
+      segments[0] <= {FADE_WIDTH-1{1'b0}};
+      segments[1] <= {FADE_WIDTH-1{1'b0}};
+      segments[2] <= {FADE_WIDTH-1{1'b0}};
+      segments[3] <= {FADE_WIDTH-1{1'b0}};
+      segments[4] <= {FADE_WIDTH-1{1'b0}};
+      segments[5] <= {FADE_WIDTH-1{1'b0}};
+      segments[6] <= {FADE_WIDTH-1{1'b0}};
     end
 
     case(state)

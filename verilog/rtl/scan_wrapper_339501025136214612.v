@@ -1,4 +1,13 @@
 `default_nettype none
+/*
+`ifdef COCOTB
+`define UNIT_DELAY #1
+`define FUNCTIONAL
+`define USE_POWER_PINS
+`include "libs.ref/sky130_fd_sc_hd/verilog/primitives.v"
+`include "libs.ref/sky130_fd_sc_hd/verilog/sky130_fd_sc_hd.v"
+`endif
+*/
 
 module scan_wrapper_339501025136214612 (
     input wire clk_in,
@@ -12,8 +21,8 @@ module scan_wrapper_339501025136214612 (
     );
 
     // input buffers
-    // Looking at results from multiple projects the buffering is a bit
-    // inconsistent. So instead, we ensure at least clk buf
+        // Looking at results from multiple projects the bufferring is a bit
+        // inconsistent. So instead, we ensure at least clk buf
     wire clk;
 
     sky130_fd_sc_hd__clkbuf_2 input_buf_clk (
@@ -24,7 +33,7 @@ module scan_wrapper_339501025136214612 (
     );
 
     // output buffers
-    // Same as for input, to try and be more consistent, we make our own
+        // Same as for input, to try and be more consistent, we make our own
     wire data_out_i;
 
     sky130_fd_sc_hd__buf_4 output_buffers[3:0] (
@@ -33,6 +42,16 @@ module scan_wrapper_339501025136214612 (
         .VPWR       (1'b1),
         .VGND       (1'b0)
     );
+
+    /*
+    `ifdef COCOTB
+    initial begin
+        $dumpfile ("scan_wrapper.vcd");
+        $dumpvars (0, scan_wrapper_lesson_1);
+        #1;
+    end
+    `endif
+    */
 
     parameter NUM_IOS = 8;
 

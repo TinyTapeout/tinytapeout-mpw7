@@ -7,140 +7,84 @@ module user_module_341271902949474898(io_out, io_in);
   wire \$12 ;
   wire \$15 ;
   wire \$17 ;
-  wire \$19 ;
+  wire [4:0] \$19 ;
   wire \$21 ;
-  wire [10:0] \$23 ;
-  wire [2:0] \$24 ;
-  wire [10:0] \$26 ;
-  wire \$28 ;
+  wire [4:0] \$23 ;
+  wire \$25 ;
+  wire \$27 ;
+  wire [10:0] \$29 ;
   wire [5:0] \$3 ;
-  wire \$30 ;
-  wire [18:0] \$32 ;
-  wire [9:0] \$33 ;
-  wire \$34 ;
-  wire \$36 ;
-  wire [18:0] \$39 ;
+  wire [10:0] \$30 ;
+  wire [10:0] \$32 ;
+  wire [10:0] \$33 ;
+  wire [19:0] \$35 ;
+  wire [18:0] \$36 ;
+  wire [9:0] \$38 ;
+  wire \$39 ;
   wire \$4 ;
-  wire \$41 ;
+  wire [19:0] \$42 ;
+  wire \$44 ;
+  wire \$45 ;
   wire [5:0] \$7 ;
   wire \$8 ;
-  reg [9:0] c3_5 = 10'h000;
-  reg [9:0] \c3_5$next ;
-  wire c3_5_lt_1000;
-  reg [2:0] i5 = 3'h6;
-  reg [2:0] \i5$next ;
+  reg [9:0] c3 = 10'h000;
+  reg [9:0] \c3$next ;
+  wire c3_lt_1000;
+  reg [9:0] c5 = 10'h000;
+  reg [9:0] \c5$next ;
+  wire c5_lt_1000;
   input [7:0] io_in;
   wire [7:0] io_in;
   output [7:0] io_out;
   wire [7:0] io_out;
   reg [17:0] result = 18'h00000;
   reg [17:0] \result$next ;
+  reg [4:0] shift5 = 5'h01;
+  reg [4:0] \shift5$next ;
   wire tiny_clk;
   wire tiny_rst;
-  reg v5 = 1'h0;
-  reg \v5$next ;
+  wire v5;
   reg valid = 1'h0;
   reg \valid$next ;
   assign \$7  = \$8  ? result[5:0] : \$3 ;
   assign \$12  = io_in[4:3] == 2'h3;
   assign \$11  = \$12  ? 6'h3f : \$7 ;
-  assign \$15  = c3_5 < 10'h3e8;
-  assign \$17  = ~ c3_5_lt_1000;
+  assign \$15  = c3 < 10'h3e8;
+  assign \$17  = c5 < 10'h3e8;
   assign \$1  = ! io_in[4:3];
-  assign \$19  = ~ c3_5_lt_1000;
-  assign \$21  = ~ valid;
-  assign \$24  = v5 ? 3'h5 : 3'h3;
-  assign \$26  = c3_5 + \$24 ;
-  assign \$28  = ~ valid;
-  assign \$30  = ~ valid;
-  assign \$34  = ~ v5;
-  assign \$36  = i5[0] | \$34 ;
-  assign \$33  = \$36  ? c3_5 : 10'h000;
-  assign \$39  = result + \$33 ;
-  assign \$41  = ~ valid;
+  assign \$19  = shift5 & 3'h6;
+  assign \$21  = | \$19 ;
+  assign \$23  = shift5 & 3'h7;
+  assign \$25  = | \$23 ;
+  assign \$27  = c5_lt_1000 & \$25 ;
+  assign \$30  = c5 + 3'h5;
+  assign \$33  = c3 + 2'h3;
+  assign \$36  = result + c3;
+  assign \$39  = v5 & c5_lt_1000;
+  assign \$38  = \$39  ? c5 : 10'h000;
+  assign \$42  = \$36  + \$38 ;
+  assign \$45  = v5 | c5_lt_1000;
+  assign \$44  = ~ \$45 ;
   always @(posedge tiny_clk)
-    v5 <= \v5$next ;
+    c5 <= \c5$next ;
   always @(posedge tiny_clk)
-    c3_5 <= \c3_5$next ;
+    c3 <= \c3$next ;
+  assign \$4  = io_in[4:3] == 1'h1;
   always @(posedge tiny_clk)
-    i5 <= \i5$next ;
+    shift5 <= \shift5$next ;
   always @(posedge tiny_clk)
     result <= \result$next ;
   always @(posedge tiny_clk)
     valid <= \valid$next ;
-  assign \$4  = io_in[4:3] == 1'h1;
   assign \$3  = \$4  ? result[11:6] : result[17:12];
   assign \$8  = ! io_in[4:3];
   always @* begin
     if (\$auto$verilog_backend.cc:2083:dump_module$1 ) begin end
-    \v5$next  = v5;
-    casez (\$17 )
-      1'h1:
-          \v5$next  = 1'h1;
-    endcase
-    casez (tiny_rst)
-      1'h1:
-          \v5$next  = 1'h0;
-    endcase
-  end
-  always @* begin
-    if (\$auto$verilog_backend.cc:2083:dump_module$1 ) begin end
-    \c3_5$next  = c3_5;
-    casez (\$19 )
-      1'h1:
-          \c3_5$next  = 10'h000;
-    endcase
-    casez (\$21 )
-      1'h1:
-          casez ({ v5, c3_5_lt_1000 })
-            2'b?1:
-                \c3_5$next  = \$26 [9:0];
-          endcase
-    endcase
-    casez (tiny_rst)
-      1'h1:
-          \c3_5$next  = 10'h000;
-    endcase
-  end
-  always @* begin
-    if (\$auto$verilog_backend.cc:2083:dump_module$1 ) begin end
-    \i5$next  = i5;
-    casez (\$28 )
-      1'h1:
-          casez (v5)
-            1'h1:
-                \i5$next  = { i5[0], i5[2:1] };
-          endcase
-    endcase
-    casez (tiny_rst)
-      1'h1:
-          \i5$next  = 3'h6;
-    endcase
-  end
-  always @* begin
-    if (\$auto$verilog_backend.cc:2083:dump_module$1 ) begin end
-    \result$next  = result;
-    casez (\$30 )
-      1'h1:
-          casez ({ v5, c3_5_lt_1000 })
-            2'b?1:
-                \result$next  = \$39 [17:0];
-          endcase
-    endcase
-    casez (tiny_rst)
-      1'h1:
-          \result$next  = 18'h00000;
-    endcase
-  end
-  always @* begin
-    if (\$auto$verilog_backend.cc:2083:dump_module$1 ) begin end
     \valid$next  = valid;
-    casez (\$41 )
+    casez (c3_lt_1000)
       1'h1:
-          casez ({ v5, c3_5_lt_1000 })
-            2'b?1:
-                /* empty */;
-            2'b1?:
+          casez (\$44 )
+            1'h1:
                 \valid$next  = 1'h1;
           endcase
     endcase
@@ -149,9 +93,60 @@ module user_module_341271902949474898(io_out, io_in);
           \valid$next  = 1'h0;
     endcase
   end
-  assign \$23  = \$26 ;
-  assign \$32  = \$39 ;
-  assign c3_5_lt_1000 = \$15 ;
+  always @* begin
+    if (\$auto$verilog_backend.cc:2083:dump_module$1 ) begin end
+    \c5$next  = c5;
+    casez (\$27 )
+      1'h1:
+          \c5$next  = \$30 [9:0];
+    endcase
+    casez (tiny_rst)
+      1'h1:
+          \c5$next  = 10'h000;
+    endcase
+  end
+  always @* begin
+    if (\$auto$verilog_backend.cc:2083:dump_module$1 ) begin end
+    \c3$next  = c3;
+    casez (c3_lt_1000)
+      1'h1:
+          \c3$next  = \$33 [9:0];
+    endcase
+    casez (tiny_rst)
+      1'h1:
+          \c3$next  = 10'h000;
+    endcase
+  end
+  always @* begin
+    if (\$auto$verilog_backend.cc:2083:dump_module$1 ) begin end
+    \shift5$next  = shift5;
+    casez (c3_lt_1000)
+      1'h1:
+          \shift5$next  = { shift5[3:0], shift5[4] };
+    endcase
+    casez (tiny_rst)
+      1'h1:
+          \shift5$next  = 5'h01;
+    endcase
+  end
+  always @* begin
+    if (\$auto$verilog_backend.cc:2083:dump_module$1 ) begin end
+    \result$next  = result;
+    casez (c3_lt_1000)
+      1'h1:
+          \result$next  = \$42 [17:0];
+    endcase
+    casez (tiny_rst)
+      1'h1:
+          \result$next  = 18'h00000;
+    endcase
+  end
+  assign \$29  = \$30 ;
+  assign \$32  = \$33 ;
+  assign \$35  = \$42 ;
+  assign v5 = \$21 ;
+  assign c5_lt_1000 = \$17 ;
+  assign c3_lt_1000 = \$15 ;
   assign io_out = { \$11 , \$1 , valid };
   assign tiny_rst = io_in[1];
   assign tiny_clk = io_in[0];

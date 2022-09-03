@@ -110,7 +110,7 @@ module anfsqrt_sqrt_341449297858921043(
 						.this_res(res_next)
 						);
 
-	reg [9:0] iteration;
+	reg [1:0] iteration;
 	
 	always @(posedge clk) begin
 		if (iteration != 3) begin

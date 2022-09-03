@@ -20,10 +20,32 @@ module scan_wrapper_341263346544149074 (
     output wire latch_enable_out
     );
 
-    assign scan_select_out = scan_select_in;
-    assign latch_enable_out = latch_enable_in;
-    assign clk_out = clk_in;
-    wire clk = clk_in;
+    // input buffers
+        // Looking at results from multiple projects the bufferring is a bit
+        // inconsistent. So instead, we ensure at least clk buf
+    wire clk;
+
+    sky130_fd_sc_hd__clkbuf_2 input_buf_clk (
+`ifdef WITH_POWER
+        .VPWR       (1'b1),
+        .VGND       (1'b0),
+`endif
+        .A          (clk_in),
+        .X          (clk)
+    );
+
+    // output buffers
+        // Same as for input, to try and be more consistent, we make our own
+    wire data_out_i;
+
+    sky130_fd_sc_hd__buf_4 output_buffers[3:0] (
+`ifdef WITH_POWER
+        .VPWR       (1'b1),
+        .VGND       (1'b0),
+`endif
+        .A          ({clk,     data_out_i, scan_select_in,  latch_enable_in }),
+        .X          ({clk_out, data_out,   scan_select_out, latch_enable_out })
+    );
 
     /*
     `ifdef COCOTB
@@ -55,7 +77,7 @@ module scan_wrapper_341263346544149074 (
         .RESET_B    (1'b1),
         .CLK_N      (clk),
         .D          (scan_data_out[NUM_IOS-1]),
-        .Q          (data_out)
+        .Q          (data_out_i)
     );
 
     // scan flops have a mux on their inputs to choose either data from the user module or the previous flop's output

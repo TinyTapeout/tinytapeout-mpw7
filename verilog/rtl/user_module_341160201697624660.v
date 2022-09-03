@@ -41,6 +41,7 @@ module user_module_341160201697624660(
   wire net33;
   wire net34;
   wire net35 = 1'b0;
+  wire net36 = 1'b0;
 
   assign io_out[0] = net7;
   assign io_out[1] = net8;

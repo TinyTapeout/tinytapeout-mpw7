@@ -95,16 +95,10 @@ module user_module_341399568412312147(
   assign io_out[5] = net14;
   assign io_out[6] = net15;
 
-  and_cell gate1 (
-
-  );
   xor_cell gate3 (
     .a (net2),
     .b (net3),
     .out (net17)
-  );
-  not_cell gate6 (
-
   );
   xor_cell gate5 (
     .a (net1),
@@ -130,9 +124,6 @@ module user_module_341399568412312147(
     .a (net17),
     .b (net4),
     .out (net23)
-  );
-  xor_cell gate2 (
-
   );
   xor_cell gate14 (
     .a (net1),
