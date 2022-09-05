@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from urllib.parse import urlparse
-import argparse, requests, base64, zipfile, io, logging, pickle, shutil, sys, os, collections, subprocess
+import argparse, requests, base64, zipfile, io, logging, pickle, shutil, sys, os, collections, subprocess, glob, csv
 
 # pipe handling
 from signal import signal, SIGPIPE, SIG_DFL
@@ -83,7 +83,6 @@ class Projects():
                 os.chdir(cwd)
                 
     def formal_scan(self):
-        import glob
         cwd = os.getcwd()
         formal_dir = 'tinytapeout_scan'
         for number, url in enumerate(self.get_project_urls()):
@@ -96,7 +95,33 @@ class Projects():
             logging.info(commands)
             subprocess.run(commands, check=True)
             os.chdir(cwd)
-        
+
+    def summary_report(self):
+        stat_names = ['wire_length', 'vias', 'cells_pre_abc']
+        total_stats = { x : 0 for x in stat_names }
+        min_stats = { x : 10000 for x in stat_names }
+        max_stats = { x : 0 for x in stat_names }
+        for number, url in enumerate(self.get_project_urls()):
+            metrics_dir = os.path.join(self.get_dir_name(url, number), 'runs/wokwi/reports/')
+            metrics_file = glob.glob(metrics_dir + '/*.csv')[0]
+
+            with open(metrics_file) as fh:
+                summary = csv.DictReader(fh)
+                for row in summary:
+                    for stat in stat_names:
+                        total_stats[stat] += int(row[stat])
+
+                        if int(row[stat]) > max_stats[stat]:
+                            max_stats[stat] = int(row[stat])
+
+                        if int(row[stat]) < min_stats[stat]:
+                            min_stats[stat] = int(row[stat])
+                            
+        for stat in stat_names:
+            logging.info("total {} = {}".format(stat, total_stats[stat]))
+            logging.info("min   {} = {}".format(stat, min_stats[stat]))
+            logging.info("max   {} = {}".format(stat, max_stats[stat]))
+
     def get_projects_db(self):
         if self.test:
             return "projects_test.pkl"
@@ -522,6 +547,7 @@ if __name__ == '__main__':
     parser.add_argument('--apply-git-patch', help="git patch", action="store_const", const=True)
     parser.add_argument('--harden', help="harden", action="store_const", const=True)
     parser.add_argument('--formal', help="formal scan proof", action="store_const", const=True)
+    parser.add_argument('--summary', help="summary", action="store_const", const=True)
 
     args = parser.parse_args()
 
@@ -552,6 +578,8 @@ if __name__ == '__main__':
         projects.harden()
     if args.formal:
         projects.formal_scan()
+    if args.summary:
+        projects.summary_report()
 
     caravel = CaravelConfig(projects, num_projects=args.limit_num_projects)
 
