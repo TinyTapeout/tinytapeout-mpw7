@@ -44,6 +44,10 @@ class Projects():
         with open(self.get_projects_db(), 'wb') as fh:
             pickle.dump(self.wokwi_ids, fh)
 
+    def list(self):
+        for count, (wokwi_id, project_url) in enumerate(zip(self.get_wokwi_ids(), self.get_project_urls())):
+            logging.info("{:3} {:20} {}".format(count, wokwi_id, project_url))
+
     def get_dir_name(self, url, number):
         user_name, repo = Projects.split_git_url(url)
         top_dir = 'repos3'
@@ -56,17 +60,16 @@ class Projects():
             dir_name = self.get_dir_name(url, number)
             logging.info("cloning {}".format(url))
             subprocess.run(['git', 'clone', url, dir_name], check=True)
-     
+
     def apply_git_patch(self):
         cwd = os.getcwd()
         for number, url in enumerate(self.get_project_urls()):
             logging.info(url)
-            if url not in [ 'https://github.com/mattvenn/tinytapeout_m_segments',
-#                    'https://github.com/smunaut/tinytapeout-fifo',
-                    'https://github.com/gatecat/tinytapeout-fpga-test',
-                    'https://github.com/smunaut/tinytapeout-misc-1',
-                    'https://github.com/mattvenn/tinytapeout-laura', 
-                    'https://github.com/smunaut/tinytapeout-smolram' ]:
+            if url not in ['https://github.com/mattvenn/tinytapeout_m_segments',
+                           'https://github.com/gatecat/tinytapeout-fpga-test',
+                           'https://github.com/smunaut/tinytapeout-misc-1',
+                           'https://github.com/mattvenn/tinytapeout-laura',
+                           'https://github.com/smunaut/tinytapeout-smolram']:
                 os.chdir(self.get_dir_name(url, number))
                 subprocess.run(['../../update_repo.sh'], check=True)
                 os.chdir(cwd)
@@ -74,14 +77,14 @@ class Projects():
     def harden(self):
         cwd = os.getcwd()
         for number, url in enumerate(self.get_project_urls()):
-            #if number >= 0 and number < 50:
-            #if number >= 50 and number < 100:
+            # if number >= 0 and number < 50:
+            # if number >= 50 and number < 100:
             if number >= 100:
                 os.chdir(self.get_dir_name(url, number))
                 subprocess.run(['make', 'fetch'])
                 subprocess.run(['make', 'harden'])
                 os.chdir(cwd)
-                
+
     def formal_scan(self):
         cwd = os.getcwd()
         formal_dir = 'tinytapeout_scan'
@@ -97,10 +100,10 @@ class Projects():
             os.chdir(cwd)
 
     def summary_report(self):
-        stat_names = ['wire_length', 'vias', 'cells_pre_abc']
-        total_stats = { x : 0 for x in stat_names }
-        min_stats = { x : 10000 for x in stat_names }
-        max_stats = { x : 0 for x in stat_names }
+        stat_names  = ['wire_length', 'vias', 'cells_pre_abc']
+        total_stats = {x : 0 for x in stat_names}
+        min_stats   = {x : 10000 for x in stat_names}
+        max_stats   = {x : 0 for x in stat_names}
         for number, url in enumerate(self.get_project_urls()):
             metrics_dir = os.path.join(self.get_dir_name(url, number), 'runs/wokwi/reports/')
             metrics_file = glob.glob(metrics_dir + '/*.csv')[0]
@@ -116,7 +119,7 @@ class Projects():
 
                         if int(row[stat]) < min_stats[stat]:
                             min_stats[stat] = int(row[stat])
-                            
+
         for stat in stat_names:
             logging.info("total {} = {}".format(stat, total_stats[stat]))
             logging.info("min   {} = {}".format(stat, min_stats[stat]))
@@ -319,6 +322,7 @@ class Projects():
             shutil.copyfile(from_path, file[1])
 
         return wokwi_id
+
 
 class CaravelConfig():
 
@@ -580,6 +584,8 @@ if __name__ == '__main__':
         projects.formal_scan()
     if args.summary:
         projects.summary_report()
+    if args.list:
+        projects.list()
 
     caravel = CaravelConfig(projects, num_projects=args.limit_num_projects)
 
