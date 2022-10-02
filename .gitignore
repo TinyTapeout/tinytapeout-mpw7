@@ -8,7 +8,10 @@ gds/*gds
 *.lst
 *.vcd
 *.gtkw
+*.fst
 results.xml
-sim_build
+sim_build*
 __pycache__
 scan_mux
+.DS_Store
+venv
