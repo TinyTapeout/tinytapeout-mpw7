@@ -69,70 +69,14 @@ The scan controller allows a configurable delay on the latch and scan select pul
 
     make user_project_wrapper
 
-## Simulations
+To build the GDS and run the simulations, you will need to install the Sky130 PDK and OpenLane tool.
+It takes about 5 minutes and needs about 3GB of disk space.
 
-### Scan controller
+    export PDK_ROOT=<some dir>/pdk
+    export OPENLANE_ROOT=<some dir>/openlane
+    cd <the root of this repo>
+    make setup 
 
-There are some testbenches that you can use to check the scan chain and controller is working.
-The default of 498 projects takes a very long time to simulate, so I advise overriding the configuration first:
+## Verification
 
-    # fetch the test projects
-    ./configure.py --test --update-projects
-    # rebuild config with only 20 projects
-    ./configure.py --test --update-caravel --limit 20
-
-Then run the test:
-
-    cd verilog/dv/scan_controller
-    # you will also need to set your PDK_ROOT environment variable
-    make test_scan_controller
-
-The Gate Level simulation requires scan_controller and user_project_wrapper to be re-hardened to get the correct gate level netlists: 
-
-* Edit openlane/scan_controller/config.tcl and change NUM_DESIGNS=498 to NUM_DESIGNS=20.
-* Then from the top level directory:
-
-    make scan_controller
-    make user_project_wrapper
-
-* Then run the GL test
-
-    cd verilog/dv/scan_controller
-    make test_scan_controller_gl
-
-### Top level test: internal control
-
-Uses the scan controller.
-
-    cd verilog/dv/scan_controller_int
-    make coco_test
-
-### Top level test: external control
-
-Uses external signals to control the scan chain.
-
-    cd verilog/dv/scan_controller_ext
-    make coco_test
-
-### Top level test: logic analyser control
-
-Uses the RISCV co-processor to drive the scanchain with firmware.
-
-    cd verilog/dv/scan_controller_la
-    make coco_test
-
-## Dev notes
-
-* PDN hang issues https://github.com/The-OpenROAD-Project/OpenLane/issues/1173
-* Also discovered PDN hangs if extra lefs/defs are not deduplicated
-* with PDN set so dense, tapeout job fails with density checks
-* with unused PDN straps turned off, precheck fails
-* copied the erased version (just power rings) and deleted the first digital power rings, copy pasted that over final gds
-* precheck fails with missing power ports
-* manually added missing power ports to gl verilog of user_project_wrapper
-* precheck passes. Will try tapeout job
-* tapeout job failed with DRC, was because outer power ring was too thin. I think due to configuration rather than being cutoff for precheck
-* updated missing_power_rings with correct rings and repeated, this time tapeout passes
-* Tim suggests doing this as a module/cell to make it easier to reproduce
-* Maximo suggests editing pdn_cfg.tcl and using the -nets option with add_pdn_stripe to force only 1st voltage domain
-* This worked, see the new openlane/user_project_wrapper/pdn_cfg.tcl config
+See the separate [verification](verification.md) doc.
