@@ -15,10 +15,10 @@ The scan chain is identical for each little project, and you can [read it here](
 A good way to see how this works is to read the FSM in the [scan controller](verilog/rtl/scan_controller/scan_controller.v).
 You can also run one of the simple tests and check the waveforms. See how in the [scan chain verification](verification.md) doc.
 
-Assuming you want to update project at position 2 (0 indexed) with lowest 3 inputs high and fetch the output.
-
 * Signal names are from the perspective of the scan chain driver.
 * The desired project shall be called DUT (design under test)
+
+Assuming you want to update DUT at position 2 (0 indexed) with lowest 3 inputs high and fetch the output.
 
 * Set scan_select low so that the data is clocked into the scan flops (rather than from the design)
 * For the next 8 clocks, set scan_data_out to 0, 0, 0, 0, 0, 0, 1, 1
