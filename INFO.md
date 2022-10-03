@@ -18,10 +18,11 @@ You can also run one of the simple tests and check the waveforms. See how in the
 * Signal names are from the perspective of the scan chain driver.
 * The desired project shall be called DUT (design under test)
 
-Assuming you want to update DUT at position 2 (0 indexed) with lowest 3 inputs high and fetch the output.
+Assuming you want to update DUT at position 2 (0 indexed) with inputs = 0x02 and then fetch the output.
+This design connects an inverter between each input and output.
 
 * Set scan_select low so that the data is clocked into the scan flops (rather than from the design)
-* For the next 8 clocks, set scan_data_out to 0, 0, 0, 0, 0, 0, 1, 1
+* For the next 8 clocks, set scan_data_out to 0, 0, 0, 0, 0, 0, 1, 0
 * Toggle scan_clk_out 16 times to deliver the data to the DUT
 * Toggle scan_latch_en to deliver the data from the scan chain to the DUT
 * Set scan_select high to set the scan flop's input to be from the DUT
@@ -29,6 +30,12 @@ Assuming you want to update DUT at position 2 (0 indexed) with lowest 3 inputs h
 * Toggle the scan_clk_out another 8 x number of remaining designs to receive the data at scan_data_in
 
 ![update cycle](pics/update_cycle.png)
+
+*Notes on understanding the trace*
+
+* There are large wait times between the latch and scan signals to ensure no hold violations across the whole chain. For the internal scan controller, these can be configured (see section on wait states below).
+* The input looks wrong (0x03) because the input is incremented by the test bench as soon as the scan controller captures the data. The input is actually 0x02.
+* The output in the trace looks wrong (0xFE) because it's updated after a full refresh, the output is 0xFD.
 
 ## Clocking
 
