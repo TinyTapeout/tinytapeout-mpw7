@@ -8,6 +8,17 @@ export PYTHONPATH := test
 
 export USER_PROJECT_VERILOG=../../../verilog
 
+test_single:
+	rm -rf sim_build/
+	mkdir sim_build/
+	iverilog -DUSE_POWER_PINS -DMPRJ_IO_PADS=38 -DCOCOTB -s test_scan_controller_tb test_scan_controller_tb.v \
+    -I $(PDK_ROOT)/sky130A/ \
+	-f../../includes/includes.rtl.caravel_user_project \
+	-o sim_build/sim.vvp \
+
+	TESTCASE=test_single MODULE=test_scan_controller vvp -M $$(cocotb-config --prefix)/cocotb/libs -m libcocotbvpi_icarus sim_build/sim.vvp
+	! grep failure results.xml
+
 test_wait_state:
 	rm -rf sim_build/
 	mkdir sim_build/

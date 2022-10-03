@@ -18,6 +18,30 @@ def decode_seg(value):
         return '?'
 
 @cocotb.test()
+async def test_single(dut):
+    clock = Clock(dut.clk, 100, units="ns") # 10 MHz
+    cocotb.fork(clock.start())
+
+    dut.reset.value = 1
+    dut.set_clk_div.value = 0
+    dut.driver_sel.value = 0b10   # internal controller
+    dut.inputs.value = 0
+    dut.active_select.value = 2   # inverter
+    await ClockCycles(dut.clk, 10)
+    dut.reset.value = 0
+    await ClockCycles(dut.clk, 10) # wait until the wait state config is read
+
+    dut.inputs.value = 0
+    await FallingEdge(dut.ready)
+    await FallingEdge(dut.ready)
+    for i in range(11):
+        dut.inputs.value = i
+        await FallingEdge(dut.ready)
+        print(i, int(dut.outputs))
+        if i > 0:
+            assert 256 - i == int(dut.outputs)
+
+@cocotb.test()
 async def wait_state(dut):
     clock = Clock(dut.clk, 100, units="ns") # 10 MHz
     cocotb.fork(clock.start())
