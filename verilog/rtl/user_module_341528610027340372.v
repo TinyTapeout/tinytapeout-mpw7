@@ -47,7 +47,7 @@ end
             iflag <= 0;
 		end
 		else begin
-
+            // PC
             if ((inst_in[5:4] == OP_BCC) && ~accu[8])            // conditional branch (BCC)            
                 pc <= pc + {{4{inst_in[3]}}, inst_in[3:0]};  
             else if (inst_in == OP_JMPA)                        // JMPA

@@ -1,0 +1,3 @@
+[submodule "tinytapeout_scan"]
+	path = tinytapeout_scan
+	url = https://github.com/jix/tinytapeout_scan.git

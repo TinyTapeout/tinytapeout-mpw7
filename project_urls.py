@@ -142,7 +142,7 @@ project_urls = [
 	'https://github.com/rigobertoruiz98/cts_fsm',
 	'https://github.com/rajarshiroy/tinytapout0_rajarshi',
 	'https://github.com/BarsMonster/MicroASIC',
-	'https://github.com/kammoh/tinytapeout-chisel',
+#	'https://github.com/kammoh/tinytapeout-chisel', # wrong id, hasn't merged PR
 	'https://github.com/cpldcpu/TinyTapeout_TrainLED',
 	'https://github.com/malkam03/tinytapeout-game-of-life',
 	'https://github.com/BarsMonster/MicroAsicV',

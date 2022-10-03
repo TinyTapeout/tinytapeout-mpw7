@@ -72,31 +72,11 @@ MACRO scan_wrapper_341528610027340372
     END
   END scan_select_out
   PIN vccd1
-    DIRECTION INOUT ;
+    DIRECTION INPUT ;
     USE POWER ;
     PORT
       LAYER met4 ;
-        RECT 16.465 5.200 18.065 98.160 ;
-    END
-    PORT
-      LAYER met4 ;
-        RECT 39.955 5.200 41.555 98.160 ;
-    END
-    PORT
-      LAYER met4 ;
-        RECT 63.445 5.200 65.045 98.160 ;
-    END
-    PORT
-      LAYER met4 ;
-        RECT 86.935 5.200 88.535 98.160 ;
-    END
-  END vccd1
-  PIN vssd1
-    DIRECTION INOUT ;
-    USE GROUND ;
-    PORT
-      LAYER met4 ;
-        RECT 28.210 5.200 29.810 98.160 ;
+        RECT 20.380 5.200 21.980 98.160 ;
     END
     PORT
       LAYER met4 ;
@@ -104,34 +84,44 @@ MACRO scan_wrapper_341528610027340372
     END
     PORT
       LAYER met4 ;
-        RECT 75.190 5.200 76.790 98.160 ;
+        RECT 83.020 5.200 84.620 98.160 ;
+    END
+  END vccd1
+  PIN vssd1
+    DIRECTION INPUT ;
+    USE GROUND ;
+    PORT
+      LAYER met4 ;
+        RECT 36.040 5.200 37.640 98.160 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 67.360 5.200 68.960 98.160 ;
     END
   END vssd1
   OBS
       LAYER li1 ;
         RECT 5.520 5.355 99.360 98.005 ;
       LAYER met1 ;
-        RECT 0.070 3.440 103.430 98.160 ;
+        RECT 0.070 3.780 103.430 99.920 ;
       LAYER met2 ;
-        RECT 0.650 100.720 51.330 101.730 ;
-        RECT 52.170 100.720 102.850 101.730 ;
-        RECT 0.100 4.280 103.410 100.720 ;
-        RECT 0.650 3.410 51.330 4.280 ;
-        RECT 52.170 3.410 102.850 4.280 ;
+        RECT 0.650 100.720 51.330 101.000 ;
+        RECT 52.170 100.720 102.850 101.000 ;
+        RECT 0.100 4.280 103.400 100.720 ;
+        RECT 0.650 3.750 51.330 4.280 ;
+        RECT 52.170 3.750 102.850 4.280 ;
       LAYER met3 ;
-        RECT 4.000 52.040 103.435 98.085 ;
+        RECT 3.745 52.040 101.000 99.785 ;
         RECT 4.400 50.640 100.600 52.040 ;
-        RECT 4.000 4.255 103.435 50.640 ;
+        RECT 3.745 5.275 101.000 50.640 ;
       LAYER met4 ;
-        RECT 14.095 4.800 16.065 90.265 ;
-        RECT 18.465 4.800 27.810 90.265 ;
-        RECT 30.210 4.800 39.555 90.265 ;
-        RECT 41.955 4.800 51.300 90.265 ;
-        RECT 53.700 4.800 63.045 90.265 ;
-        RECT 65.445 4.800 74.790 90.265 ;
-        RECT 77.190 4.800 86.535 90.265 ;
-        RECT 88.935 4.800 93.545 90.265 ;
-        RECT 14.095 4.255 93.545 4.800 ;
+        RECT 5.815 98.560 91.705 99.785 ;
+        RECT 5.815 6.295 19.980 98.560 ;
+        RECT 22.380 6.295 35.640 98.560 ;
+        RECT 38.040 6.295 51.300 98.560 ;
+        RECT 53.700 6.295 66.960 98.560 ;
+        RECT 69.360 6.295 82.620 98.560 ;
+        RECT 85.020 6.295 91.705 98.560 ;
   END
 END scan_wrapper_341528610027340372
 END LIBRARY

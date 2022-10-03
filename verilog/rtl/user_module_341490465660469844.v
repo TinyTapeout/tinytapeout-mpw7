@@ -100,6 +100,24 @@ module user_module_341490465660469844(
   assign io_out[6] = net10;
   assign io_out[7] = net11;
 
+  and_cell gate1 (
+
+  );
+  or_cell gate2 (
+
+  );
+  xor_cell gate3 (
+
+  );
+  nand_cell gate4 (
+
+  );
+  mux_cell mux1 (
+
+  );
+  dff_cell flipflop1 (
+
+  );
   mux_cell mux3 (
     .a (net15),
     .b (net16),

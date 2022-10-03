@@ -72,31 +72,11 @@ MACRO scan_wrapper_341382703379120723
     END
   END scan_select_out
   PIN vccd1
-    DIRECTION INOUT ;
+    DIRECTION INPUT ;
     USE POWER ;
     PORT
       LAYER met4 ;
-        RECT 16.465 10.640 18.065 92.720 ;
-    END
-    PORT
-      LAYER met4 ;
-        RECT 39.955 10.640 41.555 92.720 ;
-    END
-    PORT
-      LAYER met4 ;
-        RECT 63.445 10.640 65.045 92.720 ;
-    END
-    PORT
-      LAYER met4 ;
-        RECT 86.935 10.640 88.535 92.720 ;
-    END
-  END vccd1
-  PIN vssd1
-    DIRECTION INOUT ;
-    USE GROUND ;
-    PORT
-      LAYER met4 ;
-        RECT 28.210 10.640 29.810 92.720 ;
+        RECT 20.380 10.640 21.980 92.720 ;
     END
     PORT
       LAYER met4 ;
@@ -104,7 +84,19 @@ MACRO scan_wrapper_341382703379120723
     END
     PORT
       LAYER met4 ;
-        RECT 75.190 10.640 76.790 92.720 ;
+        RECT 83.020 10.640 84.620 92.720 ;
+    END
+  END vccd1
+  PIN vssd1
+    DIRECTION INPUT ;
+    USE GROUND ;
+    PORT
+      LAYER met4 ;
+        RECT 36.040 10.640 37.640 92.720 ;
+    END
+    PORT
+      LAYER met4 ;
+        RECT 67.360 10.640 68.960 92.720 ;
     END
   END vssd1
   OBS
@@ -113,8 +105,8 @@ MACRO scan_wrapper_341382703379120723
       LAYER met1 ;
         RECT 0.070 10.640 103.430 92.720 ;
       LAYER met2 ;
-        RECT 0.650 100.720 51.330 101.730 ;
-        RECT 52.170 100.720 102.850 101.730 ;
+        RECT 0.650 100.720 51.330 101.000 ;
+        RECT 52.170 100.720 102.850 101.000 ;
         RECT 0.100 4.280 103.400 100.720 ;
         RECT 0.650 4.000 51.330 4.280 ;
         RECT 52.170 4.000 102.850 4.280 ;
@@ -123,8 +115,7 @@ MACRO scan_wrapper_341382703379120723
         RECT 4.400 50.640 100.600 52.040 ;
         RECT 4.000 10.715 101.000 50.640 ;
       LAYER met4 ;
-        RECT 49.055 19.895 51.300 63.745 ;
-        RECT 53.700 19.895 58.585 63.745 ;
+        RECT 62.855 44.375 63.185 56.265 ;
   END
 END scan_wrapper_341382703379120723
 END LIBRARY

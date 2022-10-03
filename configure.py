@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from urllib.parse import urlparse
-import argparse, requests, base64, zipfile, io, logging, pickle, shutil, sys, os, collections, subprocess, glob, csv
+import argparse, requests, base64, zipfile, io, logging, pickle, shutil, sys, os, collections, subprocess
 
 # pipe handling
 from signal import signal, SIGPIPE, SIG_DFL
@@ -30,11 +30,11 @@ class Projects():
 
     def update_cache(self, update_single=None):
         self.wokwi_ids = []
-        for number, url in enumerate(self.get_project_urls()):
+        for url in self.get_project_urls():
             if update_single is not None:
                 if url != update_single:
                     continue
-            wokwi_id = self.install_local_artifacts(number, url)
+            wokwi_id = self.install_artifacts(url)
             if wokwi_id in self.wokwi_ids:
                 logging.error("wokwi id already exists!")
                 exit(1)
@@ -43,87 +43,6 @@ class Projects():
         # cache it
         with open(self.get_projects_db(), 'wb') as fh:
             pickle.dump(self.wokwi_ids, fh)
-
-    def list(self):
-        for count, (wokwi_id, project_url) in enumerate(zip(self.get_wokwi_ids(), self.get_project_urls())):
-            logging.info("{:3} {:20} {}".format(count, wokwi_id, project_url))
-
-    def get_dir_name(self, url, number):
-        user_name, repo = Projects.split_git_url(url)
-        top_dir = 'repos3'
-        dir_name = os.path.join(top_dir, "{:03d}_{}_{}".format(number, user_name, repo))
-        logging.debug(dir_name)
-        return dir_name
-
-    def clone_projects(self):
-        for number, url in enumerate(self.get_project_urls()):
-            dir_name = self.get_dir_name(url, number)
-            logging.info("cloning {}".format(url))
-            subprocess.run(['git', 'clone', url, dir_name], check=True)
-
-    def apply_git_patch(self):
-        cwd = os.getcwd()
-        for number, url in enumerate(self.get_project_urls()):
-            logging.info(url)
-            if url not in ['https://github.com/mattvenn/tinytapeout_m_segments',
-                           'https://github.com/gatecat/tinytapeout-fpga-test',
-                           'https://github.com/smunaut/tinytapeout-misc-1',
-                           'https://github.com/mattvenn/tinytapeout-laura',
-                           'https://github.com/smunaut/tinytapeout-smolram']:
-                os.chdir(self.get_dir_name(url, number))
-                subprocess.run(['../../update_repo.sh'], check=True)
-                os.chdir(cwd)
-
-    def harden(self):
-        cwd = os.getcwd()
-        for number, url in enumerate(self.get_project_urls()):
-            # if number >= 0 and number < 50:
-            # if number >= 50 and number < 100:
-            if number >= 100:
-                os.chdir(self.get_dir_name(url, number))
-                subprocess.run(['make', 'fetch'])
-                subprocess.run(['make', 'harden'])
-                os.chdir(cwd)
-
-    def formal_scan(self):
-        cwd = os.getcwd()
-        formal_dir = 'tinytapeout_scan'
-        for number, url in enumerate(self.get_project_urls()):
-            gl_dir = os.path.join(self.get_dir_name(url, number), 'runs/wokwi/results/final/verilog/gl')
-            gl_filename = glob.glob(gl_dir + '/*')[0]
-            gl_name = os.path.basename(gl_filename)
-            shutil.copyfile(gl_filename, os.path.join(formal_dir, gl_name))
-            os.chdir(formal_dir)
-            commands = ['sby', '-f', 'tinytapeout_scan.sby', gl_name.rstrip('.v')]
-            logging.info(commands)
-            subprocess.run(commands, check=True)
-            os.chdir(cwd)
-
-    def summary_report(self):
-        stat_names  = ['wire_length', 'vias', 'cells_pre_abc']
-        total_stats = {x : 0 for x in stat_names}
-        min_stats   = {x : 10000 for x in stat_names}
-        max_stats   = {x : 0 for x in stat_names}
-        for number, url in enumerate(self.get_project_urls()):
-            metrics_dir = os.path.join(self.get_dir_name(url, number), 'runs/wokwi/reports/')
-            metrics_file = glob.glob(metrics_dir + '/*.csv')[0]
-
-            with open(metrics_file) as fh:
-                summary = csv.DictReader(fh)
-                for row in summary:
-                    for stat in stat_names:
-                        total_stats[stat] += int(row[stat])
-
-                        if int(row[stat]) > max_stats[stat]:
-                            max_stats[stat] = int(row[stat])
-
-                        if int(row[stat]) < min_stats[stat]:
-                            min_stats[stat] = int(row[stat])
-
-        for stat in stat_names:
-            logging.info("total {} = {}".format(stat, total_stats[stat]))
-            logging.info("min   {} = {}".format(stat, min_stats[stat]))
-            logging.info("max   {} = {}".format(stat, max_stats[stat]))
 
     def get_projects_db(self):
         if self.test:
@@ -231,6 +150,7 @@ class Projects():
 
     # download the artifact for each project to get the gds & lef
     def install_artifacts(self, url):
+        logging.debug(url)
         user_name, repo = Projects.split_git_url(url)
 
         # authenticate for rate limiting
@@ -296,31 +216,6 @@ class Projects():
 
         # unlink temp directory
         shutil.rmtree(tmp_dir)
-        return wokwi_id
-
-    def install_local_artifacts(self, number, url):
-        dir_name = self.get_dir_name(url, number)
-        logging.info(dir_name)
-        with open(os.path.join(dir_name, 'src/ID')) as fh:
-            wokwi_id = fh.readline().strip()
-
-        logging.info("wokwi id {} github url {}".format(wokwi_id, url))
-
-        # copy all important files to the correct places. Everything is dependent on the id
-        files = [
-            ("runs/wokwi/results/final/gds/scan_wrapper_{}.gds".format(wokwi_id), "gds/scan_wrapper_{}.gds".format(wokwi_id)),
-            ("runs/wokwi/results/final/lef/scan_wrapper_{}.lef".format(wokwi_id), "lef/scan_wrapper_{}.lef".format(wokwi_id)),
-            ("runs/wokwi/results/final/verilog/gl/scan_wrapper_{}.v".format(wokwi_id), "verilog/gl/scan_wrapper_{}.v".format(wokwi_id)),
-            ("src/scan_wrapper_{}.v".format(wokwi_id), "verilog/rtl/scan_wrapper_{}.v".format(wokwi_id)),
-            ("src/user_module_{}.v".format(wokwi_id), "verilog/rtl/user_module_{}.v".format(wokwi_id)),
-            ]
-
-        logging.debug("copying files into position")
-        for file in files:
-            from_path = os.path.join(dir_name, file[0])
-            logging.debug("copy {} to {}".format(from_path, file[1]))
-            shutil.copyfile(from_path, file[1])
-
         return wokwi_id
 
 
@@ -534,6 +429,27 @@ class CaravelConfig():
             for wokwi_id, project_url in zip(self.projects.get_wokwi_ids(), self.projects.get_project_urls()):
                 fh.write("* [{}]({}) {}\n".format(wokwi_id, Projects.build_wokwi_url(wokwi_id), project_url))
 
+    # requires tinytapeout_scan repo to be installed - use --recursive when cloning this repo
+    # also needs a mod to sby, so probably ignore this unless you're Matt
+    def formal_scan(self):
+        cwd = os.getcwd()
+        gl_dir = 'verilog/gl/'
+        formal_dir = 'tinytapeout_scan'
+        for i in range(self.num_projects):
+            gl_filename = self.projects.get_gl_verilog_names(i)[0]
+            shutil.copyfile(os.path.join(gl_dir, gl_filename), os.path.join(formal_dir, gl_filename))
+            os.chdir(formal_dir)
+            commands = ['sby', '-f', 'tinytapeout_scan.sby', gl_filename.rstrip('.v')]
+            logging.info(commands)
+            subprocess.run(commands, check=True)
+            os.chdir(cwd)
+
+    def list(self):
+        count = 0
+        for wokwi_id, project_url in zip(self.projects.get_wokwi_ids(), self.projects.get_project_urls()):
+            logging.info("{:3} {:20} {}".format(count, wokwi_id, project_url))
+            count += 1
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="TinyTapeout")
@@ -547,11 +463,9 @@ if __name__ == '__main__':
     parser.add_argument('--debug', help="debug logging", action="store_const", dest="loglevel", const=logging.DEBUG, default=logging.INFO)
 
     # stuff for help with applying patches to all designs and re-hardening
-    parser.add_argument('--clone-all', help="clone all projects", action="store_const", const=True)
-    parser.add_argument('--apply-git-patch', help="git patch", action="store_const", const=True)
-    parser.add_argument('--harden', help="harden", action="store_const", const=True)
+    # parser.add_argument('--clone-all', help="clone all projects", action="store_const", const=True)
     parser.add_argument('--formal', help="formal scan proof", action="store_const", const=True)
-    parser.add_argument('--summary', help="summary", action="store_const", const=True)
+    # parser.add_argument('--summary', help="summary", action="store_const", const=True)
 
     args = parser.parse_args()
 
@@ -574,20 +488,12 @@ if __name__ == '__main__':
     projects = Projects(update_cache=args.update_projects, test=args.test, update_single=args.update_single)
     projects.check_dupes()
 
-    if args.clone_all:
-        projects.clone_projects()
-    if args.apply_git_patch:
-        projects.apply_git_patch()
-    if args.harden:
-        projects.harden()
-    if args.formal:
-        projects.formal_scan()
-    if args.summary:
-        projects.summary_report()
-    if args.list:
-        projects.list()
-
     caravel = CaravelConfig(projects, num_projects=args.limit_num_projects)
+
+    if args.formal:
+        caravel.formal_scan()
+    if args.list:
+        caravel.list()
 
     if args.update_caravel:
         caravel.create_macro_config()

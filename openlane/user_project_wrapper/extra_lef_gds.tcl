@@ -141,7 +141,6 @@ $script_dir/../../lef/scan_wrapper_341620484740219475.lef \
 $script_dir/../../lef/scan_wrapper_341624400621077076.lef \
 $script_dir/../../lef/scan_wrapper_341614536664547922.lef \
 $script_dir/../../lef/scan_wrapper_341567111632519764.lef \
-$script_dir/../../lef/scan_wrapper_3398002391929329472.lef \
 $script_dir/../../lef/scan_wrapper_341631485498884690.lef \
 $script_dir/../../lef/scan_wrapper_341632596577354323.lef \
 $script_dir/../../lef/scan_wrapper_341628725785264722.lef \
@@ -295,7 +294,6 @@ $script_dir/../../gds/scan_wrapper_341620484740219475.gds \
 $script_dir/../../gds/scan_wrapper_341624400621077076.gds \
 $script_dir/../../gds/scan_wrapper_341614536664547922.gds \
 $script_dir/../../gds/scan_wrapper_341567111632519764.gds \
-$script_dir/../../gds/scan_wrapper_3398002391929329472.gds \
 $script_dir/../../gds/scan_wrapper_341631485498884690.gds \
 $script_dir/../../gds/scan_wrapper_341632596577354323.gds \
 $script_dir/../../gds/scan_wrapper_341628725785264722.gds \

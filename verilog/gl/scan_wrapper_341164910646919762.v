@@ -3851,7 +3851,7 @@ module scan_wrapper_341164910646919762 (clk_in,
     .VPB(vccd1),
     .VPWR(vccd1),
     .Q(\user_module.gold_code_generator.b[12] ));
- sky130_fd_sc_hd__conb_1 _284__4 (.VGND(vssd1),
+ sky130_fd_sc_hd__conb_1 _283__4 (.VGND(vssd1),
     .VNB(vssd1),
     .VPB(vccd1),
     .VPWR(vccd1),

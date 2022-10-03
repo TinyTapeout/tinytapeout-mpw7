@@ -152,7 +152,6 @@
 * [341624400621077076](https://wokwi.com/projects/341624400621077076) https://github.com/rigobertoruiz98/cts_fsm
 * [341614536664547922](https://wokwi.com/projects/341614536664547922) https://github.com/rajarshiroy/tinytapout0_rajarshi
 * [341567111632519764](https://wokwi.com/projects/341567111632519764) https://github.com/BarsMonster/MicroASIC
-* [3398002391929329472](https://wokwi.com/projects/3398002391929329472) https://github.com/kammoh/tinytapeout-chisel
 * [341631485498884690](https://wokwi.com/projects/341631485498884690) https://github.com/cpldcpu/TinyTapeout_TrainLED
 * [341632596577354323](https://wokwi.com/projects/341632596577354323) https://github.com/malkam03/tinytapeout-game-of-life
 * [341628725785264722](https://wokwi.com/projects/341628725785264722) https://github.com/BarsMonster/MicroAsicV
