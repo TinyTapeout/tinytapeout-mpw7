@@ -44,21 +44,21 @@ The Gate Level simulation requires scan_controller and user_project_wrapper to b
 
 ### Top level test: internal control
 
-Uses the scan controller.
+Uses the scan controller, instantiated inside the whole chip.
 
     cd verilog/dv/scan_controller_int
     make coco_test
 
 ### Top level test: external control
 
-Uses external signals to control the scan chain.
+Uses external signals to control the scan chain. Simulates the whole chip.
 
     cd verilog/dv/scan_controller_ext
     make coco_test
 
 ### Top level test: logic analyser control
 
-Uses the RISCV co-processor to drive the scanchain with firmware.
+Uses the RISCV co-processor to drive the scanchain with firmware. Simulates the whole chip.
 
     cd verilog/dv/scan_controller_la
     make coco_test
