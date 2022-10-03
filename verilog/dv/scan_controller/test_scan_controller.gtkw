@@ -1,38 +1,79 @@
 [*]
-[*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
-[*] Wed Aug 31 19:31:00 2022
+[*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
+[*] Mon Oct  3 15:15:17 2022
 [*]
 [dumpfile] "/home/matt/work/asic-workshop/shuttle7/tinytapeout-mpw7/verilog/dv/scan_controller/test_scan_controller.vcd"
-[dumpfile_mtime] "Wed Aug 31 19:30:43 2022"
-[dumpfile_size] 14402588
+[dumpfile_mtime] "Mon Oct  3 13:55:56 2022"
+[dumpfile_size] 4580592
 [savefile] "/home/matt/work/asic-workshop/shuttle7/tinytapeout-mpw7/verilog/dv/scan_controller/test_scan_controller.gtkw"
 [timestart] 0
-[size] 1848 1016
+[size] 2285 1284
 [pos] -1 -1
-*-30.000000 3209000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-26.400000 99100000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] test_scan_controller_tb.
 [treeopen] test_scan_controller_tb.user_project_wrapper.
+[treeopen] test_scan_controller_tb.user_project_wrapper.scan_controller.
 [treeopen] test_scan_controller_tb.user_project_wrapper.scan_wrapper_339501025136214612_0.
+[treeopen] test_scan_controller_tb.user_project_wrapper.scan_wrapper_341535056611770964_2.
 [sst_width] 507
-[signals_width] 265
+[signals_width] 655
 [sst_expanded] 1
-[sst_vpaned_height] 289
+[sst_vpaned_height] 383
 @28
 test_scan_controller_tb.clk
 test_scan_controller_tb.reset
+test_scan_controller_tb.user_project_wrapper.scan_controller.rst_i
+test_scan_controller_tb.user_project_wrapper.scan_controller.ws_set_now
+test_scan_controller_tb.set_clk_div
+test_scan_controller_tb.user_project_wrapper.scan_controller.active
+@2024
+^1 /home/matt/work/asic-workshop/shuttle7/tinytapeout-mpw7/verilog/rtl/scan_controller/state.txt
+test_scan_controller_tb.user_project_wrapper.scan_controller.state[3:0]
+@8022
+test_scan_controller_tb.user_project_wrapper.scan_controller.ws_cnt[7:0]
+@24
+test_scan_controller_tb.user_project_wrapper.scan_controller.proj_cnt[8:0]
+@28
 test_scan_controller_tb.user_project_wrapper.scan_controller.scan_clk_in
 test_scan_controller_tb.user_project_wrapper.scan_controller.scan_clk_out
 test_scan_controller_tb.user_project_wrapper.scan_controller.scan_data_in
 test_scan_controller_tb.user_project_wrapper.scan_controller.scan_data_out
 test_scan_controller_tb.user_project_wrapper.scan_controller.scan_latch_en
 test_scan_controller_tb.user_project_wrapper.scan_controller.scan_select
-@22
+@800022
 test_scan_controller_tb.user_project_wrapper.scan_controller.inputs[7:0]
+@28
+(0)test_scan_controller_tb.user_project_wrapper.scan_controller.inputs[7:0]
+(1)test_scan_controller_tb.user_project_wrapper.scan_controller.inputs[7:0]
+(2)test_scan_controller_tb.user_project_wrapper.scan_controller.inputs[7:0]
+(3)test_scan_controller_tb.user_project_wrapper.scan_controller.inputs[7:0]
+(4)test_scan_controller_tb.user_project_wrapper.scan_controller.inputs[7:0]
+(5)test_scan_controller_tb.user_project_wrapper.scan_controller.inputs[7:0]
+(6)test_scan_controller_tb.user_project_wrapper.scan_controller.inputs[7:0]
+(7)test_scan_controller_tb.user_project_wrapper.scan_controller.inputs[7:0]
+@1001200
+-group_end
+@22
 test_scan_controller_tb.user_project_wrapper.scan_controller.outputs[7:0]
 test_scan_controller_tb.user_project_wrapper.scan_controller.active_select[8:0]
 @28
 test_scan_controller_tb.user_project_wrapper.scan_controller.ready
-@29
 test_scan_controller_tb.user_project_wrapper.scan_controller.proj_done
+test_scan_controller_tb.user_project_wrapper.scan_controller.clk_divider_I.active
+@800200
+-clock div
+@29
+test_scan_controller_tb.user_project_wrapper.scan_controller.slow_clk
+@28
+test_scan_controller_tb.user_project_wrapper.scan_controller.clk_divider_I.clk
+test_scan_controller_tb.user_project_wrapper.scan_controller.clk_divider_I.reset
+@22
+test_scan_controller_tb.user_project_wrapper.scan_controller.clk_divider_I.compare[7:0]
+test_scan_controller_tb.user_project_wrapper.scan_controller.clk_divider_I.counter[7:0]
+@28
+test_scan_controller_tb.user_project_wrapper.scan_controller.clk_divider_I.set
+test_scan_controller_tb.user_project_wrapper.scan_controller.clk_divider_I.set_now
+@1000200
+-clock div
 [pattern_trace] 1
 [pattern_trace] 0
