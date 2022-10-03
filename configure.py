@@ -498,4 +498,5 @@ if __name__ == '__main__':
     if args.update_caravel:
         caravel.create_macro_config()
         caravel.instantiate()
-        caravel.build_docs()
+        if not args.test:
+            caravel.build_docs()
