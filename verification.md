@@ -2,6 +2,8 @@
 
 * Simulation of some test projects at RTL and GL level. 
 * Simulation of the whole chip with scan controller, external controller, logic analyser.
+* Check wait state setting.
+* Check clock divider setting.
 * Formal verification that each small project's scan chain is correct.
 * Formal verification that the correct signals are passed through for the 3 different scan chain control modes.
 
@@ -41,6 +43,18 @@ The Gate Level simulation requires scan_controller and user_project_wrapper to b
 
     cd verilog/dv/scan_controller
     make test_scan_controller_gl
+
+#### custom wait state
+
+Just check one inverter module. Set a custom wait state value.
+
+    make test_wait_state
+
+#### clock divider
+
+Test one inverter module with an automatically generated clock on input 0. Sets the clock rate to 1/2 of the scan refresh rate.
+
+    make test_clock_div
 
 ### Top level test: internal control
 

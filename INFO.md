@@ -14,12 +14,24 @@ So the max refresh rate is 100MHz / (8 * 2 * 500) = 12500Hz.
 
 ## Clock divider
 
-The set_clk_div input will capture what is set on the input pins and use this as a divider for an internal slow clock that can be provided to the first input bit.
+A rising edge on the set_clk_div input will capture what is set on the input pins and use this as a divider for an internal slow clock that can be provided to the first input bit.
 
 The slow clock is only enabled if the set_clk_div is set, and the resulting clock is connected to input0 and also output on the slow_clk pin.
 
 The slow clock is synced with the scan rate. A divider of 0 mean it toggles the input0 every scan. Divider of 1 toggles it every 2 cycles.
 So the resultant slow clock frequency is scan_rate / (2 * (N+1)).
+
+See the test_clock_div test in the [scan chain verification](verification.md).
+
+## Wait states
+
+This dictates how many wait cycle we insert in various state
+of the load process. We have a sane default, but also allow
+override externally.
+
+To override, set the wait amount on the inputs, set the driver_sel inputs both high, and then reset the chip.
+
+See the test_wait_state test in the [scan chain verification](verification.md).
 
 ## Pinout
 

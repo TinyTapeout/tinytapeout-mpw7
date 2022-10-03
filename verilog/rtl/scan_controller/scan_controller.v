@@ -163,7 +163,7 @@ module scan_controller #(
     // LA interface
     assign la_scan_data_out   = scan_data_in;
 
-    // Mux toward scan-schain
+    // Mux toward scan-chain
     always @(*)
     begin
         casez (driver_sel)

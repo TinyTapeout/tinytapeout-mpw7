@@ -2,21 +2,6 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles, with_timeout
 
-# utility functions. using 2nd bit as reset and 1st bit as clock for synchronous design examples
-async def reset(dut):
-    await RisingEdge(dut.ready);
-    dut.inputs.value = 0b10
-    await RisingEdge(dut.ready);
-    dut.inputs.value = 0b11
-    await RisingEdge(dut.ready);
-    dut.inputs.value = 0b0
-
-async def single_cycle(dut):
-    await RisingEdge(dut.ready);
-    dut.inputs.value = 0b1
-    await RisingEdge(dut.ready);
-    dut.inputs.value = 0b0
-
 def decode_seg(value):
     try:
         if value == 0b0111111: return 0
@@ -31,6 +16,55 @@ def decode_seg(value):
         if value == 0b1101111: return 9
     except ValueError:
         return '?'
+
+@cocotb.test()
+async def wait_state(dut):
+    clock = Clock(dut.clk, 100, units="ns") # 10 MHz
+    cocotb.fork(clock.start())
+
+    dut.reset.value = 1
+    dut.set_clk_div.value = 0
+    dut.driver_sel.value = 0b11   # internal controller and update wait count
+    dut.inputs.value = 0x02       # set wait count to be 0x02  - default is 10
+    dut.active_select.value = 2   # inverter
+    await ClockCycles(dut.clk, 10)
+    dut.reset.value = 0
+    await ClockCycles(dut.clk, 10) # wait until the wait state config is read
+
+    dut.inputs.value = 0
+    await FallingEdge(dut.ready)
+    await FallingEdge(dut.ready)
+    for i in range(11):
+        dut.inputs.value = i
+        await FallingEdge(dut.ready)
+        print(i, int(dut.outputs))
+        if i > 0:
+            assert 256 - i == int(dut.outputs)
+
+@cocotb.test()
+async def clock_div(dut):
+    clock = Clock(dut.clk, 100, units="ns") # 10 MHz
+    cocotb.fork(clock.start())
+
+    dut.reset.value = 1
+    dut.set_clk_div.value = 0   
+    await ClockCycles(dut.clk, 10)
+    dut.reset.value = 0
+
+    # set clock divider
+    dut.set_clk_div.value = 1     # rising edge to lock in the new clock divider value
+    dut.inputs.value = 0x02       # set clock divider for 1/2 scan refresh rate
+    dut.driver_sel.value = 0b10   # internal controller
+    await ClockCycles(dut.clk, 10)
+    dut.active_select.value = 2   # inverter
+
+    dut.inputs.value = 0
+    await RisingEdge(dut.ready)
+    for i in range(2):
+        await RisingEdge(dut.slow_clk)
+        assert dut.outputs == 0xFF
+        await FallingEdge(dut.slow_clk)
+        assert dut.outputs == 0xFE
 
 @cocotb.test()
 async def internal_controller(dut):
