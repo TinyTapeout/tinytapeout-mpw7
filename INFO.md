@@ -16,14 +16,15 @@ A good way to see how this works is to read the FSM in the [scan controller](ver
 You can also run one of the simple tests and check the waveforms. See how in the [scan chain verification](verification.md) doc.
 
 Assuming you want to update project at position 2 (0 indexed) with lowest 3 inputs high and fetch the output.
+Signal names are from the perspective of the scan chain driver.
 
 * Set scan_select low so that the data is clocked into the scan flops (rather than from the design)
-* Toggle data 16 times to skip project 0 & 1
-* For the next 8 clocks, set data to 0, 0, 0, 0, 0, 0, 1, 1
-* Toggle latch to deliver the data from the scan chain to the project
+* Toggle scan_clk_out 16 times to skip project 0 & 1
+* For the next 8 clocks, set scan_data_out to 0, 0, 0, 0, 0, 0, 1, 1
+* Toggle scan_latch_en to deliver the data from the scan chain to the project
 * Set scan_select high to set the scan flop's input to be from the project
-* Toggle the clock to capture the project data into the scan chain
-* Toggle the clock another 8 x number of remaining designs to receive the data out of the end of the scan chain.
+* Toggle the scan_clk_out to capture the project data into the scan chain
+* Toggle the scan_clk_out another 8 x number of remaining designs to receive the data at scan_data_in
 
 ![update cycle](pics/update_cycle.png)
 
