@@ -1,5 +1,32 @@
 # Technical info
 
+## Scan chain
+
+All 498 designs are joined together in a long chain similiar to JTAG. We provide the inputs and outputs of that chain (see pinout below) externally, to the Caravel logic analyser, and to an internal scan chain driver.
+
+The default is to use an external driver, this is in case anything goes wrong with the Caravel logic analyser or the internal driver.
+
+The scan chain is identical for each little project, and you can [read it here](https://github.com/mattvenn/wokwi-verilog-gds-test/blob/main/template/scan_wrapper.v).
+
+![block diagram](pics/block_diagram.png)
+
+### Updating inputs and outputs of a specified design
+
+A good way to see how this works is to read the FSM in the [scan controller](verilog/rtl/scan_controller/scan_controller.v).
+You can also run one of the simple tests and check the waveforms. See how in the [scan chain verification](verification.md) doc.
+
+Assuming you want to update project at position 2 (0 indexed) with lowest 3 inputs high and fetch the output.
+
+* Set scan_select low so that the data is clocked into the scan flops (rather than from the design)
+* Toggle data 16 times to skip project 0 & 1
+* For the next 8 clocks, set data to 0, 0, 0, 0, 0, 0, 1, 1
+* Toggle latch to deliver the data from the scan chain to the project
+* Set scan_select high to set the scan flop's input to be from the project
+* Toggle the clock to capture the project data into the scan chain
+* Toggle the clock another 8 x number of remaining designs to receive the data out of the end of the scan chain.
+
+![update cycle](pics/update_cycle.png)
+
 ## Clocking
 
 Assuming:
@@ -51,35 +78,35 @@ See the test_wait_state test in the [scan chain verification](verification.md).
     29      ext_scan_clk_in     clk output from end of chain
     30      ext_scan_data_in    data output from end of chain
 
-## Scan controller configuration
+## Instructions to build GDS
 
-The scan controller allows a configurable delay on the latch and scan select pulses. TODO.
+To run the tool locally or have a fork's GitHub action work, you need the GH_USERNAME and GH_TOKEN set in your environment.
 
-## Scan chain structure
+GH_USERNAME should be set to your GitHub username.
 
-![block diagram](pics/block_diagram.png)
+To generate your GH_TOKEN go to https://github.com/settings/tokens/new . You don't need to tick any boxes in the form, the default is fine.
 
-![read](pics/read.png)
+To run locally, make a file like this:
 
-[read wavedrom diagram](https://wavedrom.com/editor.html?%7Bsignal%3A%20%5B%0A%20%20%7Bname%3A%20%27clk%27%2C%20wave%3A%20%27p.....%27%7D%2C%0A%20%20%7Bname%3A%20%27scan%20en%27%2C%20wave%3A%20%27010...%27%7D%2C%0A%20%20%7Bname%3A%20%27latch%27%2C%20wave%3A%20%270.....%27%7D%2C%0A%20%20%7Bname%3A%20%27data%20o%27%2C%20wave%3A%20%27x.....%27%7D%2C%0A%20%20%7Bname%3A%20%27data%20i%27%2C%20wave%3A%20%270.1010%27%7D%2C%0A%5D%2C%0Ahead%3A%7B%0A%20%20%20text%3A%27Capture%20outputs%201010%27%2C%0A%20%20%20tick%3A0%2C%0A%20%20%20every%3A1%0A%20%7D%7D%0A)
+    export GH_USERNAME=<username>
+    export GH_TOKEN=<token>
 
-![load](pics/load.png)
-
-[load wavedrom diagram](https://wavedrom.com/editor.html?%7Bsignal%3A%20%5B%0A%20%20%7Bname%3A%20%27clk%27%2C%20wave%3A%20%27p...l.%27%7D%2C%0A%20%20%7Bname%3A%20%27scan%20en%27%2C%20wave%3A%20%270.....%27%7D%2C%0A%20%20%7Bname%3A%20%27latch%27%2C%20wave%3A%20%270...10%27%7D%2C%0A%20%20%7Bname%3A%20%27data%20o%27%2C%20wave%3A%20%2701010.%27%7D%2C%0A%20%20%7Bname%3A%20%27data%20i%27%2C%20wave%3A%20%27x.....%27%7D%2C%0A%0A%5D%2C%0Ahead%3A%7B%0A%20%20%20text%3A%27Load%20inputs%20with%200101%27%2C%0A%20%20%20tick%3A0%2C%0A%20%20%20every%3A1%0A%20%7D%7D%0A)
-
-## Instructions to build
+And then source it before running the tool.
 
 ### Fetch all the projects
+
+This goes through all the projects in project_urls.py, and fetches the latest artifact zip from GitHub. It takes the verilog, the GL verilog, and the GDS and copies 
+them to the correct place.
 
     ./configure.py --update-projects
 
 ### Configure Caravel
 
+Caravel needs the list of macros, how power is connected, instantiation of all the projects etc. This command builds these configs and also makes the README.md index.
+
     ./configure.py --update-caravel
 
 ### Build the GDS
-
-    make user_project_wrapper
 
 To build the GDS and run the simulations, you will need to install the Sky130 PDK and OpenLane tool.
 It takes about 5 minutes and needs about 3GB of disk space.
@@ -88,6 +115,10 @@ It takes about 5 minutes and needs about 3GB of disk space.
     export OPENLANE_ROOT=<some dir>/openlane
     cd <the root of this repo>
     make setup 
+
+Then to create the GDS:
+
+    make user_project_wrapper
 
 ## Verification
 

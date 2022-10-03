@@ -44,6 +44,12 @@ The Gate Level simulation requires scan_controller and user_project_wrapper to b
     cd verilog/dv/scan_controller
     make test_scan_controller_gl
 
+#### single
+
+Just check one inverter module. Mainly for easy understanding of the traces.
+
+    make test_single
+
 #### custom wait state
 
 Just check one inverter module. Set a custom wait state value.
