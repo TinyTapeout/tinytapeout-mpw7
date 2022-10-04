@@ -98,10 +98,16 @@ We implement a simple MUX to achieve this and [formally prove it is correct](ver
 
 ## Timing constraints
 
+Due to limitations in OpenLane - a top level timing analyis is not possible. This would allow us to detect setup and hold violations in the scan chain. 
+
+Instead, we design the chain and the timing constraints for each project and the scan controller with this in mind.
+
 * [Each small project has a negedge flop flop at the end of the shift register to reclock the data](https://github.com/mattvenn/wokwi-verilog-gds-test/blob/17f106db36f022536d013b960316bcc7f02c572c/template/scan_wrapper.v#L67). This gives more hold margin.
 * [Each small project has SDC timing constraints](https://github.com/mattvenn/wokwi-verilog-gds-test/blob/main/src/base.sdc)
 * [Scan controller](https://github.com/mattvenn/tinytapeout-mpw7/blob/aacae16304f4a4878943a49fd479d8a284736e32/verilog/rtl/scan_controller/scan_controller.v#L334) uses a shift register clocked with the end of the chain to ensure correct data is captured.
 * [Scan controller has its own SDC timing constraints](openlane/scan_controller/base.sdc)
+* Scan controller can be configured to wait for a programmable time at latching data into the design and capturing it from the design.
+* External pins (by default) control the scan chain.
 
 ## Physical tests
 
