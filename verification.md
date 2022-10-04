@@ -1,20 +1,17 @@
 # Verification
 
+We are not trying to verify every single design. That is up to the person who makes it. What we want is to ensure that every design is accessible, even if some designs are broken.
+
+We can split the verification effort into functional testing (simulation), static tests (formal verification), timing tests (STA) and physical tests (LVS & DRC).
+
+See the sections below for details on each type of verification.
+
+## Simulations
+
 * Simulation of some test projects at RTL and GL level. 
 * Simulation of the whole chip with scan controller, external controller, logic analyser.
 * Check wait state setting.
 * Check clock divider setting.
-* Formal verification that each small project's scan chain is correct.
-* Formal verification that the correct signals are passed through for the 3 different scan chain control modes.
-
-# Timing constraints
-
-* [Each small project has a negedge flop flop at the end of the shift register to reclock the data](https://github.com/mattvenn/wokwi-verilog-gds-test/blob/17f106db36f022536d013b960316bcc7f02c572c/template/scan_wrapper.v#L67). This gives more hold margin.
-* [Each small project has SDC timing constraints](https://github.com/mattvenn/wokwi-verilog-gds-test/blob/main/src/base.sdc)
-* [Scan controller](https://github.com/mattvenn/tinytapeout-mpw7/blob/aacae16304f4a4878943a49fd479d8a284736e32/verilog/rtl/scan_controller/scan_controller.v#L334) uses a shift register clocked with the end of the chain to ensure correct data is captured.
-* [Scan controller has its own SDC timing constraints](openlane/scan_controller/base.sdc)
-
-## Simulations
 
 There are some testbenches that you can use to check the scan chain and controller is working.
 The default of 498 projects takes a very long time to simulate, so I advise overriding the configuration first:
@@ -85,13 +82,47 @@ Uses the RISCV co-processor to drive the scanchain with firmware. Simulates the 
 
 ## Formal Verification
 
-## Scan chain
+* Formal verification that each small project's scan chain is correct.
+* Formal verification that the correct signals are passed through for the 3 different scan chain control modes.
+
+### Scan chain
 
 Each GL netlist for each small project is proven to be equivalent to the reference scan chain implementation.
 The verification is done on the GL netlist, so an RTL version of the cells used needed to be created.
 See [here for more info](tinytapeout_scan/README.md).
 
-## Scan controller MUX
+### Scan controller MUX
 
 In case the internal scan controller doesn't work, we also have ability to control the chain from external pins or the Caravel Logic Analyser.
 We implement a simple MUX to achieve this and [formally prove it is correct](verilog/rtl/scan_controller/properties.v).
+
+## Timing constraints
+
+* [Each small project has a negedge flop flop at the end of the shift register to reclock the data](https://github.com/mattvenn/wokwi-verilog-gds-test/blob/17f106db36f022536d013b960316bcc7f02c572c/template/scan_wrapper.v#L67). This gives more hold margin.
+* [Each small project has SDC timing constraints](https://github.com/mattvenn/wokwi-verilog-gds-test/blob/main/src/base.sdc)
+* [Scan controller](https://github.com/mattvenn/tinytapeout-mpw7/blob/aacae16304f4a4878943a49fd479d8a284736e32/verilog/rtl/scan_controller/scan_controller.v#L334) uses a shift register clocked with the end of the chain to ensure correct data is captured.
+* [Scan controller has its own SDC timing constraints](openlane/scan_controller/base.sdc)
+
+## Physical tests
+
+* LVS
+* DRC
+* CVC
+
+### LVS
+
+Each project is built with OpenLane, which will check LVS for each small project.
+Then when we combine all the projects together we run a top level LVS & DRC for routing, power supply and macro placement.
+
+The extracted netlist from the GDS is what is used in the formal scan chain proof.
+
+### DRC
+
+DRC is checked by OpenLane for each small project, and then again at the top level when we combine all the projects.
+
+### CVC
+
+Mitch Bailey' CVC checker is a device level static verification system for quickly and easily detecting common circuit errors in CDL (Circuit Definition Language) netlists. We ran the test on the final design and found no errors.
+
+* See [the paper here](https://woset-workshop.github.io/PDFs/2020/a05-slides.pdf).
+* Github repo for the tool: https://github.com/d-m-bailey/cvc
