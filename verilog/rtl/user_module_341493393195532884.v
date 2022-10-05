@@ -8,7 +8,7 @@ module user_module_341493393195532884(
     wire [7:0] c;
     assign io_out = c;
 
-    mul #(4) mul_i(a, b, c);
+    mul_341493393195532884 #(4) mul_i(a, b, c);
 
 endmodule
 
@@ -30,7 +30,7 @@ endmodule
  *  or in connection with the use or performance of this software.
  *
  */
-module mul
+module mul_341493393195532884
     #(
          parameter WIDTH = 16
      )
@@ -48,7 +48,7 @@ module mul
 
     genvar k;
 generate for (k = 0; k < WIDTH; k = k +1) begin
-            full_addr #(WIDTH<<1) full_addr_i(add_a[k], add_b[k], add_y[k]);
+            full_addr_341493393195532884 #(WIDTH<<1) full_addr_i(add_a[k], add_b[k], add_y[k]);
 end endgenerate
 
     integer i;
@@ -71,7 +71,7 @@ generate always @(*) begin
 endmodule
 
 // carry ripple style
-module full_addr
+module full_addr_341493393195532884
     #(
          parameter WIDTH = 16
      )

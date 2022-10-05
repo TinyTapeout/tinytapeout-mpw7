@@ -64,7 +64,7 @@ module user_module_341176884318437971(
 /*
  * Instances
  */
-    Mult_Wallace4 inst_mul (
+    Mult_Wallace4_341176884318437971 inst_mul (
         .a(int_first_nibble),
         .b(io_in[7:4]),
         .o(int_mult_result)
@@ -74,7 +74,7 @@ endmodule
 // Unsigned 4x4-bit multiplier with
 // Wallace tree reduction. Generated
 // with my own tool.
-module Mult_Wallace4 # (
+module Mult_Wallace4_341176884318437971 # (
     parameter N = 4
 )(
     input  wire [N-1:0] a,
@@ -104,18 +104,18 @@ module Mult_Wallace4 # (
 	wire [11:0] s;
 	wire [11:0] cout;
 
-	ha HA1 (.a(ppts[0][1]), .b(ppts[1][0]), .s(s[0]), .cout(cout[0]));
-	fa FA2 (.a(ppts[0][2]), .b(ppts[1][1]), .cin(ppts[2][0]), .s(s[1]), .cout(cout[1]));
-	fa FA3 (.a(ppts[0][3]), .b(ppts[1][2]), .cin(ppts[2][1]), .s(s[2]), .cout(cout[2]));
-	ha HA4 (.a(ppts[1][3]), .b(ppts[2][2]), .s(s[3]), .cout(cout[3]));
-	ha HA5 (.a(cout[0]), .b(s[1]), .s(s[4]), .cout(cout[4]));
-	fa FA6 (.a(ppts[3][0]), .b(cout[1]), .cin(s[2]), .s(s[5]), .cout(cout[5]));
-	fa FA7 (.a(ppts[3][1]), .b(cout[2]), .cin(s[3]), .s(s[6]), .cout(cout[6]));
-	fa FA8 (.a(ppts[2][3]), .b(ppts[3][2]), .cin(cout[3]), .s(s[7]), .cout(cout[7]));
-	ha HA9 (.a(cout[4]), .b(s[5]), .s(s[8]), .cout(cout[8]));
-	fa FA10 (.a(cout[5]), .b(s[6]), .cin(cout[8]), .s(s[9]), .cout(cout[9]));
-	fa FA11 (.a(cout[6]), .b(s[7]), .cin(cout[9]), .s(s[10]), .cout(cout[10]));
-	fa FA12 (.a(ppts[3][3]), .b(cout[7]), .cin(cout[10]), .s(s[11]), .cout(cout[11]));
+	ha_341176884318437971 HA1 (.a(ppts[0][1]), .b(ppts[1][0]), .s(s[0]), .cout(cout[0]));
+	fa_341176884318437971 FA2 (.a(ppts[0][2]), .b(ppts[1][1]), .cin(ppts[2][0]), .s(s[1]), .cout(cout[1]));
+	fa_341176884318437971 FA3 (.a(ppts[0][3]), .b(ppts[1][2]), .cin(ppts[2][1]), .s(s[2]), .cout(cout[2]));
+	ha_341176884318437971 HA4 (.a(ppts[1][3]), .b(ppts[2][2]), .s(s[3]), .cout(cout[3]));
+	ha_341176884318437971 HA5 (.a(cout[0]), .b(s[1]), .s(s[4]), .cout(cout[4]));
+	fa_341176884318437971 FA6 (.a(ppts[3][0]), .b(cout[1]), .cin(s[2]), .s(s[5]), .cout(cout[5]));
+	fa_341176884318437971 FA7 (.a(ppts[3][1]), .b(cout[2]), .cin(s[3]), .s(s[6]), .cout(cout[6]));
+	fa_341176884318437971 FA8 (.a(ppts[2][3]), .b(ppts[3][2]), .cin(cout[3]), .s(s[7]), .cout(cout[7]));
+	ha_341176884318437971 HA9 (.a(cout[4]), .b(s[5]), .s(s[8]), .cout(cout[8]));
+	fa_341176884318437971 FA10 (.a(cout[5]), .b(s[6]), .cin(cout[8]), .s(s[9]), .cout(cout[9]));
+	fa_341176884318437971 FA11 (.a(cout[6]), .b(s[7]), .cin(cout[9]), .s(s[10]), .cout(cout[10]));
+	fa_341176884318437971 FA12 (.a(ppts[3][3]), .b(cout[7]), .cin(cout[10]), .s(s[11]), .cout(cout[11]));
 
 	assign o[7] = cout[11];
 	assign o[6] = s[11];
@@ -128,7 +128,7 @@ module Mult_Wallace4 # (
 endmodule
 
 // Full adder
-module fa (
+module fa_341176884318437971 (
     input  wire a,
     input  wire b,
     input  wire cin,
@@ -168,7 +168,7 @@ module fa (
 endmodule
 
 // Half adder
-module ha (
+module ha_341176884318437971 (
     input  wire a,
     input  wire b,
     output wire s,
@@ -197,7 +197,7 @@ module ha (
 endmodule
 
 // Carry save adder
-module csa #(
+module csa_341176884318437971 #(
     parameter NUM_BITS = 4
 ) (
     input  wire [NUM_BITS-1:0] a, // Input A
@@ -210,7 +210,7 @@ module csa #(
 
     generate
         for (i = 0; i < NUM_BITS; i = i + 1) begin
-            fa fa_i (
+            fa_341176884318437971 fa_i (
                 .a   (a[i]),
                 .b   (b[i]),
                 .cin (c[i]),
@@ -222,7 +222,7 @@ module csa #(
 endmodule
 
 // Ripple carry adder
-module rca #(
+module rca_341176884318437971 #(
     parameter NUM_BITS = 4
 ) (
     input  wire [NUM_BITS-1:0] a,
@@ -247,14 +247,14 @@ module rca #(
             if (i == 0) begin
                 // The first bits have no carry in,
                 // so just generate a half adder.
-                ha ha_0 (
+                ha_341176884318437971 ha_0 (
                     .a   (a[i]),
                     .b   (b[i]),
                     .s   (s[i]),
                     .cout(int_carry[i])
                 );
             end else begin
-                fa fa_i (
+                fa_341176884318437971 fa_i (
                     .a   (a[i]),
                     .b   (b[i]),
                     .cin (int_carry[i-1]),

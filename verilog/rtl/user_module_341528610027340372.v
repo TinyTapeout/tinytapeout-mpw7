@@ -6,7 +6,7 @@ module user_module_341528610027340372(
   output [7:0] io_out
 );
 
-MCPU5 MCPU5_top (
+MCPU5_341528610027340372 MCPU5_top (
   .clk(io_in[0]),
   .rst(io_in[1]),
   .inst_in(io_in[7:2]),
@@ -16,7 +16,7 @@ MCPU5 MCPU5_top (
 endmodule
 
 
-module MCPU5(inst_in,cpu_out,rst,clk);
+module MCPU5_341528610027340372(inst_in,cpu_out,rst,clk);
 
 input [5:0] inst_in;
 output [7:0] cpu_out;

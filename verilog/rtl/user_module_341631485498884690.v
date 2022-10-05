@@ -6,7 +6,7 @@ module user_module_341631485498884690(
   output [7:0] io_out
 );
 
-TrainLED LED1 (
+TrainLED_341631485498884690 LED1 (
     .clk(io_in[0]),
     .rst(io_in[1]),
     .din(io_in[2]),
@@ -19,7 +19,7 @@ TrainLED LED1 (
 endmodule
 
 
-module TrainLED(clk,rst,din,dout,led1,led2,led3);
+module TrainLED_341631485498884690(clk,rst,din,dout,led1,led2,led3);
 
 input clk,rst,din;
 output dout;
@@ -34,9 +34,9 @@ reg [7:0] resetcount;
 reg [3:0] pwmcounter;
 reg [1:0] mode;  // 0=receive, 1=forward, 2=reset
 
-PWMEngine PWM1 (.clk(clk),.rst(rst),.counter(pwmcounter),.PW_in(shiftlatch[3:0]),.led(led1));
-PWMEngine PWM2 (.clk(clk),.rst(rst),.counter(pwmcounter),.PW_in(shiftlatch[7:4]),.led(led2));
-PWMEngine PWM3 (.clk(clk),.rst(rst),.counter(pwmcounter),.PW_in(shiftlatch[11:8]),.led(led3));
+PWMEngine_341631485498884690 PWM1 (.clk(clk),.rst(rst),.counter(pwmcounter),.PW_in(shiftlatch[3:0]),.led(led1));
+PWMEngine_341631485498884690 PWM2 (.clk(clk),.rst(rst),.counter(pwmcounter),.PW_in(shiftlatch[7:4]),.led(led2));
+PWMEngine_341631485498884690 PWM3 (.clk(clk),.rst(rst),.counter(pwmcounter),.PW_in(shiftlatch[11:8]),.led(led3));
 
     always @(posedge clk)
         if (rst) begin
@@ -109,7 +109,7 @@ assign dout = outdff;
 
 endmodule
 
-module PWMEngine(clk,rst,PW_in,counter,led);
+module PWMEngine_341631485498884690(clk,rst,PW_in,counter,led);
 
 input [3:0] PW_in;   // 
 input [3:0] counter;   // 

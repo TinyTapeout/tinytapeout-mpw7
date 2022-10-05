@@ -1,4 +1,4 @@
-module hm_enc( input wire [3:0] in, output wire[6:0] out);
+module hm_enc_hamming74( input wire [3:0] in, output wire[6:0] out);
    assign out[0] = in[0] ^ in[1] ^ in[3];
    assign out[1] = in[0] ^ in[2] ^ in[3];
    assign out[2] = in[0];
@@ -6,9 +6,9 @@ module hm_enc( input wire [3:0] in, output wire[6:0] out);
    assign out[4] = in[1];
    assign out[5] = in[2];
    assign out[6] = in[3];
-endmodule // hm_enc
+endmodule // hm_enc_hamming74
 
-module hm_dec (
+module hm_dec_hamming74 (
                input [6:0]  recv,
                output [3:0] infoword,
                output [2:0] syndrome
@@ -41,8 +41,8 @@ module user_module_hamming74
    wire [6:0]        codeword = io_in[6:0];
    wire              enc_dec = io_in[7];
 
-   hm_enc encoder (.in(info), .out(encoded));
-   hm_dec decoder (.recv(codeword), .infoword(decoded), .syndrome(syndrome));
+   hm_enc_hamming74 encoder (.in(info), .out(encoded));
+   hm_dec_hamming74 decoder (.recv(codeword), .infoword(decoded), .syndrome(syndrome));
 
    assign io_out[6:0] = enc_dec ? encoded : {syndrome , decoded};
 
