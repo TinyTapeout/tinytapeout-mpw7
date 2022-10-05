@@ -69,8 +69,22 @@ include $(shell cocotb-config --makefiles)/Makefile.sim
 # Simulation
 # ==============================================================================
 
+.PHONY: test_single
+test_single: TESTCASE=test_single
+test_single: $(COCOTB_RESULTS_FILE)
+
+.PHONY: test_wait_state
+test_wait_state: TESTCASE=wait_state
+test_wait_state: $(COCOTB_RESULTS_FILE)
+
+.PHONY: test_clock_div
+test_clock_div: TESTCASE=clock_div
+test_clock_div: $(COCOTB_RESULTS_FILE)
+
 .PHONY: test_scan_controller
+test_scan_controller: TESTCASE=internal_controller
 test_scan_controller: $(COCOTB_RESULTS_FILE)
 
 .PHONY: test_scan_controller
+test_scan_controller_gl: TESTCASE=internal_controller
 test_scan_controller_gl: $(COCOTB_RESULTS_FILE)
