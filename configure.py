@@ -213,13 +213,78 @@ class Projects():
             ]
 
         logging.debug("copying files into position")
-        for file in files:
-            logging.debug("copy {} to {}".format(file[0], file[1]))
-            shutil.copyfile(file[0], file[1])
+        for from_path, to_path in files:
+            logging.debug(f"copy {from_path} to {to_path}")
+            shutil.copyfile(from_path, to_path)
+
+        # Uniquify the Verilog for this project
+        self.uniquify_project(wokwi_id, [
+            f"verilog/rtl/scan_wrapper_{wokwi_id}.v",
+            f"verilog/rtl/user_module_{wokwi_id}.v",
+        ])
 
         # unlink temp directory
         shutil.rmtree(tmp_dir)
         return wokwi_id
+
+    def uniquify_project(self, wokwi_id : str, rtl_files : List[str]) -> None:
+        """
+        Ensure all modules within a given subproject include the Wokwi ID, this
+        avoids collisions between names. This is a relatively simplistic function
+        for uniquification, it could probably be improved a lot.
+
+        :param wokwi_id:    The unique ID for the project
+        :param rtl_files:   List of paths to Verilog files to uniquify
+        """
+        # Identify all of the module names in this project
+        rgx_mod  = re.compile(r"(?:^|[\W])module[\s]{1,}([\w]+)")
+        all_mod  = set()
+        full_txt = {}
+        for path in rtl_files:
+            with open(path, "r", encoding="utf-8") as fh:
+                # Pull in full text
+                full_txt[path] = list(fh.readlines())
+                # Strip single and multi line comments
+                in_block = False
+                clean    = []
+                for line in full_txt[path]:
+                    if "/*" in line and "*/" in line:
+                        line = line.split("/*")[0] + line.split("*/")[1]
+                    elif "/*" in line:
+                        line     = line.split("/*")[0]
+                        in_block = True
+                    elif in_block and "*/" in line:
+                        line     = line.split("*/")[1]
+                        in_block = False
+                    clean.append(line.split("//")[0].strip())
+                # Join cleaned up lines together
+                flat_text = " ".join(clean)
+                # Search for 'module X' declarations
+                for match in rgx_mod.finditer(flat_text):
+                    all_mod.add(match.group(1))
+        # Replace just the names which don't contain the Wokwi ID
+        problems = { x for x in all_mod if wokwi_id not in x }
+        if problems:
+            # Create regular expression to match uses of the module name
+            rgx_repl = re.compile(rf"\b({'|'.join(problems)})\b")
+            # Run through each Verilog file
+            for path, orig_txt in full_txt.items():
+                new_txt = []
+                for line in orig_txt:
+                    # For every match, substitute with a safe module name
+                    for match in list(rgx_repl.finditer(line))[::-1]:
+                        m_start, m_end = match.span()
+                        m_sub          = f"{match.group(1)}_{wokwi_id}"
+                        line           = line[:m_start] + m_sub + line[m_end:]
+                        # Some projects seem to have hardcoded RTL and forgotten
+                        # to replace 'USER_MODULE_ID' with the Wokwi ID
+                        if "_USER_MODULE_ID_" in line:
+                            line = line.replace("_USER_MODULE_ID_", "_")
+                    new_txt.append(line)
+                # Overwrite the file
+                logging.info(f"Writing uniquified RTL for {path}")
+                with open(path, "w", encoding="utf-8") as fh:
+                    fh.writelines(new_txt)
 
 
 class CaravelConfig():
