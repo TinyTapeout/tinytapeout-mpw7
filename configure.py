@@ -16,6 +16,7 @@ class Projects():
         self.default_project = 0
         self.test = test
         if update_cache:
+            logging.info("updating cache, this could take a while")
             self.update_cache(update_single)
         else:
             # load projects from cache
