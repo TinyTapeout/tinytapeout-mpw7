@@ -58,7 +58,7 @@ jobs:
 
     # fetch the repos
     - name: fetch all
-      run: python ./configure.py --update-projects
+      run: python ./configure.py --update-projects --debug
 
     # install projects
     - name: configure
