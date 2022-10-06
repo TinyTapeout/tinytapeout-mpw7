@@ -2,6 +2,6 @@
 
 run
 
-    ./configure.py --update-caravel --limit 1
+    ./configure.py --update-caravel --limit 20
 
 before starting test
