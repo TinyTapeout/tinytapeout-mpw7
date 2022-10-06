@@ -94,7 +94,7 @@ To run the tool locally or have a fork's GitHub action work, you need the GH_USE
 
 GH_USERNAME should be set to your GitHub username.
 
-To generate your GH_TOKEN go to https://github.com/settings/tokens/new . You don't need to tick any boxes in the form, the default is fine.
+To generate your GH_TOKEN go to https://github.com/settings/tokens/new . Set the checkboxes for repo and workflow.
 
 To run locally, make a file like this:
 

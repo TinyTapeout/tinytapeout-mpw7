@@ -6,20 +6,25 @@ We can split the verification effort into functional testing (simulation), stati
 
 See the sections below for details on each type of verification.
 
+# Setup
+
+You will need the GitHub tokens setup as described in [INFO](INFO.md#instructions-to-build-gds).
+
+The default of 498 projects takes a very long time to simulate, so I advise overriding the configuration:
+
+    # fetch the test projects
+    ./configure.py --test --update-projects
+    # rebuild config with only 20 projects
+    ./configure.py --test --update-caravel --limit 20
+
+You will also need iVerilog & cocotb. The easist way to install these are to download and install the [oss-cad-suite](https://github.com/YosysHQ/oss-cad-suite-build).
+
 ## Simulations
 
 * Simulation of some test projects at RTL and GL level. 
 * Simulation of the whole chip with scan controller, external controller, logic analyser.
 * Check wait state setting.
 * Check clock divider setting.
-
-There are some testbenches that you can use to check the scan chain and controller is working.
-The default of 498 projects takes a very long time to simulate, so I advise overriding the configuration first:
-
-    # fetch the test projects
-    ./configure.py --test --update-projects
-    # rebuild config with only 20 projects
-    ./configure.py --test --update-caravel --limit 20
 
 ### Scan controller
 
