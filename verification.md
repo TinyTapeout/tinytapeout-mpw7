@@ -64,6 +64,12 @@ Test one inverter module with an automatically generated clock on input 0. Sets 
 
     make test_clock_div
 
+## Top level tests setup
+
+For all the top level tests, you will also need a [RISCV compiler to build the firmware](https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.3.0-2020.04.1-x86_64-linux-ubuntu14.tar.gz). 
+
+You will also need to install the 'management core' for the Caravel ASIC submission wrapper. This is done automatically by following the [PDK install instructions](INFO.md#build-the-gds).
+
 ### Top level test: internal control
 
 Uses the scan controller, instantiated inside the whole chip.
