@@ -16,11 +16,11 @@ jobs:
     - name: checkout repo
       uses: actions/checkout@v2
 
-    # build pdk - have to move this back above to get caravel makefile
-    #- name: pdk & openlane & precheck
-    #  run: |
-    #    make setup
-    #    make precheck
+     build pdk - have to move this back above to get caravel makefile
+    - name: pdk & openlane & precheck
+      run: |
+        make setup
+        make precheck
 
     # need python
     - name: setup python
@@ -30,12 +30,12 @@ jobs:
         cache: 'pip'
     - run: pip install -r requirements.txt
 
-    # install riscv gcc
-    #- name: riscv gcc
-    #  run: |
-    #    cd $HOME
-    #    wget https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.3.0-2020.04.1-x86_64-linux-ubuntu14.tar.gz
-    #    tar -xzf riscv64-unknown-elf-gcc-8.3.0-2020.04.1-x86_64-linux-ubuntu14.tar.gz
+     install riscv gcc
+    - name: riscv gcc
+      run: |
+        cd $HOME
+        wget https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.3.0-2020.04.1-x86_64-linux-ubuntu14.tar.gz
+        tar -xzf riscv64-unknown-elf-gcc-8.3.0-2020.04.1-x86_64-linux-ubuntu14.tar.gz
 
     # pwd debug
     - name: pwd
@@ -60,10 +60,26 @@ jobs:
       run: python ./configure.py --update-caravel --test --limit 20
 
     # run first set of tests
-    - name: simulation
+    - name: basic simulations
       run: |
         cd verilog/dv/scan_controller
         make clean test_single
         make clean test_wait_state
         make clean test_clock_div
         make clean test_scan_controller
+
+    # requires riscv for firmware and PDK for standard cells
+    - name: full chip sim - external
+      run: |
+        cd verilog/dv/scan_controller_ext
+        make coco_test
+
+    - name: full chip sim - internal
+      run: |
+        cd verilog/dv/scan_controller_int
+        make coco_test
+
+    - name: full chip sim - logic analyser
+      run: |
+        cd verilog/dv/scan_controller_la
+        make coco_test
