@@ -37,7 +37,7 @@ async def test_single(dut):
     for i in range(11):
         dut.inputs.value = i
         await FallingEdge(dut.ready)
-        print(i, int(dut.outputs))
+        dut._log.info("cycle %d - output state %d", i, int(dut.outputs))
         if i > 0:
             assert 256 - i == int(dut.outputs)
 
@@ -61,7 +61,7 @@ async def wait_state(dut):
     for i in range(11):
         dut.inputs.value = i
         await FallingEdge(dut.ready)
-        print(i, int(dut.outputs))
+        dut._log.info("cycle %d - output state %d", i, int(dut.outputs))
         if i > 0:
             assert 256 - i == int(dut.outputs)
 
@@ -71,7 +71,7 @@ async def clock_div(dut):
     cocotb.fork(clock.start())
 
     dut.reset.value = 1
-    dut.set_clk_div.value = 0   
+    dut.set_clk_div.value = 0
     await ClockCycles(dut.clk, 10)
     dut.reset.value = 0
 
@@ -139,7 +139,7 @@ async def internal_controller(dut):
     for i in range(11):
         dut.inputs.value = i
         await FallingEdge(dut.ready)
-        dut._log.info(i, int(dut.outputs))
+        dut._log.info("cycle %d - output state %d", i, int(dut.outputs))
         if i > 0:
             assert i == int(dut.outputs) + 1
 
@@ -151,7 +151,7 @@ async def internal_controller(dut):
     for i in range(11):
         dut.inputs.value = i
         await FallingEdge(dut.ready)
-        dut._log.info(i, int(dut.outputs))
+        dut._log.info("cycle %d - output state %d", i, int(dut.outputs))
         if i > 0:
             assert 256 - i == int(dut.outputs)
 
@@ -162,6 +162,6 @@ async def internal_controller(dut):
         for i in range(11):
             dut.inputs.value = i
             await FallingEdge(dut.ready)
-            dut._log.info(i, int(dut.outputs))
+            dut._log.info("cycle %d - output state %d", i, int(dut.outputs))
             if i > 0:
                 assert i == int(dut.outputs) + 1

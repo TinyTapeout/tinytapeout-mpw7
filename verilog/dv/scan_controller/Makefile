@@ -85,6 +85,6 @@ test_clock_div: $(COCOTB_RESULTS_FILE)
 test_scan_controller: TESTCASE=internal_controller
 test_scan_controller: $(COCOTB_RESULTS_FILE)
 
-.PHONY: test_scan_controller
+.PHONY: test_scan_controller_gl
 test_scan_controller_gl: TESTCASE=internal_controller
 test_scan_controller_gl: $(COCOTB_RESULTS_FILE)
