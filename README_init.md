@@ -1,4 +1,5 @@
 [![tinytapeout](https://github.com/mattvenn/tinytapeout-mpw7/actions/workflows/tinytapeout.yaml/badge.svg)](https://github.com/mattvenn/tinytapeout-mpw7/actions/workflows/tinytapeout.yaml)
+[![verification](https://github.com/mattvenn/tinytapeout-mpw7/actions/workflows/verification.yaml/badge.svg)](https://github.com/mattvenn/tinytapeout-mpw7/actions/workflows/verification.yaml)
 
 # TinyTapeout
 
