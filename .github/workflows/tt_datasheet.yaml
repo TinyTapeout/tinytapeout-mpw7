@@ -1,0 +1,64 @@
+name: tt_datasheet
+# either manually started, or on a schedule
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *' # At 4:00 UTC everyday
+jobs:
+  build_datasheet:
+    env:
+        GH_TOKEN:       ${{ secrets.GH_TOKEN }}
+        GH_USERNAME:    ${{ secrets.GH_USERNAME }}
+
+    # ubuntu
+    runs-on: ubuntu-latest
+    steps:
+    # need the repo checked out, and the tt_docs repo checked out
+    - name: checkout repo
+      uses: actions/checkout@v2
+      with: 
+        submodules: true
+
+    # need python
+    - name: setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.7.7' # install the python version needed
+
+    # python deps from reqirements file, use a marketplace action
+    - name: Install Python dependencies
+      uses: py-actions/py-dependency-install@v2
+      with:
+        path: "tt_docs/requirements.txt"
+
+    # run the job
+    - name: build datasheet
+      run: |
+        cd tt_docs
+        python builddoc.py
+
+    # convert to PDF
+    - name: Pandoc deps
+      run: | 
+        sudo apt-get update -y
+        sudo apt-get install -y pandoc texlive-xetex
+
+    - name: convert pdf
+      run: |
+        cd tt_docs
+        ./pandoc.sh
+
+    # archive the PDF
+    - name: Archive PDF
+      uses: actions/upload-artifact@v2
+      with:
+          name: PDF
+          path: tt_docs/tt01.pdf
+
+    # archive the MD
+    - name: Archive MD
+      uses: actions/upload-artifact@v2
+      with:
+          name: MD
+          path: tt_docs/tt01.md
