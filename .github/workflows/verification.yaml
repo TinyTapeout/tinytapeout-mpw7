@@ -1,0 +1,69 @@
+name: verification
+# either manually started, or on a schedule
+on: [ push, workflow_dispatch, pull_request ]
+jobs:
+  verification:
+    env:
+        OPENLANE_ROOT:  /home/runner/openlane
+        PDK_ROOT:       /home/runner/pdk
+        PDK:            sky130B
+        GH_TOKEN:       ${{ secrets.GH_TOKEN }}
+        GH_USERNAME:    ${{ secrets.GH_USERNAME }}
+    # ubuntu
+    runs-on: ubuntu-latest
+    steps:
+    # need the repo checked out
+    - name: checkout repo
+      uses: actions/checkout@v2
+
+    # build pdk - have to move this back above to get caravel makefile
+    #- name: pdk & openlane & precheck
+    #  run: |
+    #    make setup
+    #    make precheck
+
+    # need python
+    - name: setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.7.7'
+        cache: 'pip'
+    - run: pip install -r requirements.txt
+
+    # install riscv gcc
+    #- name: riscv gcc
+    #  run: |
+    #    cd $HOME
+    #    wget https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.3.0-2020.04.1-x86_64-linux-ubuntu14.tar.gz
+    #    tar -xzf riscv64-unknown-elf-gcc-8.3.0-2020.04.1-x86_64-linux-ubuntu14.tar.gz
+
+    # pwd debug
+    - name: pwd
+      run: |
+        pwd # /home/runner/work/tinytapeout-mpw7/tinytapeout-mpw7
+
+    # install oss fpga tools for cocotb and iverilog
+    - name: install oss-cad-suite
+      uses: YosysHQ/setup-oss-cad-suite@v1
+      with:
+          python-override: true # don't want to use that python
+    - run: | 
+        yosys --version
+        iverilog -V
+
+    # fetch the repos - test mode
+    - name: fetch all
+      run: python ./configure.py --update-projects --debug --test
+
+    # install projects
+    - name: configure for test
+      run: python ./configure.py --update-caravel --test --limit 20
+
+    # run first set of tests
+    - name: simulation
+      run: |
+        cd verilog/dv/scan_controller
+        make clean test_single
+        make clean test_wait_state
+        make clean test_clock_div
+        make clean test_scan_controller
