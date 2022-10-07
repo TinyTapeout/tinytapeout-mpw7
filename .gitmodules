@@ -1,3 +1,6 @@
 [submodule "tinytapeout_scan"]
 	path = tinytapeout_scan
 	url = https://github.com/jix/tinytapeout_scan.git
+[submodule ".github/workflows/tt_docs"]
+	path = .github/workflows/tt_docs
+	url = https://github.com/TinyTapeout/tt_docs.git
