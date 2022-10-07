@@ -16,7 +16,7 @@ jobs:
     - name: checkout repo
       uses: actions/checkout@v2
 
-     build pdk - have to move this back above to get caravel makefile
+    # build pdk - have to move this back above to get caravel makefile
     - name: pdk & openlane & precheck
       run: |
         make setup
@@ -30,7 +30,7 @@ jobs:
         cache: 'pip'
     - run: pip install -r requirements.txt
 
-     install riscv gcc
+    # install riscv gcc
     - name: riscv gcc
       run: |
         cd $HOME
