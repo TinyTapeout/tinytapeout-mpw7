@@ -5,7 +5,7 @@ module user_module_341457494561784402(
     input  wire [7:0] io_in,
     output wire [7:0] io_out
 );
-    ChiselWrapper chiselwrapper(
+    ChiselWrapper_341457494561784402 chiselwrapper(
         .io_in(io_in),
         .io_out(io_out),
     );
@@ -13,7 +13,7 @@ module user_module_341457494561784402(
 endmodule
 
 
-module DisplayDriver(
+module DisplayDriver_341457494561784402(
   input  [3:0] io_in,
   input        io_dot,
   output [7:0] io_out
@@ -30,7 +30,7 @@ module DisplayDriver(
   wire [6:0] display = 4'h9 == io_in ? 7'h6f : _display_T_17; // @[Mux.scala 81:58]
   assign io_out = {io_dot,display}; // @[Cat.scala 31:58]
 endmodule
-module GCD(
+module GCD_341457494561784402(
   input        clock,
   input  [3:0] io_value1,
   input  [3:0] io_value2,
@@ -42,22 +42,22 @@ module GCD(
   reg [31:0] _RAND_0;
   reg [31:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
-  reg [3:0] x; // @[GCD.scala 21:15]
-  reg [3:0] y; // @[GCD.scala 22:15]
-  wire [3:0] _x_T_1 = x - y; // @[GCD.scala 24:24]
-  wire [3:0] _y_T_1 = y - x; // @[GCD.scala 25:25]
-  assign io_outputGCD = x; // @[GCD.scala 32:16]
-  assign io_outputValid = y == 4'h0; // @[GCD.scala 33:23]
+  reg [3:0] x; // @[GCD_341457494561784402.scala 21:15]
+  reg [3:0] y; // @[GCD_341457494561784402.scala 22:15]
+  wire [3:0] _x_T_1 = x - y; // @[GCD_341457494561784402.scala 24:24]
+  wire [3:0] _y_T_1 = y - x; // @[GCD_341457494561784402.scala 25:25]
+  assign io_outputGCD = x; // @[GCD_341457494561784402.scala 32:16]
+  assign io_outputValid = y == 4'h0; // @[GCD_341457494561784402.scala 33:23]
   always @(posedge clock) begin
-    if (io_loadingValues) begin // @[GCD.scala 27:26]
-      x <= io_value1; // @[GCD.scala 28:7]
-    end else if (x > y) begin // @[GCD.scala 24:15]
-      x <= _x_T_1; // @[GCD.scala 24:19]
+    if (io_loadingValues) begin // @[GCD_341457494561784402.scala 27:26]
+      x <= io_value1; // @[GCD_341457494561784402.scala 28:7]
+    end else if (x > y) begin // @[GCD_341457494561784402.scala 24:15]
+      x <= _x_T_1; // @[GCD_341457494561784402.scala 24:19]
     end
-    if (io_loadingValues) begin // @[GCD.scala 27:26]
-      y <= io_value2; // @[GCD.scala 29:7]
-    end else if (!(x > y)) begin // @[GCD.scala 24:15]
-      y <= _y_T_1; // @[GCD.scala 25:20]
+    if (io_loadingValues) begin // @[GCD_341457494561784402.scala 27:26]
+      y <= io_value2; // @[GCD_341457494561784402.scala 29:7]
+    end else if (!(x > y)) begin // @[GCD_341457494561784402.scala 24:15]
+      y <= _y_T_1; // @[GCD_341457494561784402.scala 25:20]
     end
   end
 // Register and memory initialization
@@ -108,25 +108,25 @@ end // initial
 `endif
 `endif // SYNTHESIS
 endmodule
-module ChiselWrapper(
+module ChiselWrapper_341457494561784402(
   input  [7:0] io_in,
   output [7:0] io_out
 );
-  wire [3:0] display_io_in; // @[ChiselWrapper.scala 15:23]
-  wire  display_io_dot; // @[ChiselWrapper.scala 15:23]
-  wire [7:0] display_io_out; // @[ChiselWrapper.scala 15:23]
-  wire  gcd_clock; // @[ChiselWrapper.scala 19:55]
-  wire [3:0] gcd_io_value1; // @[ChiselWrapper.scala 19:55]
-  wire [3:0] gcd_io_value2; // @[ChiselWrapper.scala 19:55]
-  wire  gcd_io_loadingValues; // @[ChiselWrapper.scala 19:55]
-  wire [3:0] gcd_io_outputGCD; // @[ChiselWrapper.scala 19:55]
-  wire  gcd_io_outputValid; // @[ChiselWrapper.scala 19:55]
-  DisplayDriver display ( // @[ChiselWrapper.scala 15:23]
+  wire [3:0] display_io_in; // @[ChiselWrapper_341457494561784402.scala 15:23]
+  wire  display_io_dot; // @[ChiselWrapper_341457494561784402.scala 15:23]
+  wire [7:0] display_io_out; // @[ChiselWrapper_341457494561784402.scala 15:23]
+  wire  gcd_clock; // @[ChiselWrapper_341457494561784402.scala 19:55]
+  wire [3:0] gcd_io_value1; // @[ChiselWrapper_341457494561784402.scala 19:55]
+  wire [3:0] gcd_io_value2; // @[ChiselWrapper_341457494561784402.scala 19:55]
+  wire  gcd_io_loadingValues; // @[ChiselWrapper_341457494561784402.scala 19:55]
+  wire [3:0] gcd_io_outputGCD; // @[ChiselWrapper_341457494561784402.scala 19:55]
+  wire  gcd_io_outputValid; // @[ChiselWrapper_341457494561784402.scala 19:55]
+  DisplayDriver_341457494561784402 display ( // @[ChiselWrapper_341457494561784402.scala 15:23]
     .io_in(display_io_in),
     .io_dot(display_io_dot),
     .io_out(display_io_out)
   );
-  GCD gcd ( // @[ChiselWrapper.scala 19:55]
+  GCD_341457494561784402 gcd ( // @[ChiselWrapper_341457494561784402.scala 19:55]
     .clock(gcd_clock),
     .io_value1(gcd_io_value1),
     .io_value2(gcd_io_value2),
@@ -134,11 +134,11 @@ module ChiselWrapper(
     .io_outputGCD(gcd_io_outputGCD),
     .io_outputValid(gcd_io_outputValid)
   );
-  assign io_out = display_io_out; // @[ChiselWrapper.scala 16:10]
-  assign display_io_in = gcd_io_outputGCD; // @[ChiselWrapper.scala 23:17]
-  assign display_io_dot = gcd_io_outputValid; // @[ChiselWrapper.scala 24:18]
-  assign gcd_clock = io_in[0]; // @[ChiselWrapper.scala 19:35]
+  assign io_out = display_io_out; // @[ChiselWrapper_341457494561784402.scala 16:10]
+  assign display_io_in = gcd_io_outputGCD; // @[ChiselWrapper_341457494561784402.scala 23:17]
+  assign display_io_dot = gcd_io_outputValid; // @[ChiselWrapper_341457494561784402.scala 24:18]
+  assign gcd_clock = io_in[0]; // @[ChiselWrapper_341457494561784402.scala 19:35]
   assign gcd_io_value1 = {1'h1,io_in[4:2]}; // @[Cat.scala 31:58]
   assign gcd_io_value2 = {1'h0,io_in[7:5]}; // @[Cat.scala 31:58]
-  assign gcd_io_loadingValues = io_in[1]; // @[ChiselWrapper.scala 22:32]
+  assign gcd_io_loadingValues = io_in[1]; // @[ChiselWrapper_341457494561784402.scala 22:32]
 endmodule

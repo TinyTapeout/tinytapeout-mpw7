@@ -1,8 +1,4 @@
 `default_nettype none
-`define UNIT_DELAY #1
-`define FUNCTIONAL
-`include "libs.ref/sky130_fd_sc_hd/verilog/primitives.v"
-`include "libs.ref/sky130_fd_sc_hd/verilog/sky130_fd_sc_hd.v"
 
 module test_scan_controller_tb(
     input wire clk,
@@ -34,11 +30,17 @@ module test_scan_controller_tb(
     // 7 seg signals
     wire [6:0] seven_seg = outputs[6:0];
 
-    `ifdef COCOTB
+    `ifdef SIM_ICARUS
     initial begin
-        $dumpfile ("test_scan_controller.vcd");
-        $dumpvars (0, test_scan_controller_tb);
-        #1;
+        string f_name;
+        $timeformat(-9, 2, " ns", 20);
+        if ($value$plusargs("WAVE_FILE=%s", f_name)) begin
+            $display("%0t: Capturing wave file %s", $time, f_name);
+            $dumpfile(f_name);
+            $dumpvars(0, test_scan_controller_tb);
+        end else begin
+            $display("%0t: No filename provided - disabling wave capture", $time);
+        end
     end
     `endif
 

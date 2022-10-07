@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import re
+from typing import List
 from urllib.parse import urlparse
 import argparse, requests, base64, zipfile, io, logging, pickle, shutil, sys, os, collections, subprocess
 
@@ -211,13 +213,78 @@ class Projects():
             ]
 
         logging.debug("copying files into position")
-        for file in files:
-            logging.debug("copy {} to {}".format(file[0], file[1]))
-            shutil.copyfile(file[0], file[1])
+        for from_path, to_path in files:
+            logging.debug(f"copy {from_path} to {to_path}")
+            shutil.copyfile(from_path, to_path)
+
+        # Uniquify the Verilog for this project
+        self.uniquify_project(wokwi_id, [
+            f"verilog/rtl/scan_wrapper_{wokwi_id}.v",
+            f"verilog/rtl/user_module_{wokwi_id}.v",
+        ])
 
         # unlink temp directory
         shutil.rmtree(tmp_dir)
         return wokwi_id
+
+    def uniquify_project(self, wokwi_id : str, rtl_files : List[str]) -> None:
+        """
+        Ensure all modules within a given subproject include the Wokwi ID, this
+        avoids collisions between names. This is a relatively simplistic function
+        for uniquification, it could probably be improved a lot.
+
+        :param wokwi_id:    The unique ID for the project
+        :param rtl_files:   List of paths to Verilog files to uniquify
+        """
+        # Identify all of the module names in this project
+        rgx_mod  = re.compile(r"(?:^|[\W])module[\s]{1,}([\w]+)")
+        all_mod  = set()
+        full_txt = {}
+        for path in rtl_files:
+            with open(path, "r", encoding="utf-8") as fh:
+                # Pull in full text
+                full_txt[path] = list(fh.readlines())
+                # Strip single and multi line comments
+                in_block = False
+                clean    = []
+                for line in full_txt[path]:
+                    if "/*" in line and "*/" in line:
+                        line = line.split("/*")[0] + line.split("*/")[1]
+                    elif "/*" in line:
+                        line     = line.split("/*")[0]
+                        in_block = True
+                    elif in_block and "*/" in line:
+                        line     = line.split("*/")[1]
+                        in_block = False
+                    clean.append(line.split("//")[0].strip())
+                # Join cleaned up lines together
+                flat_text = " ".join(clean)
+                # Search for 'module X' declarations
+                for match in rgx_mod.finditer(flat_text):
+                    all_mod.add(match.group(1))
+        # Replace just the names which don't contain the Wokwi ID
+        problems = { x for x in all_mod if wokwi_id not in x }
+        if problems:
+            # Create regular expression to match uses of the module name
+            rgx_repl = re.compile(rf"\b({'|'.join(problems)})\b")
+            # Run through each Verilog file
+            for path, orig_txt in full_txt.items():
+                new_txt = []
+                for line in orig_txt:
+                    # For every match, substitute with a safe module name
+                    for match in list(rgx_repl.finditer(line))[::-1]:
+                        m_start, m_end = match.span()
+                        m_sub          = f"{match.group(1)}_{wokwi_id}"
+                        line           = line[:m_start] + m_sub + line[m_end:]
+                        # Some projects seem to have hardcoded RTL and forgotten
+                        # to replace 'USER_MODULE_ID' with the Wokwi ID
+                        if "_USER_MODULE_ID_" in line:
+                            line = line.replace("_USER_MODULE_ID_", "_")
+                    new_txt.append(line)
+                # Overwrite the file
+                logging.info(f"Writing uniquified RTL for {path}")
+                with open(path, "w", encoding="utf-8") as fh:
+                    fh.writelines(new_txt)
 
 
 class CaravelConfig():
@@ -322,70 +389,97 @@ class CaravelConfig():
     # instantiate inside user_project_wrapper
     def instantiate(self):
         logging.info("instantiating designs in user_project_wrapper.v")
-        assigns = """
-        localparam NUM_MACROS = {};
-        wire [NUM_MACROS:0] data, scan, latch, clk;
-        """
 
-        scan_controller_template = """
-        scan_controller #(.NUM_DESIGNS(NUM_MACROS)) scan_controller(
-            .clk                    (wb_clk_i),
-            .reset                  (wb_rst_i),
-            .active_select          (io_in[20:12]),
-            .inputs                 (io_in[28:21]),
-            .outputs                (io_out[36:29]),
-            .ready                  (io_out[37]),
-            .slow_clk               (io_out[10]),
-            .set_clk_div            (io_in[11]),
+        # NOTE: The user project wrapper initially used vectored signals for clk,
+        #       scan, and latch signals. However, this leads to atrocious sim
+        #       performance, as any change within the vectored signal is
+        #       interpreted as a trigger condition for re-evaluating logic (at
+        #       least this is the case under Icarus and Verilator). Therefore
+        #       single bit signals are used between stages to limit the impact
+        #       of any wire changing.
 
-            .scan_clk_out           (clk[0]),
-            .scan_clk_in            (clk[NUM_MACROS]),
-            .scan_data_out          (data[0]),
-            .scan_data_in           (data[NUM_MACROS]),
-            .scan_select            (scan[0]),
-            .scan_latch_en          (latch[0]),
+        # Instance the scan controller
+        body = [
+            "",
+            "wire sc_clk_out, sc_data_out, sc_latch_out, sc_scan_out;",
+            "wire sc_clk_in,  sc_data_in;",
+            "",
+            f"scan_controller #(.NUM_DESIGNS({self.num_projects})) scan_controller (",
+            "   .clk                    (wb_clk_i),",
+            "   .reset                  (wb_rst_i),",
+            "   .active_select          (io_in[20:12]),",
+            "   .inputs                 (io_in[28:21]),",
+            "   .outputs                (io_out[36:29]),",
+            "   .ready                  (io_out[37]),",
+            "   .slow_clk               (io_out[10]),",
+            "   .set_clk_div            (io_in[11]),",
+            "",
+            "   .scan_clk_out           (sc_clk_out),",
+            "   .scan_clk_in            (sc_clk_in),",
+            "   .scan_data_out          (sc_data_out),",
+            "   .scan_data_in           (sc_data_in),",
+            "   .scan_select            (sc_scan_out),",
+            "   .scan_latch_en          (sc_latch_out),",
+            "",
+            "   .la_scan_clk_in         (la_data_in[0]),",
+            "   .la_scan_data_in        (la_data_in[1]),",
+            "   .la_scan_data_out       (la_data_out[0]),",
+            "   .la_scan_select         (la_data_in[2]),",
+            "   .la_scan_latch_en       (la_data_in[3]),",
+            "",
+            "   .driver_sel             (io_in[9:8]),",
+            "",
+            "   .oeb                    (io_oeb)",
+            ");",
+        ]
 
-            .la_scan_clk_in         (la_data_in[0]),
-            .la_scan_data_in        (la_data_in[1]),
-            .la_scan_data_out       (la_data_out[0]),
-            .la_scan_select         (la_data_in[2]),
-            .la_scan_latch_en       (la_data_in[3]),
+        # Instance every design on the scan chain
+        for idx in range(self.num_projects):
+            # First design driven by scan controller, all others are chained
+            pfx      = f"sw_{idx:03d}"
+            prev_pfx = f"sw_{idx-1:03d}" if idx > 0 else "sc"
+            # Pickup the Wokwi design ID and github URL for the project
+            wk_id  = self.projects.get_wokwi_id(idx)
+            giturl = self.projects.get_giturl(idx)
+            logging.debug("instance %(idx)d scan_wrapper_%(wk_id)s", { "idx"  : idx,
+                                                                       "wk_id": wk_id })
+            # Append the instance to the body
+            body += [
+                "",
+                f"// [{idx:03d}] {giturl}",
+                f"wire {pfx}_clk_out, {pfx}_data_out, {pfx}_scan_out, {pfx}_latch_out;",
+                f"scan_wrapper_{wk_id} #(.NUM_IOS(8)) {self.projects.get_macro_instance(idx)} (",
+                f"    .clk_in          ({prev_pfx}_clk_out),",
+                f"    .data_in         ({prev_pfx}_data_out),",
+                f"    .scan_select_in  ({prev_pfx}_scan_out),",
+                f"    .latch_enable_in ({prev_pfx}_latch_out),",
+                f"    .clk_out         ({pfx}_clk_out),",
+                f"    .data_out        ({pfx}_data_out),",
+                f"    .scan_select_out ({pfx}_scan_out),",
+                f"    .latch_enable_out({pfx}_latch_out)",
+                ");"
+            ]
 
-            .driver_sel             (io_in[9:8]),
+        # Link the final design back to the scan controller
+        body += [
+            "",
+            "// Connect final signals back to the scan controller",
+            f"assign sc_clk_in  = sw_{idx:03d}_clk_out;",
+            f"assign sc_data_in = sw_{idx:03d}_data_out;",
+            "",
+            ""
+        ]
 
-            .oeb                    (io_oeb)
-        );
-
-        """
-        lesson_template = """
-        // {giturl}
-        {name} #(.NUM_IOS(8)) {instance} (
-            .clk_in          (clk  [{id}]),
-            .data_in         (data [{id}]),
-            .scan_select_in  (scan [{id}]),
-            .latch_enable_in (latch[{id}]),
-            .clk_out         (clk  [{next_id}]),
-            .data_out        (data [{next_id}]),
-            .scan_select_out (scan [{next_id}]),
-            .latch_enable_out(latch[{next_id}])
-            );
-        """
-        with open('upw_pre.v') as fh:
-            pre = fh.read()
-
-        with open('upw_post.v') as fh:
-            post = fh.read()
-
+        # Write to file
         with open('verilog/rtl/user_project_wrapper.v', 'w') as fh:
-            fh.write(pre)
-            fh.write(assigns.format(self.num_projects))
-            fh.write(scan_controller_template)
-            for i in range(self.num_projects):
-                logging.debug("instance {} {}".format(i, self.projects.get_macro_name(i)))
-                # instantiate template
-                instance = lesson_template.format(giturl=self.projects.get_giturl(i), instance=self.projects.get_macro_instance(i), name=self.projects.get_macro_name(i), id=i, next_id=i + 1)
-                fh.write(instance)
-            fh.write(post)
+            # Insert the Caravel preamble
+            with open("upw_pre.v", "r") as fh_pre:
+                fh.write(fh_pre.read())
+            # Indent, join, and insert the module instances
+            fh.write("\n".join([("    " + x).rstrip() for x in body]))
+            # Insert the Caravel postamble
+            with open("upw_post.v", "r") as fh_post:
+                fh.write(fh_post.read())
 
         # build the user_project_includes.v file - used for blackboxing when building the GDS
         verilogs = []

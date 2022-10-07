@@ -60,7 +60,7 @@ module user_module_341193419111006803(
 endmodule
 
 `ifdef TB
-module tb;
+module tb_341193419111006803;
    reg clock = 1;
    always #5 clock = !clock;
 

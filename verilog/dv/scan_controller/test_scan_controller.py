@@ -37,7 +37,7 @@ async def test_single(dut):
     for i in range(11):
         dut.inputs.value = i
         await FallingEdge(dut.ready)
-        print(i, int(dut.outputs))
+        dut._log.info("cycle %d - output state %d", i, int(dut.outputs))
         if i > 0:
             assert 256 - i == int(dut.outputs)
 
@@ -61,7 +61,7 @@ async def wait_state(dut):
     for i in range(11):
         dut.inputs.value = i
         await FallingEdge(dut.ready)
-        print(i, int(dut.outputs))
+        dut._log.info("cycle %d - output state %d", i, int(dut.outputs))
         if i > 0:
             assert 256 - i == int(dut.outputs)
 
@@ -71,7 +71,7 @@ async def clock_div(dut):
     cocotb.fork(clock.start())
 
     dut.reset.value = 1
-    dut.set_clk_div.value = 0   
+    dut.set_clk_div.value = 0
     await ClockCycles(dut.clk, 10)
     dut.reset.value = 0
 
@@ -95,11 +95,14 @@ async def internal_controller(dut):
     clock = Clock(dut.clk, 100, units="ns") # 10 MHz
     cocotb.fork(clock.start())
 
+    dut._log.info("resetting design")
     dut.reset.value = 1
     dut.set_clk_div.value = 0
     dut.driver_sel.value = 0b10   # internal controller
     dut.active_select.value = 1 # 7 seg seconds
     await ClockCycles(dut.clk, 10)
+
+    dut._log.info("releasing reset")
     dut.reset.value = 0
     dut.inputs.value = 0
     dut.set_clk_div.value = 1   # lock in the new clock divider value
@@ -107,6 +110,7 @@ async def internal_controller(dut):
     dut.inputs.value = 0
 
     # reset: set bit 1 high, wait for one cycle of slow_clk, then set bit 1 low
+    dut._log.info("first slow-clock cycle")
     dut.inputs.value = 0b10
     await RisingEdge(dut.slow_clk)
     await RisingEdge(dut.slow_clk)
@@ -114,7 +118,7 @@ async def internal_controller(dut):
     dut.inputs.value = 0
 
     # sync to display, GL and RTL have different times to start
-    print("sync to 7seg at pos 1")
+    dut._log.info("sync to 7seg at pos 1")
     count = 10
     while count > 0:
         await FallingEdge(dut.slow_clk)
@@ -124,22 +128,22 @@ async def internal_controller(dut):
 
     # check all segments
     for i in range(10):
-        print("clock {:2} 7seg {}".format(i, decode_seg(dut.seven_seg.value)))
+        dut._log.info("clock {:2} 7seg {}".format(i, decode_seg(dut.seven_seg.value)))
         assert decode_seg(dut.seven_seg.value) == i
         await FallingEdge(dut.slow_clk)
 
-    print("straight test at pos 0")
+    dut._log.info("straight test at pos 0")
     dut.set_clk_div.value = 0   # no clock div
     dut.active_select.value = 0 # straight
     await FallingEdge(dut.ready)
     for i in range(11):
         dut.inputs.value = i
         await FallingEdge(dut.ready)
-        print(i, int(dut.outputs))
+        dut._log.info("cycle %d - output state %d", i, int(dut.outputs))
         if i > 0:
             assert i == int(dut.outputs) + 1
 
-    print("invert test at pos 2")
+    dut._log.info("invert test at pos 2")
     dut.active_select.value = 2 # invert
     dut.inputs.value = 0
     await FallingEdge(dut.ready)
@@ -147,18 +151,17 @@ async def internal_controller(dut):
     for i in range(11):
         dut.inputs.value = i
         await FallingEdge(dut.ready)
-        print(i, int(dut.outputs))
+        dut._log.info("cycle %d - output state %d", i, int(dut.outputs))
         if i > 0:
             assert 256 - i == int(dut.outputs)
 
     for design in range(3,20): # next designs are all straight
-        print("straight test at pos {}".format(design))
-        dut.active_select.value = design 
+        dut._log.info("straight test at pos {}".format(design))
+        dut.active_select.value = design
         await FallingEdge(dut.ready)
         for i in range(11):
             dut.inputs.value = i
             await FallingEdge(dut.ready)
-            print(i, int(dut.outputs))
+            dut._log.info("cycle %d - output state %d", i, int(dut.outputs))
             if i > 0:
                 assert i == int(dut.outputs) + 1
-    

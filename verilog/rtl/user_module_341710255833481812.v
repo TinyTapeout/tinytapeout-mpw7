@@ -1,4 +1,4 @@
-module CodeLUT_339800239192932947(input CLK,  input RST,
+module CodeLUT_339800239192932947_341710255833481812(input CLK,  input RST,
   input [3:0] ancilla,
   output [4:0] correction,
   output [1:0] axis);
@@ -86,7 +86,7 @@ wire [4:0] correction;
 wire [1:0] axis;
 assign io_out = {1'b0, axis, correction};
 
-  CodeLUT_339800239192932947 codelut(
+  CodeLUT_339800239192932947_341710255833481812 codelut(
     CLK, RST,
     ancilla,
     correction,

@@ -1,4 +1,4 @@
-module s_p_shift_reg #(parameter LENGTH=256, parameter ROT_LEN = 8) (input d,
+module s_p_shift_reg_bc4d7220e4fdbf20a574d56ea112a8e1 #(parameter LENGTH=256, parameter ROT_LEN = 8) (input d,
                                           input clk,
                                           input rst_n,
                                           input cs_n,
@@ -19,7 +19,7 @@ module s_p_shift_reg #(parameter LENGTH=256, parameter ROT_LEN = 8) (input d,
   
 endmodule
 
-module lut #(parameter IN_WIDTH=4, parameter OUT_WIDTH=4) (input [IN_WIDTH-1:0] sel,
+module lut_bc4d7220e4fdbf20a574d56ea112a8e1 #(parameter IN_WIDTH=4, parameter OUT_WIDTH=4) (input [IN_WIDTH-1:0] sel,
                                                            input [2**(IN_WIDTH)*OUT_WIDTH-1:0] in,
                                                            output [OUT_WIDTH-1:0] out);
  
@@ -39,15 +39,15 @@ module lut #(parameter IN_WIDTH=4, parameter OUT_WIDTH=4) (input [IN_WIDTH-1:0] 
   
 endmodule
 
-module serial_load_lut #(parameter IN_WIDTH=4, parameter OUT_WIDTH=4) (
+module serial_load_lut_bc4d7220e4fdbf20a574d56ea112a8e1 #(parameter IN_WIDTH=4, parameter OUT_WIDTH=4) (
   input d, input clk, input rst_n, input cs_n, input rot_n, input [IN_WIDTH-1:0] sel, output [OUT_WIDTH-1:0] out);
   
   wire [2**(IN_WIDTH)*OUT_WIDTH-1:0] parallel_table;
   
-  s_p_shift_reg #(2**(IN_WIDTH)*OUT_WIDTH, OUT_WIDTH) p_s_shift_reg(.d(d),.clk(clk),.rst_n(rst_n),.cs_n(cs_n),
+  s_p_shift_reg_bc4d7220e4fdbf20a574d56ea112a8e1 #(2**(IN_WIDTH)*OUT_WIDTH, OUT_WIDTH) p_s_shift_reg(.d(d),.clk(clk),.rst_n(rst_n),.cs_n(cs_n),
                                                                   .rot_n(rot_n), .out(parallel_table));
   
-  lut #(IN_WIDTH, OUT_WIDTH) lut(.sel(sel), .in(parallel_table), .out(out));
+  lut_bc4d7220e4fdbf20a574d56ea112a8e1 #(IN_WIDTH, OUT_WIDTH) lut_bc4d7220e4fdbf20a574d56ea112a8e1(.sel(sel), .in(parallel_table), .out(out));
   
   
 endmodule
@@ -62,7 +62,7 @@ module user_module_bc4d7220e4fdbf20a574d56ea112a8e1(
   wire rst_n;
   assign rst_n = 1;
   
-  serial_load_lut #(4, 3) lut(.d(io_in[0]), .clk(io_in[1]), .cs_n(io_in[2]), .rst_n(rst_n),
+  serial_load_lut_bc4d7220e4fdbf20a574d56ea112a8e1 #(4, 3) lut_bc4d7220e4fdbf20a574d56ea112a8e1(.d(io_in[0]), .clk(io_in[1]), .cs_n(io_in[2]), .rst_n(rst_n),
                               .rot_n(io_in[7]), .sel(io_in[6:3]), .out(io_out[2:0]));
   
   

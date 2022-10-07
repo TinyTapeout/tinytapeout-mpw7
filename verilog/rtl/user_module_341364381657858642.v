@@ -6,7 +6,7 @@ module user_module_341364381657858642(
   output [7:0] io_out
 );
 
-mcpu6bit mcpu6bit_top (
+mcpu6bit_341364381657858642 mcpu6bit_top (
   .clk(io_in[0]),
   .rst(io_in[1]),
   .datain(io_in[7:2]),
@@ -18,7 +18,7 @@ mcpu6bit mcpu6bit_top (
 endmodule
 
 
-module mcpu6bit(datain,dataout,we,rst,clk);
+module mcpu6bit_341364381657858642(datain,dataout,we,rst,clk);
 
 input [5:0] datain;
 output [5:0] dataout;
