@@ -55,6 +55,7 @@ jobs:
     - name: install oss-cad-suite
       uses: YosysHQ/setup-oss-cad-suite@v1
       with:
+          osscadsuite-version: '2022-09-03' # pin the version, latest one fails to work with caravel
           python-override: true # don't want to use that python
     - run: | 
         yosys --version
